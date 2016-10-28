@@ -2,12 +2,14 @@ package com.netcracker.cinema;
 
 import javax.servlet.annotation.*;
 
+import com.vaadin.spring.server.SpringVaadinServlet;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.ContextLoaderListener;
 
 import com.netcracker.cinema.domains.Dummy;
-import com.netcracker.cinema.persistance.HibernateUtil;
 import com.vaadin.annotations.*;
 import com.vaadin.server.*;
 import com.vaadin.spring.annotation.*;
@@ -26,13 +28,12 @@ import com.vaadin.ui.*;
 @Theme("mytheme")
 public class MyUI extends UI {
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
-
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
 
         final TextField id = new TextField();
         final TextField name = new TextField();
@@ -53,11 +54,14 @@ public class MyUI extends UI {
     }
 
     private void save(long id, String name) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
-        Dummy dummy = new Dummy(id, name);
+        Dummy dummy = new Dummy();
+        dummy.setId(id);
+        dummy.setName(name);
         session.save(dummy);
         session.getTransaction().commit();
+        session.close();
     }
 
     @Configuration
@@ -71,6 +75,6 @@ public class MyUI extends UI {
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
-    public static class MyUIServlet extends VaadinServlet {
+    public static class MyUIServlet extends SpringVaadinServlet {
     }
 }

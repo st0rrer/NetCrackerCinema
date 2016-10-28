@@ -1,22 +1,30 @@
 package com.netcracker.cinema.domains;
 
-import com.sun.istack.internal.NotNull;
-import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name = "dummies")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class Dummy {
     @Id
     @Column(name = "DUMMY_ID")
     private long id;
 
-    @NotNull
     @Column(name = "DUMMY_NAME")
     private String name;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
