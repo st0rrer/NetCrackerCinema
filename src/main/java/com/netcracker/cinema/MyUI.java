@@ -2,6 +2,7 @@ package com.netcracker.cinema;
 
 import javax.servlet.annotation.*;
 
+import com.vaadin.spring.server.SpringVaadinServlet;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

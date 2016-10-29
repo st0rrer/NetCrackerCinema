@@ -1,6 +1,5 @@
 package com.netcracker.cinema.domains;
 
-import com.sun.istack.internal.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Dummy {
+public class Dummy implements Serializable {
     @Id
     @Column(name = "DUMMY_ID")
     private long id;
