@@ -1,9 +1,9 @@
 package com.netcracker.cinema.domains;
 
-import com.sun.istack.internal.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "dummies")
@@ -11,12 +11,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Dummy {
+public class Dummy implements Serializable{
     @Id
     @Column(name = "DUMMY_ID")
     private long id;
 
-    @NotNull
     @Column(name = "DUMMY_NAME")
     private String name;
+
 }
