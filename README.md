@@ -1,12 +1,12 @@
 cinema
 ==============
 
-Template for a simple Vaadin application that only requires a Servlet 3.0 container to run.
+Cinema is a project that automates the ticketing process, scheduling, report generation.
 
 Workflow
 ========
 
-To change your database properties, check hibernate.cfg.xml
+To change your database properties, check application.properties
 
 To compile the entire project, run "mvn install".
 
@@ -44,9 +44,3 @@ When using the runtime compiler, running the application in the "run" mode
 significantly.
 
 It is highly recommended to disable runtime compilation for production WAR files.
-
-Using Vaadin pre-releases
--------------------------
-
-If Vaadin pre-releases are not enabled by default, use the Maven parameter
-"-P vaadin-prerelease" or change the activation default value of the profile in pom.xml .
