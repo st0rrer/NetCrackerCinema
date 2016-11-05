@@ -2,9 +2,8 @@ package com.netcracker.cinema.web;
 
 import javax.servlet.annotation.*;
 
+import com.netcracker.cinema.dao.DummyDao;
 import com.vaadin.spring.server.SpringVaadinServlet;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.ContextLoaderListener;
@@ -29,7 +28,7 @@ import com.vaadin.ui.*;
 public class MyUI extends UI {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private DummyDao dummyDao;
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -54,15 +53,12 @@ public class MyUI extends UI {
     }
 
     private void save(long id, String name) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
         Dummy dummy = new Dummy();
         dummy.setId(id);
         dummy.setName(name);
-        session.save(dummy);
-        session.getTransaction().commit();
-        session.close();
+        dummyDao.insert(dummy);
     }
+
 
     @Configuration
     @EnableVaadin
