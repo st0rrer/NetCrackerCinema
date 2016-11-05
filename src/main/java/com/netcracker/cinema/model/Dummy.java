@@ -1,15 +1,7 @@
 package com.netcracker.cinema.model;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "dummies")
 public class Dummy {
-    @Id
-    @Column(name = "DUMMY_ID")
     private long id;
-
-    @Column(name = "DUMMY_NAME")
     private String name;
 
     public long getId() {

@@ -10,6 +10,5 @@
     <import resource="classpath:spring/business-config.xml" />
     <context:property-placeholder location="classpath:spring/application.properties" system-properties-mode="OVERRIDE"/>
 
-    <bean class="com.netcracker.cinema.web.MyUI.MyConfiguration" />
     <context:component-scan base-package="com.netcracker.cinema" />
 </beans>
