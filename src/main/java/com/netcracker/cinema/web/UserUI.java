@@ -4,6 +4,7 @@ import javax.servlet.annotation.*;
 
 import com.netcracker.cinema.service.DummyService;
 import com.vaadin.spring.server.SpringVaadinServlet;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.netcracker.cinema.model.Dummy;
@@ -15,6 +16,7 @@ import com.vaadin.ui.*;
 @SpringUI
 @Theme("valo")
 public class UserUI extends UI {
+    private static final Logger logger = Logger.getLogger(UserUI.class);
 
     @Autowired
     private DummyService dummyService;

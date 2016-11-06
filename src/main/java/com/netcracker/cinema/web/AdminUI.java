@@ -8,11 +8,14 @@ import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import org.apache.log4j.Logger;
+
 import javax.servlet.annotation.WebServlet;
 
 @SpringUI(path = "/admin")
 @Theme("valo")
 public class AdminUI extends UI {
+    private static final Logger logger = Logger.getLogger(AdminUI.class);
 
     @Override
     protected void init(VaadinRequest request) {

@@ -1,7 +1,8 @@
-package com.netcracker.cinema.repository.jdbc;
+package com.netcracker.cinema.dao.impl;
 
 import com.netcracker.cinema.model.Dummy;
-import com.netcracker.cinema.repository.DummyRepository;
+import com.netcracker.cinema.dao.DummyDao;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,25 +14,36 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
-public class DummyRepositoryImpl implements DummyRepository {
+public class DummyDaoImpl implements DummyDao {
+    private static final Logger logger = Logger.getLogger(DummyDaoImpl.class);
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public DummyRepositoryImpl(DataSource dataSource) {
+    public DummyDaoImpl(DataSource dataSource) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public List<Dummy> findAll() throws DataAccessException {
-        return jdbcTemplate.queryForList(findAllSQL, Dummy.class);
+        return jdbcTemplate.query(findAllSQL, (rs, rowNum) -> {
+            Dummy dummy = new Dummy();
+            dummy.setId(rs.getLong("id"));
+            dummy.setName(rs.getString("name"));
+            return dummy;
+        });
     }
 
     @Override
     public Dummy findById(long id) throws DataAccessException {
-       return jdbcTemplate.queryForObject(findByIdSQL, new Object[] {id}, Dummy.class);
+        return jdbcTemplate.queryForObject(findByIdSQL, new Object[]{id}, (rs, rowNum) -> {
+            Dummy dummy = new Dummy();
+            dummy.setId(rs.getLong("id"));
+            dummy.setName(rs.getString("name"));
+            return dummy;
+        });
     }
 
     @Override
