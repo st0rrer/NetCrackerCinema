@@ -13,6 +13,9 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.List;
 
+/**
+ * Created by dimka on 05.11.2016.
+ */
 @Repository
 public class DummyDaoImpl implements DummyDao {
     private static final Logger logger = Logger.getLogger(DummyDaoImpl.class);
