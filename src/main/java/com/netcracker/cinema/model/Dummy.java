@@ -1,6 +1,7 @@
 package com.netcracker.cinema.model;
 
 public class Dummy {
+
     private long id;
     private String name;
 
