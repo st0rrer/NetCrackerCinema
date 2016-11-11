@@ -6,6 +6,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.UI;
 import org.apache.log4j.Logger;
@@ -15,7 +16,7 @@ import javax.servlet.annotation.WebServlet;
 /**
  * Created by Илья on 10.11.2016.
  */
-@SpringUI
+@SpringUI(path = "/userSeanceMain")
 @Theme("valo")
 public class UserSeanceMain extends UI {
     private static final Logger logger = Logger.getLogger(UserSeanceMain.class);
@@ -32,6 +33,7 @@ public class UserSeanceMain extends UI {
         Layout totalPrice = new TotalPrice();
         Layout backAndReserve = new BackAndReserve();
 
+        content.addComponent(new Label("UI"), 0, 0);
         //Добавляет в ячейки 1/1 - 4/4 постер фильма
         content.addComponent(poster, 1, 1, 4, 4);
         //Добавляем в ячейки 1/5 - 28/28 места
