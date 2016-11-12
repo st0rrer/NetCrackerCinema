@@ -1,21 +1,17 @@
 package com.netcracker.cinema.model;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Created by gaya on 05.11.2016.
+ * Created by gaya on 11.11.2016.
  */
 @Getter
 @Setter
-public class Ticket {
+public class Price {
 
     private long id;
-    private long code;
-    private String email;
     private int price;
-    private boolean isPaid;
     private Seance seanceId;
-    private Place placeId;
+    private Zone zoneId;
 }
