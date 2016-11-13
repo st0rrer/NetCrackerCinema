@@ -24,29 +24,30 @@ public class Ticket {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Ticket)) return false;
 
         Ticket ticket = (Ticket) o;
 
-        if (id != ticket.id) return false;
-        if (code != ticket.code) return false;
-        if (price != ticket.price) return false;
-        if (isPaid != ticket.isPaid) return false;
-        if (!email.equals(ticket.email)) return false;
-        if (!seanceId.equals(ticket.seanceId)) return false;
-        return placeId.equals(ticket.placeId);
+        if (getId() != ticket.getId()) return false;
+        if (getCode() != ticket.getCode()) return false;
+        if (getPrice() != ticket.getPrice()) return false;
+        if (isPaid() != ticket.isPaid()) return false;
+        if (getEmail() != null ? !getEmail().equals(ticket.getEmail()) : ticket.getEmail() != null) return false;
+        if (getSeanceId() != null ? !getSeanceId().equals(ticket.getSeanceId()) : ticket.getSeanceId() != null)
+            return false;
+        return getPlaceId() != null ? getPlaceId().equals(ticket.getPlaceId()) : ticket.getPlaceId() == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (code ^ (code >>> 32));
-        result = 31 * result + email.hashCode();
-        result = 31 * result + price;
-        result = 31 * result + (isPaid ? 1 : 0);
-        result = 31 * result + seanceId.hashCode();
-        result = 31 * result + placeId.hashCode();
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (int) (getCode() ^ (getCode() >>> 32));
+        result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
+        result = 31 * result + getPrice();
+        result = 31 * result + (isPaid() ? 1 : 0);
+        result = 31 * result + (getSeanceId() != null ? getSeanceId().hashCode() : 0);
+        result = 31 * result + (getPlaceId() != null ? getPlaceId().hashCode() : 0);
         return result;
     }
 }

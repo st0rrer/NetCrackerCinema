@@ -20,23 +20,23 @@ public class Price {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Price)) return false;
 
         Price price1 = (Price) o;
 
-        if (id != price1.id) return false;
-        if (price != price1.price) return false;
-        if (!seanceId.equals(price1.seanceId)) return false;
-        return zoneId.equals(price1.zoneId);
+        if (getId() != price1.getId()) return false;
+        if (getPrice() != price1.getPrice()) return false;
+        if (getSeanceId() != null ? !getSeanceId().equals(price1.getSeanceId()) : price1.getSeanceId() != null) return false;
+        return getZoneId() != null ? getZoneId().equals(price1.getZoneId()) : price1.getZoneId() == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + price;
-        result = 31 * result + seanceId.hashCode();
-        result = 31 * result + zoneId.hashCode();
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + getPrice();
+        result = 31 * result + (getSeanceId() != null ? getSeanceId().hashCode() : 0);
+        result = 31 * result + (getZoneId() != null ? getZoneId().hashCode() : 0);
         return result;
     }
 }

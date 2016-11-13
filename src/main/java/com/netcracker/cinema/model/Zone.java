@@ -19,19 +19,19 @@ public class Zone {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Zone)) return false;
 
         Zone zone = (Zone) o;
 
-        if (id != zone.id) return false;
-        return name.equals(zone.name);
+        if (getId() != zone.getId()) return false;
+        return getName() != null ? getName().equals(zone.getName()) : zone.getName() == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + name.hashCode();
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         return result;
     }
 }

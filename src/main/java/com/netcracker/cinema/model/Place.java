@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 public class Place  {
 
-    private long idd;
+    private long id;
     private int rowNumber;
     private int number;
     private Zone zoneId;
@@ -23,25 +23,27 @@ public class Place  {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Place)) return false;
 
         Place place = (Place) o;
 
-        if (idd != place.idd) return false;
-        if (rowNumber != place.rowNumber) return false;
-        if (number != place.number) return false;
-        if (!zoneId.equals(place.zoneId)) return false;
-        return hallId.equals(place.hallId);
+        if (getId() != place.getId()) return false;
+        if (getRowNumber() != place.getRowNumber()) return false;
+        if (getNumber() != place.getNumber()) return false;
+        if (getZoneId() != null ? !getZoneId().equals(place.getZoneId()) : place.getZoneId() != null) return false;
+        return getHallId() != null ? getHallId().equals(place.getHallId()) : place.getHallId() == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (idd ^ (idd >>> 32));
-        result = 31 * result + rowNumber;
-        result = 31 * result + number;
-        result = 31 * result + zoneId.hashCode();
-        result = 31 * result + hallId.hashCode();
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + getRowNumber();
+        result = 31 * result + getNumber();
+        result = 31 * result + (getZoneId() != null ? getZoneId().hashCode() : 0);
+        result = 31 * result + (getHallId() != null ? getHallId().hashCode() : 0);
         return result;
     }
+
+
 }
