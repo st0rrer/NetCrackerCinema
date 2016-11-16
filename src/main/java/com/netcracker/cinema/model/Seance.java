@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -14,9 +15,9 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @ToString
-public class Seance {
+public class Seance implements Serializable {
 
-    private long id;
+    private int id;
     private LocalDate seanceDate;
     private LocalTime seanceTime;
     private Movie movieId;
@@ -42,7 +43,7 @@ public class Seance {
 
     @Override
     public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
+        int result = getId();
         result = 31 * result + (getSeanceDate() != null ? getSeanceDate().hashCode() : 0);
         result = 31 * result + (getSeanceTime() != null ? getSeanceTime().hashCode() : 0);
         result = 31 * result + (getMovieId() != null ? getMovieId().hashCode() : 0);

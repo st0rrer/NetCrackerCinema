@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * Created by gaya on 05.11.2016.
  */
 @Getter
 @Setter
 @ToString
-public class Ticket {
+public class Ticket implements Serializable {
 
     private long id;
     private long code;
