@@ -19,5 +19,6 @@
 
     <jdbc:initialize-database data-source="oracleDataSource">
         <jdbc:script location="classpath:db/initDB.sql"/>
+        <jdbc:script location="classpath:db/populDB.sql"/>
     </jdbc:initialize-database>
 </beans>
