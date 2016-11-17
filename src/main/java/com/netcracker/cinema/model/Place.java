@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 
 /**
  * Created by gaya on 05.11.2016.
@@ -12,9 +14,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Place  {
+public class Place implements Serializable {
 
-    private long id;
+    private int id;
     private int rowNumber;
     private int number;
     private Zone zoneId;
@@ -37,13 +39,11 @@ public class Place  {
 
     @Override
     public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
+        int result = getId();
         result = 31 * result + getRowNumber();
         result = 31 * result + getNumber();
         result = 31 * result + (getZoneId() != null ? getZoneId().hashCode() : 0);
         result = 31 * result + (getHallId() != null ? getHallId().hashCode() : 0);
         return result;
     }
-
-
 }

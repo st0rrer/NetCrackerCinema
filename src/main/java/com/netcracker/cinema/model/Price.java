@@ -4,15 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * Created by gaya on 11.11.2016.
  */
 @Getter
 @Setter
 @ToString
-public class Price {
+public class Price implements Serializable {
 
-    private long id;
+    private int id;
     private int price;
     private Seance seanceId;
     private Zone zoneId;
@@ -26,14 +28,15 @@ public class Price {
 
         if (getId() != price1.getId()) return false;
         if (getPrice() != price1.getPrice()) return false;
-        if (getSeanceId() != null ? !getSeanceId().equals(price1.getSeanceId()) : price1.getSeanceId() != null) return false;
+        if (getSeanceId() != null ? !getSeanceId().equals(price1.getSeanceId()) : price1.getSeanceId() != null)
+            return false;
         return getZoneId() != null ? getZoneId().equals(price1.getZoneId()) : price1.getZoneId() == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
+        int result = getId();
         result = 31 * result + getPrice();
         result = 31 * result + (getSeanceId() != null ? getSeanceId().hashCode() : 0);
         result = 31 * result + (getZoneId() != null ? getZoneId().hashCode() : 0);

@@ -5,15 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * Created by gaya on 05.11.2016.
  */
 @Getter
 @Setter
 @ToString
-public class Zone {
+public class Zone implements Serializable {
 
-    private long id;
+    private int id;
     private String name;
 
     @Override
@@ -30,7 +32,7 @@ public class Zone {
 
     @Override
     public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
+        int result = getId();
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         return result;
     }

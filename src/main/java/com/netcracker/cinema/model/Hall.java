@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 
 /**
  * Created by gaya on 05.11.2016.
@@ -11,9 +13,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Hall {
+public class Hall implements Serializable {
 
-    private long id;
+    private int id;
     private String name;
 
     @Override
@@ -30,7 +32,7 @@ public class Hall {
 
     @Override
     public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
+        int result = getId();
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         return result;
     }
