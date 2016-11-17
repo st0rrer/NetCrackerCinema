@@ -7,7 +7,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 /**
  * Created by gaya on 05.11.2016.
@@ -19,7 +19,7 @@ public class Seance implements Serializable {
 
     private int id;
     private LocalDate seanceDate;
-    private LocalTime seanceTime;
+    private LocalDateTime seanceTime;
     private Movie movieId;
     private Hall hallId;
 
