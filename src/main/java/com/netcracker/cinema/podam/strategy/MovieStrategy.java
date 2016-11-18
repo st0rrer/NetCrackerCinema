@@ -28,11 +28,6 @@ public class MovieStrategy extends AbstractRandomDataProviderStrategy {
                 return MovieStrategy.Title.randomMovies();
             }
         }
-        if ("description".equals(attributeMetadata.getAttributeName())) {
-            if (Movie.class.equals(attributeMetadata.getPojoClass())) {
-                return MovieStrategy.Description.randomDescription();
-            }
-        }
 
         if ("poster".equals(attributeMetadata.getAttributeName())) {
             if (Movie.class.equals(attributeMetadata.getPojoClass())) {
@@ -41,22 +36,6 @@ public class MovieStrategy extends AbstractRandomDataProviderStrategy {
         }
 
         return super.getStringValue(attributeMetadata);
-    }
-
-    @Override
-    public Integer getInteger(AttributeMetadata attributeMetadata) {
-        if (Movie.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2000);
-            } else if ("duration".equals(attributeMetadata.getAttributeName())) {
-                return 10 + random.nextInt(340);
-            } else if ("periodicity".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(10);
-            } else if ("basePrice".equals(attributeMetadata.getAttributeName())) {
-                return 20 + random.nextInt(500);
-            }
-        }
-        return super.getInteger(attributeMetadata);
     }
 
     private enum Title {
@@ -73,21 +52,7 @@ public class MovieStrategy extends AbstractRandomDataProviderStrategy {
         }
     }
 
-    private enum Description {
 
-        TheWizardOfOzTheWizardOfOzTheWizardOfOzTheThirdManTheThirdManTheThirdManTheThirdMan,
-        CitizenKaneCitizenKaneCitizenKaneCitizenKaneAllAboutEveAllAboutEveAllAboutEveAllAboutEve,
-        TheGodfatherTheGodfatherTheGodfatherInsideOutInsideOutInsideOutInsideOutInsideOutInsideOut,
-        MetropolisMetropolisMetropolisMetropolisModernTimesModernTimesModernTimesModernTimesModernTimes;
-
-        private static final List<MovieStrategy.Description> values = Collections.unmodifiableList(Arrays.asList(values()));
-        private static final int size = values.size();
-        private static final Random random = new Random();
-
-        public static String randomDescription() {
-            return values.get(random.nextInt(size)).toString();
-        }
-    }
 
     private enum Poster {
 

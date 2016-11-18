@@ -31,15 +31,6 @@ public class HallStrategy  extends AbstractRandomDataProviderStrategy {
 
         return super.getStringValue(attributeMetadata);
     }
-    @Override
-    public Integer getInteger(AttributeMetadata attributeMetadata) {
-        if (Hall.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2);
-            }
-        }
-        return super.getInteger(attributeMetadata);
-    }
 
     private enum NameHall {
 

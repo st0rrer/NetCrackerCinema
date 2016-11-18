@@ -25,6 +25,7 @@
     </properties>
 
     <repositories>
+
         <!-- For Oracle JDBC driver -->
         <repository>
             <id>Jahia</id>
@@ -140,6 +141,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.0</version>
         </dependency>
+
 
     </dependencies>
 

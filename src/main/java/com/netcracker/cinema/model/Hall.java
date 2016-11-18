@@ -3,6 +3,7 @@ package com.netcracker.cinema.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import uk.co.jemos.podam.common.PodamIntValue;
 
 import java.io.Serializable;
 
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @ToString
 public class Hall implements Serializable {
 
+    @PodamIntValue(minValue = 1, maxValue = 2)
     private int id;
     private String name;
 

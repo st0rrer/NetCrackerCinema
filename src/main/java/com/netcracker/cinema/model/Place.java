@@ -1,9 +1,11 @@
 package com.netcracker.cinema.model;
 
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import uk.co.jemos.podam.common.PodamIntValue;
 
 import java.io.Serializable;
 
@@ -14,36 +16,16 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class Place implements Serializable {
 
+    @PodamIntValue(minValue = 1, maxValue = 200)
     private int id;
-    private int rowNumber;
-    private int number;
+    @PodamIntValue(minValue = 1, maxValue = 120)
+    private Integer rowNumber;
+    @PodamIntValue(minValue = 1, maxValue = 120)
+    private Integer number;
     private Zone zoneId;
     private Hall hallId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Place)) return false;
-
-        Place place = (Place) o;
-
-        if (getId() != place.getId()) return false;
-        if (getRowNumber() != place.getRowNumber()) return false;
-        if (getNumber() != place.getNumber()) return false;
-        if (getZoneId() != null ? !getZoneId().equals(place.getZoneId()) : place.getZoneId() != null) return false;
-        return getHallId() != null ? getHallId().equals(place.getHallId()) : place.getHallId() == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getId();
-        result = 31 * result + getRowNumber();
-        result = 31 * result + getNumber();
-        result = 31 * result + (getZoneId() != null ? getZoneId().hashCode() : 0);
-        result = 31 * result + (getHallId() != null ? getHallId().hashCode() : 0);
-        return result;
-    }
 }

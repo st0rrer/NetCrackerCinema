@@ -35,34 +35,5 @@ public class PlaceStrategy extends AbstractRandomDataProviderStrategy {
         }
         return super.getStringValue(attributeMetadata);
     }
-
-
-    @Override
-    public Integer getInteger(AttributeMetadata attributeMetadata) {
-        if (Place.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(120);
-            } else if ("rowNumber".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(120);
-            } else if ("number".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(120);
-            }
-        }
-
-        if (Hall.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2);
-            }
-        }
-        if (Zone.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(6);
-            }
-        }
-
-        return super.getInteger(attributeMetadata);
-    }
-
-
 }
 

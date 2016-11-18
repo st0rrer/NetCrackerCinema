@@ -42,30 +42,4 @@ public class SeanceStrategy extends AbstractRandomDataProviderStrategy {
         return super.getStringValue(attributeMetadata);
     }
 
-
-    @Override
-    public Integer getInteger(AttributeMetadata attributeMetadata) {
-        if (Seance.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2000);
-            }
-        }
-        if (Hall.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2);
-            }
-        }
-        if (Movie.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2000);
-            } else if ("duration".equals(attributeMetadata.getAttributeName())) {
-                return 10 + random.nextInt(340);
-            } else if ("periodicity".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(10);
-            } else if ("basePrice".equals(attributeMetadata.getAttributeName())) {
-                return 20 + random.nextInt(500);
-            }
-        }
-        return super.getInteger(attributeMetadata);
-    }
 }

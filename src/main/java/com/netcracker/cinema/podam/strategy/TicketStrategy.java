@@ -26,7 +26,7 @@ public class TicketStrategy extends AbstractRandomDataProviderStrategy {
         SeanceStrategy seanceStrategy = new SeanceStrategy();
         MovieStrategy movieStrategy = new MovieStrategy();
         HallStrategy hallStrategy = new HallStrategy();
-        ZoneStrategy zoneStrategy=new ZoneStrategy();
+        ZoneStrategy zoneStrategy = new ZoneStrategy();
 
         if (Place.class.equals(attributeMetadata.getPojoClass())) {
             return placeStrategy.getStringValue(attributeMetadata);
@@ -43,54 +43,6 @@ public class TicketStrategy extends AbstractRandomDataProviderStrategy {
         }
 
         return super.getStringValue(attributeMetadata);
-    }
-
-
-    @Override
-    public Integer getInteger(AttributeMetadata attributeMetadata) {
-
-        if (Seance.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2000);
-            }
-        }
-        if (Place.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(120);
-            } else if ("rowNumber".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(120);
-            } else if ("number".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(120);
-            }
-        }
-        if (Hall.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2);
-            }
-        }
-        if (Ticket.class.equals(attributeMetadata.getPojoClass())) {
-            if ("price".equals(attributeMetadata.getAttributeName())) {
-                return 40 + random.nextInt(500);
-            }
-        }
-        if (Zone.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(6);
-            }
-        }
-        if (Movie.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(2000);
-            } else if ("duration".equals(attributeMetadata.getAttributeName())) {
-                return 10 + random.nextInt(340);
-            } else if ("periodicity".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(10);
-            } else if ("basePrice".equals(attributeMetadata.getAttributeName())) {
-                return 20 + random.nextInt(500);
-            }
-        }
-
-        return super.getInteger(attributeMetadata);
     }
 
 

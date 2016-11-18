@@ -43,7 +43,7 @@ public class MovieDaoImpl implements MovieDao {
     @Override
     public void save(Movie movie) {
         jdbcTemplate.update(INSERT_MOVIE, new Object[]{movie.getName(), movie.getDescription(),
-                String.valueOf(movie.getDuration()), String.valueOf(movie.getIMDB()),
+                String.valueOf(movie.getDuration()), String.valueOf(movie.getImdb()),
                 String.valueOf(movie.getPeriodicity()), String.valueOf(movie.getBasePrice()),
                 getCurrentDate(movie.getStartDate()), getCurrentDate(movie.getEndDate()), movie.getPoster()});
     }
@@ -53,7 +53,7 @@ public class MovieDaoImpl implements MovieDao {
         jdbcTemplate.update(UPDATE_MOVIE_OBJECTS, new Object[]{movie.getName(), movie.getId()});
         jdbcTemplate.update(UPDATE_MOVIE_ATTRIBUTES_DESCRIPTION, new Object[]{movie.getDescription(), movie.getId()});
         jdbcTemplate.update(UPDATE_MOVIE_ATTRIBUTES_DURATION, new Object[]{movie.getDuration(), movie.getId()});
-        jdbcTemplate.update(UPDATE_MOVIE_ATTRIBUTES_IMDB, new Object[]{movie.getIMDB(), movie.getId()});
+        jdbcTemplate.update(UPDATE_MOVIE_ATTRIBUTES_IMDB, new Object[]{movie.getImdb(), movie.getId()});
         jdbcTemplate.update(UPDATE_MOVIE_ATTRIBUTES_PERIODICITY, new Object[]{movie.getPeriodicity(), movie.getId()});
         jdbcTemplate.update(UPDATE_MOVIE_ATTRIBUTES_BASE_PRICE, new Object[]{movie.getBasePrice(), movie.getId()});
         jdbcTemplate.update(UPDATE_MOVIE_ATTRIBUTES_ROLLING_START, new Object[]{getCurrentDate(movie.getStartDate()), movie.getId()});
@@ -79,7 +79,7 @@ public class MovieDaoImpl implements MovieDao {
             movie.setName(resultSet.getString("title"));
             movie.setDescription(resultSet.getString("description"));
             movie.setDuration(Integer.parseInt(resultSet.getString("duration")));
-            movie.setIMDB(Integer.parseInt(resultSet.getString("IMDB")));
+            movie.setImdb(Integer.parseInt(resultSet.getString("imdb")));
             movie.setPeriodicity(Integer.parseInt(resultSet.getString("periodicity")));
             movie.setBasePrice(Integer.parseInt(resultSet.getString("basePrice")));
             movie.setPoster(resultSet.getString("poster"));

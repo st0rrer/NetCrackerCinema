@@ -28,17 +28,7 @@ public class ZoneStrategy extends AbstractRandomDataProviderStrategy {
                 return ZoneStrategy.ZoneName.randomHall();
             }
         }
-
         return super.getStringValue(attributeMetadata);
-    }
-    @Override
-    public Integer getInteger(AttributeMetadata attributeMetadata) {
-        if (Zone.class.equals(attributeMetadata.getPojoClass())) {
-            if ("id".equals(attributeMetadata.getAttributeName())) {
-                return 1 + random.nextInt(6);
-            }
-        }
-        return super.getInteger(attributeMetadata);
     }
 
     private enum ZoneName {
