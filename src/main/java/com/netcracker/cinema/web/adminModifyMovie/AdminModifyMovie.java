@@ -12,7 +12,7 @@ import com.vaadin.ui.*;
  * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
  * overridden to add component to the user interface and initialize non-component functionality.
  */
-@SpringUI(path = "/adminAddMovieMain")
+@SpringUI(path = "/adminModifyMovie")
 @Theme("valo")
 public class AdminModifyMovie extends UI {
     @Override
