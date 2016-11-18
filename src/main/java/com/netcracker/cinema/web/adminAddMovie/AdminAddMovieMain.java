@@ -32,7 +32,7 @@ public class AdminAddMovieMain extends UI {
         content.addComponent(menuBar, 0, 0, 29, 0);
         content.addComponent(poster, 1, 2, 4, 4);
         content.addComponent(titleAndDesc, 6, 2, 10, 4);
-        content.addComponent(info,11, 2, 20, 29);
+        content.addComponent(info,15, 2, 25, 29);
 
         setContent(content);
         content.setSizeFull();

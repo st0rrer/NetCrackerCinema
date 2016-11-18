@@ -1,5 +1,6 @@
 package com.netcracker.cinema.web.adminAddMovie;
 
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -7,7 +8,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Created by Илья on 17.11.2016.
  */
-public class TitleAndDesc extends VerticalLayout {
+public class TitleAndDesc extends FormLayout {
     TextField title;
     TextArea description;
 
