@@ -19,5 +19,7 @@ class MovieComponent extends VerticalLayout {
 		addComponent(title);
 		setComponentAlignment(poster, Alignment.MIDDLE_CENTER);
 		setComponentAlignment(title, Alignment.MIDDLE_CENTER);
+		//TODO: show border when mouse enter component
+		addLayoutClickListener(event -> getUI().getNavigator().navigateTo(MovieDetailsView.VIEW_NAME + "/" + movie.getId()));
 	}
 }
