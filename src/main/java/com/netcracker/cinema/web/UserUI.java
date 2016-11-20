@@ -1,40 +1,46 @@
 package com.netcracker.cinema.web;
 
-import javax.servlet.annotation.*;
-
+import com.netcracker.cinema.web.user.UserMenu;
+import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.navigator.Navigator;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.spring.server.SpringVaadinServlet;
+import com.vaadin.ui.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.vaadin.annotations.*;
-import com.vaadin.server.*;
-import com.vaadin.spring.annotation.*;
-import com.vaadin.ui.*;
+import javax.servlet.annotation.WebServlet;
 
-@SpringUI
 @Theme("valo")
+@SpringUI
 public class UserUI extends UI {
     private static final Logger logger = Logger.getLogger(UserUI.class);
 
+    @Autowired
+    private SpringViewProvider viewProvider;
+    
     @Override
-    protected void init(VaadinRequest vaadinRequest) {
-        final VerticalLayout layout = new VerticalLayout();
+    protected void init(VaadinRequest request) {
 
-        final TextField id = new TextField();
-        final TextField name = new TextField();
-        id.setCaption("Type your id here:");
-        name.setCaption("Type your name here:");
-        Button button = new Button("Save");
-        button.addClickListener(e -> {
-            layout.addComponent(new Label("Thanks " + name.getValue()
-                    + ", it works!"));
-        });
+        final VerticalLayout root = new VerticalLayout();
+        root.setSizeFull();
+        setContent(root);
 
-        layout.addComponents(id, name, button);
-        layout.setMargin(true);
-        layout.setSpacing(true);
+        UserMenu userMenu = new UserMenu();
+        userMenu.setWidth("100%");
 
-        setContent(layout);
+        root.addComponent(userMenu);
+
+        final Panel springViewDisplay = new Panel();
+        springViewDisplay.setSizeFull();
+        root.addComponent(springViewDisplay);
+        root.setExpandRatio(springViewDisplay, 1.0f);
+
+        Navigator navigator = new Navigator(this, springViewDisplay);
+        navigator.addProvider(viewProvider);
     }
 
     @WebServlet(urlPatterns = "/*", name = "UserUIServlet", asyncSupported = true)
