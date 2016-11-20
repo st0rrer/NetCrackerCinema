@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ZoneDaoImpl implements ZoneDao, ZoneStaticDao {
+
     private static final Logger LOGGER = Logger.getLogger(MovieDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
 
