@@ -8,6 +8,7 @@ import uk.co.jemos.podam.common.PodamStringValue;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * Created by gaya on 05.11.2016.

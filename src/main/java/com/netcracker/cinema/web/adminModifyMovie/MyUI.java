@@ -7,6 +7,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -21,7 +22,8 @@ import java.util.List;
  * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
  * overridden to add component to the user interface and initialize non-component functionality.
  */
-@Theme("mytheme")
+@SpringUI(path = "/adminModifyMovieUI")
+@Theme("valo")
 public class MyUI extends UI {
 
     private MovieService service = MovieService.getInstance();
@@ -110,8 +112,8 @@ public class MyUI extends UI {
         grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, movies));
     }
 
-    @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
+    @WebServlet(urlPatterns = "/adminModifyMovieUi/*", name = "adminModifyMovieUiUIServlet", asyncSupported = true)
+    @VaadinServletConfiguration(ui = AdminModifyMovie.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
 }
