@@ -110,7 +110,7 @@ public class MyUI extends UI {
         grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, movies));
     }
 
-    @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
+    @WebServlet(urlPatterns = "/adminMyUI*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
