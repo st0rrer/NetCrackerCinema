@@ -15,7 +15,5 @@ public interface MovieDao {
 
     void save(Movie movie);
 
-    void update(Movie movie);
-
     void delete(Movie movie);
 }

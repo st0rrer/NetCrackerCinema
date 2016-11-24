@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <import resource="classpath:spring/datasource-config.xml"/>
+
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+    <bean id="movieDao" class="com.netcracker.cinema.dao.impl.MovieDaoImpl"></bean>
+
+    <bean id="hallDao" class="com.netcracker.cinema.dao.impl.HallDaoImpl"></bean>
+
+    <bean id="zoneDao" class="com.netcracker.cinema.dao.impl.ZoneDaoImpl"></bean>
+
+</beans>
