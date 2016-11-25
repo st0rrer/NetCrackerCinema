@@ -59,6 +59,10 @@ public class MovieDaoImpl implements MovieDao, MovieDaoQuery {
     }
 
     private static java.sql.Date getCurrentDate(LocalDate localDate) {
+        if(localDate == null) {
+            return null;
+        }
+
         java.sql.Date date = java.sql.Date.valueOf(localDate);
         return date;
     }
@@ -70,13 +74,13 @@ public class MovieDaoImpl implements MovieDao, MovieDaoQuery {
             movie.setId(resultSet.getInt("id"));
             movie.setName(resultSet.getString("title"));
             movie.setDescription(resultSet.getString("description"));
-            movie.setDuration(Integer.parseInt(resultSet.getString("duration")));
-            movie.setImdb(Integer.parseInt(resultSet.getString("imdb")));
-            movie.setPeriodicity(Integer.parseInt(resultSet.getString("periodicity")));
-            movie.setBasePrice(Integer.parseInt(resultSet.getString("basePrice")));
+            movie.setDuration(resultSet.getString("duration") == null ? null : resultSet.getInt("duration"));
+            movie.setImdb(resultSet.getString("imdb") == null ? null : resultSet.getInt("imdb"));
+            movie.setPeriodicity(resultSet.getString("periodicity") == null ? null : resultSet.getInt("periodicity"));
+            movie.setBasePrice(resultSet.getString("basePrice") == null ? null : resultSet.getInt("periodicity"));
             movie.setPoster(resultSet.getString("poster"));
-            movie.setStartDate(resultSet.getDate("startDate").toLocalDate());
-            movie.setEndDate(resultSet.getDate("endDate").toLocalDate());
+            movie.setStartDate(resultSet.getDate("startDate") == null ? null : resultSet.getDate("startDate").toLocalDate());
+            movie.setEndDate(resultSet.getDate("endDate") == null ? null : resultSet.getDate("endDate").toLocalDate());
             return movie;
         }
     }
