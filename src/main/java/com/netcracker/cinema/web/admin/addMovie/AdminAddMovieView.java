@@ -106,13 +106,20 @@ public class AdminAddMovieView extends GridLayout implements View {
 
     public Movie newMovie(){
         temp = new Movie();
-        temp.setName(title.getValue());
-        temp.setDescription(description.getValue());
-        temp.setPoster(posterUrl.getValue());
-        temp.setDuration(Integer.valueOf(duration.getValue()));
-        temp.setImdb(Integer.valueOf(imdb.getValue()));
-        temp.setPeriodicity(Integer.valueOf(periodicity.getValue()));
-        temp.setBasePrice(Integer.valueOf(basePrice.getValue()));
+        temp.setName(title.getValue().equals("") ? "Title not found" : title.getValue());
+
+        temp.setDescription(description.getValue().equals("") ? "Description not found" : description.getValue());
+
+        temp.setPoster(posterUrl.getValue().equals("") ? "http://empo.pro/wp-content/uploads/2012/02/404-page.jpg"
+                : posterUrl.getValue());
+
+        temp.setDuration(duration.getValue().equals("") ? 90 : Integer.valueOf(duration.getValue()));
+
+        temp.setImdb(imdb.getValue().equals("") ? 50 : Integer.valueOf(imdb.getValue()));
+
+        temp.setPeriodicity(periodicity.getValue().equals("") ? 10 : Integer.valueOf(periodicity.getValue()));
+
+        temp.setBasePrice(basePrice.getValue().equals("") ? 50 : Integer.valueOf(basePrice.getValue()));
 
         temp.setStartDate(rollingStart == null ? LocalDate.now() :
                 rollingStart.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
