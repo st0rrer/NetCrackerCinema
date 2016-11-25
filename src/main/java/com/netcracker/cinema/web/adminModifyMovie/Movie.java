@@ -14,7 +14,7 @@ public class Movie implements Serializable, Cloneable {
 
 	private Long id;
 
-	private String image;
+	private String image = "";
 
 	private String movie = "";
 
@@ -34,9 +34,9 @@ public class Movie implements Serializable, Cloneable {
 
 	private String description = "";
 
-	private ExternalResource hello;
+	private ExternalResource picture;
 
-	public ExternalResource getHello() {
+	public ExternalResource getPicture() {
 		return new ExternalResource(getImage());
 	}
 

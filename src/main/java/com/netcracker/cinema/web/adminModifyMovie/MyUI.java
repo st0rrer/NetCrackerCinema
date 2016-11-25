@@ -78,7 +78,7 @@ public class MyUI extends UI {
         toolbar.setSpacing(true);
 
         grid.setColumns("movie", "duration", "imdb", "basePrice", "periodicity", "timeOut", "rollingStart", "rollingEnd");
-        grid.addColumn("hello", Resource.class)
+        grid.addColumn("picture", Resource.class)
                 .setRenderer(new ImageRenderer());
 
         HorizontalLayout main = new HorizontalLayout(grid, form);
@@ -112,8 +112,8 @@ public class MyUI extends UI {
         grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, movies));
     }
 
-    @WebServlet(urlPatterns = "/adminModifyMovieUi/*", name = "adminModifyMovieUiUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = AdminModifyMovie.class, productionMode = false)
+    @WebServlet(urlPatterns = "/adminModifyMovieUI/*", name = "adminModifyMovieUiUIServlet", asyncSupported = true)
+    @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
 }

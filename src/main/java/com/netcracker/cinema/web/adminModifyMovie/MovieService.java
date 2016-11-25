@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * An in memory dummy "database" for the example purposes. In a typical Java app
+ * An in memory dummy "database" for the example purposes. In a typical Java com.netcracker.cinema.web.adminModifyMovie
  * this class would be replaced by e.g. EJB or a Spring based service class.
  * <p>
  * In demos/tutorials/examples, get a reference to this service class with
