@@ -21,7 +21,7 @@ import java.util.Date;
 public class Movie implements Serializable {
 
     @PodamIntValue(minValue = 1, maxValue = 2000)
-    private int id;
+    private long id;
     private String name;
     @PodamStringValue(length = 1000)
     private String description;

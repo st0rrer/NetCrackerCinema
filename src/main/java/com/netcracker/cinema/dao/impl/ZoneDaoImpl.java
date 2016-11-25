@@ -1,6 +1,7 @@
 package com.netcracker.cinema.dao.impl;
 
 import com.netcracker.cinema.dao.ZoneDao;
+import com.netcracker.cinema.dao.impl.queries.ZoneDaoQuery;
 import com.netcracker.cinema.model.Zone;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ZoneDaoImpl implements ZoneDao, ZoneDaoQuery {
+import static com.netcracker.cinema.dao.impl.queries.ZoneDaoQuery.*;
+
+public class ZoneDaoImpl implements ZoneDao {
     private static final Logger LOGGER = Logger.getLogger(MovieDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
 
@@ -52,7 +55,7 @@ public class ZoneDaoImpl implements ZoneDao, ZoneDaoQuery {
         @Override
         public Zone mapRow(ResultSet resultSet, int i) throws SQLException {
             Zone zone = new Zone();
-            zone.setId(resultSet.getInt("id"));
+            zone.setId(resultSet.getLong("id"));
             zone.setName(resultSet.getString("name"));
             return zone;
         }

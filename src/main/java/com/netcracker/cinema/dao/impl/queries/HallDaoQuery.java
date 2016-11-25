@@ -1,6 +1,6 @@
-package com.netcracker.cinema.dao.impl;
+package com.netcracker.cinema.dao.impl.queries;
 
-interface HallDaoQuery {
+public interface HallDaoQuery {
     static final String FIND_ALL_SQL =
             "SELECT " +
                     "HALL.OBJECT_ID id" +

@@ -1,9 +1,9 @@
-package com.netcracker.cinema.dao.impl;
+package com.netcracker.cinema.dao.impl.queries;
 
 /**
  * Created by dimka on 18.11.2016.
  */
-interface MovieDaoQuery {
+public interface MovieDaoQuery {
 
     String FIND_ALL_SQL =
             "SELECT " +
@@ -86,60 +86,10 @@ interface MovieDaoQuery {
                     "REND_ATT.ATTR_ID = 7 AND " +
                     "POSTER_ATT.ATTR_ID = 8";
 
-//    static final String INSERT_MOVIE =
-//            "INSERT ALL\n" +
-//                    "INTO OBJECTS(OBJECT_ID, PARENT_ID, OBJECT_TYPE_ID, NAME, DESCRIPTION) VALUES (GET_OBJ_ID.nextval, NULL, 1, ?, NULL)\n" +
-//                    "INTO ATTRIBUTES(ATTR_ID, OBJECT_ID, VALUE, DATE_VALUE) VALUES (1, GET_OBJ_ID.currval, ?, NULL) \n" + //DESCRIPTION
-//                    "INTO ATTRIBUTES(ATTR_ID, OBJECT_ID, VALUE, DATE_VALUE) VALUES (2, GET_OBJ_ID.currval, ?, NULL) \n" + //DURATION
-//                    "INTO ATTRIBUTES(ATTR_ID, OBJECT_ID, VALUE, DATE_VALUE) VALUES (3, GET_OBJ_ID.currval, ?, NULL) \n" + //IMDB
-//                    "INTO ATTRIBUTES(ATTR_ID, OBJECT_ID, VALUE, DATE_VALUE) VALUES (4, GET_OBJ_ID.currval, ?, NULL) \n" + //PERIODICITY
-//                    "INTO ATTRIBUTES(ATTR_ID, OBJECT_ID, VALUE, DATE_VALUE) VALUES (5, GET_OBJ_ID.currval, ?, NULL) \n" + //BASE_PRICE
-//                    "INTO ATTRIBUTES(ATTR_ID, OBJECT_ID, VALUE, DATE_VALUE) VALUES (6, GET_OBJ_ID.currval, NULL, ?) \n" + //ROLLING_START
-//                    "INTO ATTRIBUTES(ATTR_ID, OBJECT_ID, VALUE, DATE_VALUE) VALUES (7, GET_OBJ_ID.currval, NULL, ?) \n" + //ROLLING_END
-//                    "INTO ATTRIBUTES(ATTR_ID, OBJECT_ID, VALUE, DATE_VALUE) VALUES (8, GET_OBJ_ID.currval, ?, NULL) \n" + //POSTER
-//                    "SELECT * FROM dual";
-//
-//    static final String UPDATE_MOVIE_OBJECTS =
-//            "UPDATE OBJECTS \n" +
-//                "SET NAME = ? \n" +
-//                    "WHERE OBJECT_ID = ?";
-//    static final String UPDATE_MOVIE_ATTRIBUTES_DESCRIPTION =
-//            "UPDATE ATTRIBUTES \n" +
-//                "SET VALUE = ? \n" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 1";
-//    static final String UPDATE_MOVIE_ATTRIBUTES_DURATION =
-//            "UPDATE ATTRIBUTES \n" +
-//                "SET VALUE = ? \n" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 2";
-//    static final String UPDATE_MOVIE_ATTRIBUTES_IMDB =
-//            "UPDATE ATTRIBUTES \n" +
-//                "SET VALUE = ? \n" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 3";
-//    static final String UPDATE_MOVIE_ATTRIBUTES_PERIODICITY =
-//            "UPDATE ATTRIBUTES \n" +
-//                "SET VALUE = ? \n" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 4";
-//    static final String UPDATE_MOVIE_ATTRIBUTES_BASE_PRICE =
-//            "UPDATE ATTRIBUTES \n" +
-//                "SET VALUE = ? \n" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 5";
-//    static final String UPDATE_MOVIE_ATTRIBUTES_ROLLING_START =
-//            "UPDATE ATTRIBUTES \n" +
-//                "SET DATE_VALUE = ? \n" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 6";
-//    static final String UPDATE_MOVIE_ATTRIBUTES_ROLLING_END =
-//            "UPDATE ATTRIBUTES \n" +
-//                "SET DATE_VALUE = ? \n" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 7";
-//    static final String UPDATE_MOVIE_ATTRIBUTES_POSTER =
-//            "UPDATE ATTRIBUTES \n" +
-//                "SET VALUE = ? \n" +
-//                    "WHERE OBJECT_ID = ? AND ATTR_ID = 8";
-
     String DELETE_MOVIE =
-            "DELETE " +
-                "FROM OBJECTS \n" +
-                    "WHERE OBJECT_ID = ?";
+            " DELETE " +
+            "   FROM OBJECTS \n" +
+            "  WHERE OBJECT_ID = ?";
 
     String MERGE_MOVIE_OBJECT = "MERGE INTO OBJECTS object\n" +
             "USING (SELECT ? AS id, ? AS name FROM dual) obj\n" +

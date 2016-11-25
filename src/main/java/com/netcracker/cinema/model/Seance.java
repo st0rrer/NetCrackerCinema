@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class Seance implements Serializable {
 
     @PodamIntValue(minValue = 1, maxValue = 2000)
-    private int id;
+    private long id;
     private LocalDate seanceDate;
     private LocalDateTime seanceTime;
     private Movie movieId;

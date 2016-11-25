@@ -30,7 +30,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Movie getById(int id) {
+    public Movie getById(long id) {
         return movieDao.getById(id);
     }
 

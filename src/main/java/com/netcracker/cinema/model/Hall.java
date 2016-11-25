@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class Hall implements Serializable {
 
     @PodamIntValue(minValue = 1, maxValue = 2)
-    private int id;
+    private long id;
     private String name;
 
     @Override
@@ -34,7 +34,7 @@ public class Hall implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = getId();
+        int result = (int) getId();
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         return result;
     }

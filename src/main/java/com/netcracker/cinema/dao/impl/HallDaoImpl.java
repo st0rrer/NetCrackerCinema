@@ -1,6 +1,7 @@
 package com.netcracker.cinema.dao.impl;
 
 import com.netcracker.cinema.dao.HallDao;
+import com.netcracker.cinema.dao.impl.queries.HallDaoQuery;
 import com.netcracker.cinema.model.Hall;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class HallDaoImpl implements HallDao, HallDaoQuery {
+import static com.netcracker.cinema.dao.impl.queries.HallDaoQuery.*;
+
+public class HallDaoImpl implements HallDao {
 
     private static final Logger LOGGER = Logger.getLogger(MovieDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
@@ -53,7 +56,7 @@ public class HallDaoImpl implements HallDao, HallDaoQuery {
         @Override
         public Hall mapRow(ResultSet resultSet, int i) throws SQLException {
             Hall hall = new Hall();
-            hall.setId(resultSet.getInt("id"));
+            hall.setId(resultSet.getLong("id"));
             hall.setName(resultSet.getString("name"));
             return hall;
         }

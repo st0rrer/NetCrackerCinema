@@ -20,7 +20,7 @@ import java.io.Serializable;
 public class Place implements Serializable {
 
     @PodamIntValue(minValue = 1, maxValue = 200)
-    private int id;
+    private long id;
     @PodamIntValue(minValue = 1, maxValue = 120)
     private Integer rowNumber;
     @PodamIntValue(minValue = 1, maxValue = 120)

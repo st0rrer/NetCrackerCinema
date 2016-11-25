@@ -12,7 +12,7 @@ public interface MovieService {
 
     List<Movie> findAll();
 
-    Movie getById(int id);
+    Movie getById(long id);
 
     void save(Movie movie);
 

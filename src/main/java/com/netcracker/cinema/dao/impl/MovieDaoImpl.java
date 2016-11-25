@@ -14,11 +14,13 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.netcracker.cinema.dao.impl.queries.MovieDaoQuery.*;
+
 /**
  * Created by dimka on 16.11.2016.
  */
 @Repository
-public class MovieDaoImpl implements MovieDao, MovieDaoQuery {
+public class MovieDaoImpl implements MovieDao {
     private static final Logger LOGGER = Logger.getLogger(MovieDaoImpl.class);
 
     private JdbcTemplate jdbcTemplate;
@@ -51,6 +53,7 @@ public class MovieDaoImpl implements MovieDao, MovieDaoQuery {
         jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_START, new Object[]{getCurrentDate(movie.getStartDate()), movie.getId()});
         jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_END, new Object[]{getCurrentDate(movie.getEndDate()), movie.getId()});
         jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_POSTER, new Object[]{movie.getPoster(), movie.getId()});
+        LOGGER.info("");
     }
 
     @Override
@@ -62,7 +65,6 @@ public class MovieDaoImpl implements MovieDao, MovieDaoQuery {
         if(localDate == null) {
             return null;
         }
-
         java.sql.Date date = java.sql.Date.valueOf(localDate);
         return date;
     }
@@ -71,7 +73,7 @@ public class MovieDaoImpl implements MovieDao, MovieDaoQuery {
         @Override
         public Movie mapRow(ResultSet resultSet, int i) throws SQLException {
             Movie movie = new Movie();
-            movie.setId(resultSet.getInt("id"));
+            movie.setId(resultSet.getLong("id"));
             movie.setName(resultSet.getString("title"));
             movie.setDescription(resultSet.getString("description"));
             movie.setDuration(resultSet.getString("duration") == null ? null : resultSet.getInt("duration"));

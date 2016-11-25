@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class Price implements Serializable {
 
     @PodamIntValue(minValue = 1, maxValue = 2000)
-    private int id;
+    private long id;
     @PodamIntValue(minValue = 20, maxValue = 500)
     private Integer price;
     private Seance seanceId;

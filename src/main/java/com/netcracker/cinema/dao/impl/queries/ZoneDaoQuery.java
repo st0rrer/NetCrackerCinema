@@ -1,6 +1,6 @@
-package com.netcracker.cinema.dao.impl;
+package com.netcracker.cinema.dao.impl.queries;
 
-interface ZoneDaoQuery {
+public interface ZoneDaoQuery {
     static final String FIND_ALL_SQL =
             "SELECT " +
                     "ZONE.OBJECT_ID id" +
