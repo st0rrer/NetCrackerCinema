@@ -121,9 +121,9 @@ public class AdminAddMovieView extends GridLayout implements View {
 
         temp.setBasePrice(basePrice.getValue().equals("") ? 50 : Integer.valueOf(basePrice.getValue()));
 
-        temp.setStartDate(rollingStart == null ? LocalDate.now() :
+        temp.setStartDate(rollingStart.getValue() == null ? LocalDate.now() :
                 rollingStart.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        temp.setEndDate(rollingEnd == null ? LocalDate.now() :
+        temp.setEndDate(rollingEnd.getValue() == null ? LocalDate.now() :
                 rollingStart.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         return temp;
     }
