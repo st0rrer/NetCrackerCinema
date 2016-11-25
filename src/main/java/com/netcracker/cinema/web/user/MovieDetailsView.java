@@ -1,7 +1,7 @@
 package com.netcracker.cinema.web.user;
 
-import com.netcracker.cinema.dao.MovieDao;
 import com.netcracker.cinema.model.Movie;
+import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.web.UserUI;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -16,7 +16,7 @@ public class MovieDetailsView extends CustomComponent implements View {
     public static final String VIEW_NAME = "details";
 
     @Autowired
-    private MovieDao movieDao;
+    private MovieService movieService;
 
     @PostConstruct
     public void init() {
@@ -34,7 +34,7 @@ public class MovieDetailsView extends CustomComponent implements View {
         }
         //TODO: get all seances for this movie
         //TODO: catch exception for non existing movie
-        Movie movie = movieDao.getById(movieId);
+        Movie movie = movieService.getById(movieId);
         setCompositionRoot(new MovieDetailsComponent(movie, null));
     }
 }

@@ -24,23 +24,28 @@ public class UserUI extends UI {
     
     @Override
     protected void init(VaadinRequest request) {
-
         final VerticalLayout root = new VerticalLayout();
         root.setSizeFull();
         setContent(root);
 
-        UserMenu userMenu = new UserMenu();
-        userMenu.setWidth("100%");
+        addUserMenu(root);
+        addViewDisplay(root);
+    }
 
-        root.addComponent(userMenu);
-
-        final Panel springViewDisplay = new Panel();
+    private void addViewDisplay(VerticalLayout root) {
+        Panel springViewDisplay = new Panel();
         springViewDisplay.setSizeFull();
         root.addComponent(springViewDisplay);
         root.setExpandRatio(springViewDisplay, 1.0f);
 
         Navigator navigator = new Navigator(this, springViewDisplay);
         navigator.addProvider(viewProvider);
+    }
+
+    private void addUserMenu(VerticalLayout root) {
+        UserMenu userMenu = new UserMenu();
+        userMenu.setWidth("100%");
+        root.addComponent(userMenu);
     }
 
     @WebServlet(urlPatterns = "/*", name = "UserUIServlet", asyncSupported = true)

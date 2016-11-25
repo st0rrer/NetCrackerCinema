@@ -17,12 +17,19 @@ public class MovieDetailsComponent extends CustomComponent {
         posterAndTextDetails.setSpacing(true);
         root.addComponent(posterAndTextDetails);
 
-        ExternalResource resource = new ExternalResource(movie.getPoster());
-        Image poster = new Image(null, resource);
-        poster.setHeight("350px");
-        poster.setWidth("230px");
-        posterAndTextDetails.addComponent(poster);
+        addPoster(movie, posterAndTextDetails);
 
+        addMovieAttributes(movie, posterAndTextDetails);
+
+        Label seance = new Label("Seances");
+        root.addComponent(seance);
+
+        //TODO: display seances
+
+        setCompositionRoot(root);
+    }
+
+    private void addMovieAttributes(Movie movie, Layout posterAndTextDetails) {
         VerticalLayout textDetails = new VerticalLayout();
         posterAndTextDetails.addComponent(textDetails);
 
@@ -41,12 +48,13 @@ public class MovieDetailsComponent extends CustomComponent {
 
         Label estimatedPrice = new Label("Estimated price: " + movie.getBasePrice());
         textDetails.addComponent(estimatedPrice);
+    }
 
-        Label seance = new Label("Seances");
-        root.addComponent(seance);
-
-        //TODO: display seances
-
-        setCompositionRoot(root);
+    private void addPoster(Movie movie, Layout layout) {
+        ExternalResource resource = new ExternalResource(movie.getPoster());
+        Image poster = new Image(null, resource);
+        poster.setHeight("350px");
+        poster.setWidth("230px");
+        layout.addComponent(poster);
     }
 }

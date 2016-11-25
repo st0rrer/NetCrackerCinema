@@ -14,6 +14,7 @@ public class UserMenu extends MenuBar {
                 getUI().getNavigator().navigateTo(ScheduleView.VIEW_NAME);
             }
         };
+
         addItem("Movies", command);
         addItem("Schedule", command);
     }
