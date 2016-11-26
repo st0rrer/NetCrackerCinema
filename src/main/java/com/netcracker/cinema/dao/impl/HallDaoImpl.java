@@ -1,7 +1,6 @@
 package com.netcracker.cinema.dao.impl;
 
 import com.netcracker.cinema.dao.HallDao;
-import com.netcracker.cinema.dao.impl.queries.HallDaoQuery;
 import com.netcracker.cinema.model.Hall;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +38,8 @@ public class HallDaoImpl implements HallDao {
 
     @Override
     public void save(Hall hall) {
-        jdbcTemplate.update(INSERT_HALL, new Object[]{hall.getName()});
-    }
-
-    @Override
-    public void update(Hall hall) {
-        jdbcTemplate.update(UPDATE_HALL_OBJECTS, new Object[]{hall.getName(), hall.getId()});
+        jdbcTemplate.update(MERGE_HALL_OBJECT, new Object[]{hall.getId(), hall.getName()});
+        LOGGER.info("");
     }
 
     @Override

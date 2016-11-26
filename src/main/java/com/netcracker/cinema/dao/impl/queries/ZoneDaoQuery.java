@@ -1,7 +1,7 @@
 package com.netcracker.cinema.dao.impl.queries;
 
 public interface ZoneDaoQuery {
-    static final String FIND_ALL_SQL =
+    String FIND_ALL_SQL =
             "SELECT " +
                     "ZONE.OBJECT_ID id" +
                     ", ZONE.NAME name \n" +
@@ -10,7 +10,7 @@ public interface ZoneDaoQuery {
             "WHERE " +
                     "ZONE.OBJECT_TYPE_ID = 3\n";
 
-    static final String FIND_ZONE_BY_ID =
+    String FIND_ZONE_BY_ID =
             "SELECT " +
                     "ZONE.OBJECT_ID id" +
                     ", ZONE.NAME name\n" +
@@ -20,21 +20,23 @@ public interface ZoneDaoQuery {
                     "ZONE.OBJECT_ID = ? " +
                     "AND ZONE.OBJECT_TYPE_ID = 3";
 
-    static final String INSERT_ZONE =
-            "INSERT INTO OBJECTS(OBJECT_ID, PARENT_ID, OBJECT_TYPE_ID, NAME, DESCRIPTION) " +
-            "VALUES (GET_OBJ_ID.nextval, NULL, 3, ?, NULL)\n";
-
-    static final String UPDATE_ZONE_OBJECTS =
-            "UPDATE OBJECTS \n" +
-                "SET NAME = ? \n" +
-                    "WHERE " +
-                        "OBJECT_ID = ? " +
-                        "AND OBJECT_TYPE_ID = 3";
-
-    static final String DELETE_ZONE =
+    String DELETE_ZONE =
             "DELETE FROM OBJECTS \n" +
                 "WHERE " +
                     "OBJECT_ID = ? \n" +
                     "AND OBJECT_TYPE_ID = 3";
+
+    String MERGE_ZONE_OBJECT = "MERGE INTO OBJECTS object\n" +
+            "USING (SELECT ? AS id, ? AS name FROM dual) obj\n" +
+            "  ON(obj.id = object.OBJECT_ID)\n" +
+            "WHEN MATCHED THEN\n" +
+            "  UPDATE\n" +
+            "    SET\n"  +
+            "      object.NAME = obj.name\n" +
+            "    WHERE\n"+
+            "      object.OBJECT_ID = obj.id\n" +
+            "WHEN NOT MATCHED THEN\n" +
+            "  INSERT(object.OBJECT_ID, object.PARENT_ID, object.OBJECT_TYPE_ID, object.NAME, object.DESCRIPTION)\n" +
+            "  VALUES (GET_OBJ_ID.nextval, NULL, 3, obj.name, NULL)";
 }
 

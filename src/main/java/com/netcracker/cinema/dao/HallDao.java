@@ -11,7 +11,5 @@ public interface HallDao {
 
     void save(Hall hall);
 
-    void update(Hall hall);
-
     void delete(Hall hall);
 }
