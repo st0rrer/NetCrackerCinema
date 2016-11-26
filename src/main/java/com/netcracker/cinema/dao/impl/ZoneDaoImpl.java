@@ -1,7 +1,6 @@
 package com.netcracker.cinema.dao.impl;
 
 import com.netcracker.cinema.dao.ZoneDao;
-import com.netcracker.cinema.dao.impl.queries.ZoneDaoQuery;
 import com.netcracker.cinema.model.Zone;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +37,8 @@ public class ZoneDaoImpl implements ZoneDao {
 
     @Override
     public void save(Zone hall) {
-        jdbcTemplate.update(INSERT_ZONE, new Object[]{hall.getName()});
-    }
-
-    @Override
-    public void update(Zone hall) {
-        jdbcTemplate.update(UPDATE_ZONE_OBJECTS, new Object[]{hall.getName(), hall.getId()});
+        jdbcTemplate.update(MERGE_ZONE_OBJECT, new Object[]{hall.getId(), hall.getName()});
+        LOGGER.info("");
     }
 
     @Override

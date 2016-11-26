@@ -12,7 +12,5 @@ public interface ZoneDao {
 
     void save(Zone hall);
 
-    void update(Zone hall);
-
     void delete(Zone hall);
 }
