@@ -129,8 +129,6 @@ public class AdminAddMovieView extends GridLayout implements View {
     }
 
 
-
-
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
 
