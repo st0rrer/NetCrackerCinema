@@ -20,4 +20,5 @@
 
     <bean id="zoneDao" class="com.netcracker.cinema.dao.impl.ZoneDaoImpl"></bean>
 
+
 </beans>
