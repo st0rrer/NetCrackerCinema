@@ -13,9 +13,14 @@ public class UserMenu extends MenuBar {
             if(selectedItem.getText().equals("Schedule")) {
                 getUI().getNavigator().navigateTo(ScheduleView.VIEW_NAME);
             }
+
+            if(selectedItem.getText().equals("Seance")) {
+                getUI().getNavigator().navigateTo(SeanceView.VIEW_NAME);
+            }
         };
 
         addItem("Movies", command);
         addItem("Schedule", command);
+        addItem("Seance", command);
     }
 }
