@@ -20,5 +20,11 @@
 
     <bean id="zoneDao" class="com.netcracker.cinema.dao.impl.ZoneDaoImpl"></bean>
 
+    <bean id = "hallService" class="com.netcracker.cinema.service.impl.HallServiceImpl"></bean>
+
+    <bean id = "zoneServoce" class="com.netcracker.cinema.service.impl.ZoneServiceImpl"></bean>
+
+    <bean id = "movieServoce" class="com.netcracker.cinema.service.impl.MovieServiceImpl"></bean>
+
 
 </beans>
