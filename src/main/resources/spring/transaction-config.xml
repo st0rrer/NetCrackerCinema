@@ -22,9 +22,9 @@
 
     <bean id = "hallService" class="com.netcracker.cinema.service.impl.HallServiceImpl"></bean>
 
-    <bean id = "zoneServoce" class="com.netcracker.cinema.service.impl.ZoneServiceImpl"></bean>
+    <bean id = "zoneService" class="com.netcracker.cinema.service.impl.ZoneServiceImpl"></bean>
 
-    <bean id = "movieServoce" class="com.netcracker.cinema.service.impl.MovieServiceImpl"></bean>
+    <bean id = "movieService" class="com.netcracker.cinema.service.impl.MovieServiceImpl"></bean>
 
 
 </beans>
