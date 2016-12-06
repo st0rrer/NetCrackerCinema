@@ -1,18 +1,23 @@
 package com.netcracker.cinema.web.adminModifyMovie;
 
+import com.netcracker.cinema.model.Movie;
+import com.netcracker.cinema.service.MovieService;
+import com.netcracker.cinema.web.admin.AdminMenu;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.*;
-import com.vaadin.ui.renderers.ImageRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.annotation.WebServlet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -26,34 +31,30 @@ import java.util.List;
 @Theme("valo")
 public class MyUI extends UI {
 
-    private MovieService service = MovieService.getInstance();
+    @Autowired
+    private MovieService movieService;
     private Grid grid = new Grid();
     private TextField filterText = new TextField();
-    private MovieForm form = new MovieForm(this);
+    @Autowired
+    private MovieForm movieForm;
+    List<Movie> movie = null;
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
 
-//        UploadImage receiver = new UploadImage();
-
-
-//        Upload upload = new Upload("Upload Image Here", receiver);
-////        upload.setButtonCaption("Start Upload");
-//        upload.addSucceededListener(receiver);
-
-
-
-        MenuBar barmenu = new MenuBar();
-        MenuBar.MenuItem movies = barmenu.addItem("Movies", null, null);
-        MenuBar.MenuItem schedule = barmenu.addItem("Schedule", null, null);
-        MenuBar.MenuItem statistics = barmenu.addItem("Statistics", null, null);
+        // menu
+        AdminMenu adminMenu = new AdminMenu();
+        adminMenu.setWidth("100%");
 
         // filter and clear
         filterText.setInputPrompt("filter by movie...");
+        filterText.setWidth("900");
         filterText.addTextChangeListener(e -> {
-            grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, service.findAll(e.getText())));
+            grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, search(e.getText())));
         });
+
+        // clear text field
         Button clearFilterTextBtn = new Button(FontAwesome.TIMES);
         clearFilterTextBtn.setDescription("Clear the current filter");
         clearFilterTextBtn.addClickListener(e -> {
@@ -67,53 +68,97 @@ public class MyUI extends UI {
         filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 
 
+        // show window with form, using vertical layout
+        VerticalLayout subContent = new VerticalLayout();
+        subContent.setMargin(true);
 
+        Window subWindow = new Window("Sub-window");
+        subWindow.setContent(subContent);
+        subWindow.center();
+        subWindow.setHeight("600");
+        subWindow.setWidth("700");
+
+        // add form to panel for form's resizing
+        Panel panel = new Panel();
+        panel.setContent(movieForm);
+
+        // add panel to vertical layout
+        subContent.addComponent(panel);
+
+        // Button "Add new movie"
         Button addMovieBtn = new Button("Add new movie");
         addMovieBtn.addClickListener(e -> {
-            grid.select(null);
-            form.setMovie(new Movie());
+            movieForm.setMovie(new Movie(), subWindow, this);
+            UI.getCurrent().addWindow(subWindow);
         });
+
+        // Button "Edit movie"
+        Button editMovieBtn = new Button("Edit");
+        editMovieBtn.addClickListener(e -> {
+            if(!grid.getSelectionModel().getSelectedRows().isEmpty()) {
+                Movie movie = (Movie) grid.getSelectedRow();
+                movieForm.setMovie(movie, subWindow, this);
+                UI.getCurrent().addWindow(subWindow);
+            } else {
+                UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(this, "Select the movie"));
+            }
+        });
+
+        // Button "Delete movie"
+        Button deleteMovieBtn = new Button("Delete");
+        deleteMovieBtn.addClickListener(e -> {
+            if(!grid.getSelectionModel().getSelectedRows().isEmpty()) {
+                Movie movie = (Movie) grid.getSelectionModel().getSelectedRows().iterator().next();
+                movieService.delete(movie);
+                this.updateList();
+            } else {
+                UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(this, "Select the movie"));
+            }
+        });
+
         // horizontal
-        HorizontalLayout toolbar = new HorizontalLayout(filtering, addMovieBtn);
+        HorizontalLayout toolbar = new HorizontalLayout(filtering, addMovieBtn, editMovieBtn, deleteMovieBtn);
         toolbar.setSpacing(true);
 
-        grid.setColumns("movie", "duration", "imdb", "basePrice", "periodicity", "timeOut", "rollingStart", "rollingEnd");
-        grid.addColumn("picture", Resource.class)
-                .setRenderer(new ImageRenderer());
-
-        HorizontalLayout main = new HorizontalLayout(grid, form);
-        main.setSpacing(true);
-        main.setSizeFull();
+        grid.setColumns("name", "duration", "imdb", "basePrice", "periodicity", "startDate", "endDate");
         grid.setSizeFull();
-        main.setExpandRatio(grid, 1);
 
-        layout.addComponents(barmenu, toolbar, main);
+        layout.addComponents(toolbar, grid);
 
         updateList();
 
         layout.setMargin(true);
         layout.setSpacing(true);
         setContent(layout);
-
-        form.setVisible(false);
-
-        grid.addSelectionListener(event -> {
-            if (event.getSelected().isEmpty()) {
-                form.setVisible(false);
-            } else {
-                Movie movie = (Movie) event.getSelected().iterator().next();
-                form.setMovie(movie);
-            }
-        });
     }
 
     public void updateList() {
-        List<Movie> movies = service.findAll(filterText.getValue());
-        grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, movies));
+        movie = movieService.findAll();
+        grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, movie));
     }
 
-    @WebServlet(urlPatterns = "/adminModifyMovieUI/*", name = "adminModifyMovieUiUIServlet", asyncSupported = true)
+    public List<Movie> search(String stringFilter) {
+        ArrayList<Movie> arrayList = new ArrayList<>();
+        for (Movie contact : movie) {
+
+            boolean passesFilter = (stringFilter == null || stringFilter.isEmpty())
+                    || contact.toString().toLowerCase().contains(stringFilter.toLowerCase());
+            if (passesFilter) {
+                arrayList.add(contact);
+            }
+        }
+        Collections.sort(arrayList, new Comparator<Movie>() {
+
+            @Override
+            public int compare(Movie o1, Movie o2) {
+                return (int) (o2.getId() - o1.getId());
+            }
+        });
+        return arrayList;
+    }
+
+    @WebServlet(urlPatterns = "/VAADIN/adminModifyMovieUI/*", name = "adminModifyMovieUiUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
-    public static class MyUIServlet extends VaadinServlet {
+    public static class MyUIServlet extends SpringVaadinServlet {
     }
 }

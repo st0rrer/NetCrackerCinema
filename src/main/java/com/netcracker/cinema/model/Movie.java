@@ -2,12 +2,10 @@ package com.netcracker.cinema.model;
 
 
 import lombok.*;
-import uk.co.jemos.podam.common.PodamFloatValue;
 import uk.co.jemos.podam.common.PodamIntValue;
 import uk.co.jemos.podam.common.PodamStringValue;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -21,7 +19,7 @@ import java.util.Date;
 public class Movie implements Serializable {
 
     @PodamIntValue(minValue = 1, maxValue = 2000)
-    private long id;
+    private Long id;
     private String name;
     @PodamStringValue(length = 1000)
     private String description;
@@ -34,8 +32,7 @@ public class Movie implements Serializable {
     @PodamIntValue(minValue = 20, maxValue = 500)
     private Integer basePrice;
     private String poster;
-    private LocalDate startDate;
-    private LocalDate endDate;
-
+    private Date startDate;
+    private Date endDate;
 }
 

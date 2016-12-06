@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 
 
 @SpringComponent
@@ -18,6 +19,7 @@ import java.time.ZoneId;
 public class AddMoviePopup extends HorizontalLayout {
 
     FormLayout titleAndDesc;
+
     TextField title;
     TextArea description;
     TextField posterUrl;
@@ -111,10 +113,8 @@ public class AddMoviePopup extends HorizontalLayout {
 
         temp.setBasePrice(basePrice.getValue().equals("") ? 50 : Integer.valueOf(basePrice.getValue()));
 
-        temp.setStartDate(rollingStart.getValue() == null ? LocalDate.now() :
-                rollingStart.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        temp.setEndDate(rollingEnd.getValue() == null ? LocalDate.now() :
-                rollingStart.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        temp.setStartDate(rollingStart.getValue() == null ? new Date() : rollingStart.getValue());
+        temp.setEndDate(rollingEnd.getValue() == null ? new Date() : rollingStart.getValue());
         return temp;
     }
 

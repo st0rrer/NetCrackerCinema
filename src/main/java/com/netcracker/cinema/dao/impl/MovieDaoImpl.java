@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
 
 import static com.netcracker.cinema.dao.impl.queries.MovieDaoQuery.*;
@@ -50,8 +51,8 @@ public class MovieDaoImpl implements MovieDao {
         jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_IMDB, new Object[]{movie.getImdb(), movie.getId()});
         jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_PERIODICITY, new Object[]{movie.getPeriodicity(), movie.getId()});
         jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_BASE_PRICE, new Object[]{movie.getBasePrice(), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_START, new Object[]{getCurrentDate(movie.getStartDate()), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_END, new Object[]{getCurrentDate(movie.getEndDate()), movie.getId()});
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_START, new Object[]{new Date(movie.getStartDate().getTime()), movie.getId()});
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_END, new Object[]{new Date(movie.getEndDate().getTime()), movie.getId()});
         jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_POSTER, new Object[]{movie.getPoster(), movie.getId()});
         LOGGER.info("");
     }
@@ -81,8 +82,8 @@ public class MovieDaoImpl implements MovieDao {
             movie.setPeriodicity(resultSet.getString("periodicity") == null ? null : resultSet.getInt("periodicity"));
             movie.setBasePrice(resultSet.getString("basePrice") == null ? null : resultSet.getInt("periodicity"));
             movie.setPoster(resultSet.getString("poster"));
-            movie.setStartDate(resultSet.getDate("startDate") == null ? null : resultSet.getDate("startDate").toLocalDate());
-            movie.setEndDate(resultSet.getDate("endDate") == null ? null : resultSet.getDate("endDate").toLocalDate());
+            movie.setStartDate(resultSet.getDate("startDate") == null ? null : new Date(resultSet.getDate("startDate").getTime()));
+            movie.setEndDate(resultSet.getDate("endDate") == null ? null : new Date(resultSet.getDate("endDate").getTime()));
             return movie;
         }
     }

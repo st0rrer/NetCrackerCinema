@@ -15,7 +15,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 
-@SpringView(name = AdminAddMovieView.VIEW_NAME, ui = AdminUI.class)
+
 public class AdminAddMovieView extends GridLayout implements View {
     public static final String VIEW_NAME = "addMovie";
 
@@ -121,10 +121,9 @@ public class AdminAddMovieView extends GridLayout implements View {
 
         temp.setBasePrice(basePrice.getValue().equals("") ? 50 : Integer.valueOf(basePrice.getValue()));
 
-        temp.setStartDate(rollingStart.getValue() == null ? LocalDate.now() :
-                rollingStart.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        temp.setEndDate(rollingEnd.getValue() == null ? LocalDate.now() :
-                rollingStart.getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        temp.setStartDate(rollingStart.getValue() == null ? new Date() :
+                rollingStart.getValue());
+        temp.setEndDate(rollingEnd.getValue() == null ? new Date() : rollingStart.getValue());
         return temp;
     }
 
