@@ -26,4 +26,8 @@
 
     <bean id = "movieService" class="com.netcracker.cinema.service.impl.MovieServiceImpl"></bean>
 
+    <bean id = "seanceDao" class="com.netcracker.cinema.dao.impl.SeanceDaoImpl"></bean>
+
+    <bean id = "seanceService" class="com.netcracker.cinema.service.impl.SeanceServiceImpl"></bean>
+
 </beans>
