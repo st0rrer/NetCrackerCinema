@@ -1,6 +1,5 @@
 package com.netcracker.cinema.model;
 
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,6 @@ import lombok.ToString;
 import uk.co.jemos.podam.common.PodamIntValue;
 
 import java.io.Serializable;
-
 
 /**
  * Created by gaya on 05.11.2016.
@@ -25,7 +23,7 @@ public class Place implements Serializable {
     private Integer rowNumber;
     @PodamIntValue(minValue = 1, maxValue = 120)
     private Integer number;
-    private Zone zoneId;
-    private Hall hallId;
+    private long zoneId;
+    private long hallId;
 
 }

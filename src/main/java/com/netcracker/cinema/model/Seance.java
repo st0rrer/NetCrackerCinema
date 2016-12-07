@@ -1,6 +1,5 @@
 package com.netcracker.cinema.model;
 
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +23,7 @@ public class Seance implements Serializable {
     private long id;
     private LocalDate seanceDate;
     private LocalDateTime seanceTime;
-    private Movie movieId;
-    private Hall hallId;
-
+    private long movieId;
+    private long hallId;
 
 }

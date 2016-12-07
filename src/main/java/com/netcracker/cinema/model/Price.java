@@ -21,7 +21,7 @@ public class Price implements Serializable {
     private long id;
     @PodamIntValue(minValue = 20, maxValue = 500)
     private Integer price;
-    private Seance seanceId;
-    private Zone zoneId;
+    private long seanceId;
+    private long zoneId;
 
 }

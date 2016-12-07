@@ -1,6 +1,5 @@
 package com.netcracker.cinema.model;
 
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +26,7 @@ public class Ticket implements Serializable {
     @PodamIntValue(minValue = 20, maxValue = 500)
     private Integer price;
     private boolean isPaid;
-    private Seance seanceId;
-    private Place placeId;
-
+    private long seanceId;
+    private long placeId;
 
 }
