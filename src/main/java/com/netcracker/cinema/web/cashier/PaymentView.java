@@ -83,10 +83,11 @@ public class PaymentView extends HorizontalLayout implements View {
     }
 
     private List<Ticket> getTicketsByCode(Long code) {
-        TestData data = new TestData();
+        /*TestData data = new TestData();
         List<Ticket> tickets = data.getTicketListByCode(code);
 
-        return  data.getTicketListByCode(code);
+        return  data.getTicketListByCode(code);*/
+        return null;
     }
 
 }

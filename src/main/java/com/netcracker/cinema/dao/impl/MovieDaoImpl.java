@@ -20,7 +20,7 @@ import static com.netcracker.cinema.dao.impl.queries.MovieDaoQuery.*;
 /**
  * Created by dimka on 16.11.2016.
  */
-@Repository
+
 public class MovieDaoImpl implements MovieDao {
     private static final Logger LOGGER = Logger.getLogger(MovieDaoImpl.class);
 
@@ -80,7 +80,7 @@ public class MovieDaoImpl implements MovieDao {
             movie.setDuration(resultSet.getString("duration") == null ? null : resultSet.getInt("duration"));
             movie.setImdb(resultSet.getString("imdb") == null ? null : resultSet.getInt("imdb"));
             movie.setPeriodicity(resultSet.getString("periodicity") == null ? null : resultSet.getInt("periodicity"));
-            movie.setBasePrice(resultSet.getString("basePrice") == null ? null : resultSet.getInt("periodicity"));
+            movie.setBasePrice(resultSet.getString("basePrice") == null ? null : resultSet.getInt("basePrice"));
             movie.setPoster(resultSet.getString("poster"));
             movie.setStartDate(resultSet.getDate("startDate") == null ? null : new Date(resultSet.getDate("startDate").getTime()));
             movie.setEndDate(resultSet.getDate("endDate") == null ? null : new Date(resultSet.getDate("endDate").getTime()));
