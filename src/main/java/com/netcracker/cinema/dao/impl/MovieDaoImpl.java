@@ -62,14 +62,6 @@ public class MovieDaoImpl implements MovieDao {
         jdbcTemplate.update(DELETE_MOVIE, new Object[] {movie.getId()});
     }
 
-    private static java.sql.Date getCurrentDate(LocalDate localDate) {
-        if(localDate == null) {
-            return null;
-        }
-        java.sql.Date date = java.sql.Date.valueOf(localDate);
-        return date;
-    }
-
     class MovieMapper implements RowMapper<Movie> {
         @Override
         public Movie mapRow(ResultSet resultSet, int i) throws SQLException {
