@@ -30,4 +30,8 @@
 
     <bean id = "seanceService" class="com.netcracker.cinema.service.impl.SeanceServiceImpl"></bean>
 
+    <bean id = "placeDao" class="com.netcracker.cinema.dao.impl.PlaceDaoImpl"></bean>
+
+    <bean id = "placeService" class="com.netcracker.cinema.service.impl.PlaceServiceImpl"></bean>
+
 </beans>
