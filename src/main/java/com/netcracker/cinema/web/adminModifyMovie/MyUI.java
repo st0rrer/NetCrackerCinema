@@ -5,6 +5,7 @@ import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.web.admin.AdminMenu;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
@@ -75,7 +76,7 @@ public class MyUI extends UI {
         Window subWindow = new Window("Sub-window");
         subWindow.setContent(subContent);
         subWindow.center();
-        subWindow.setHeight("600");
+        subWindow.setHeight("550");
         subWindow.setWidth("700");
 
         // add form to panel for form's resizing
@@ -96,7 +97,8 @@ public class MyUI extends UI {
         Button editMovieBtn = new Button("Edit");
         editMovieBtn.addClickListener(e -> {
             if(!grid.getSelectionModel().getSelectedRows().isEmpty()) {
-                Movie movie = (Movie) grid.getSelectedRow();
+                Long temp = ((Movie) grid.getSelectedRow()).getId();
+                Movie movie = movieService.getById(temp);
                 movieForm.setMovie(movie, subWindow, this);
                 UI.getCurrent().addWindow(subWindow);
             } else {
@@ -111,6 +113,7 @@ public class MyUI extends UI {
                 Movie movie = (Movie) grid.getSelectionModel().getSelectedRows().iterator().next();
                 movieService.delete(movie);
                 this.updateList();
+                grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, search(filterText.getValue())));
             } else {
                 UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(this, "Select the movie"));
             }
@@ -122,6 +125,7 @@ public class MyUI extends UI {
 
         grid.setColumns("name", "duration", "imdb", "basePrice", "periodicity", "startDate", "endDate");
         grid.setSizeFull();
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         layout.addComponents(toolbar, grid);
 

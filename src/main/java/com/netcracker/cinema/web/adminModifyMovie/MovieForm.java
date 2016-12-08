@@ -8,7 +8,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.apache.commons.validator.UrlValidator;
 
 @SpringComponent
 public class MovieForm extends MovieFormDesign {
@@ -39,13 +39,14 @@ public class MovieForm extends MovieFormDesign {
 
 
     public void setMovie(Movie movie, Window window, MyUI myUI) {
+        endDate.setReadOnly(true);
         this.myUI = myUI;
         this.window = window;
         if(movie.getName() == null)
             initInfo(movie);
         this.movie = movie;
         BeanFieldGroup.bindFieldsUnbuffered(movie, this);
-
+        System.out.println(movie.getId());
         super.name.selectAll();
     }
 
@@ -64,23 +65,40 @@ public class MovieForm extends MovieFormDesign {
     }
 
     private boolean isCheck() {
+
+        UrlValidator urlValidator = new UrlValidator();
+        if(urlValidator.isValid(super.poster.getValue())) {
+            System.out.println("url is not valid");
+        }
+
+
+        if(super.startDate.isEmpty()
+                || super.endDate.isEmpty()) {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "Value(s) is empty or isn't correct"));
+            return false;
+        }
+
+        if(super.endDate.getValue().getTime() < super.startDate.getValue().getTime()) {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "\"Start date\" can't be older then the \"End date\""));
+            return false;
+        }
+
         try {
             Integer.parseInt(super.duration.getValue());
             Integer.parseInt(super.imdb.getValue());
             Integer.parseInt(super.periodicity.getValue());
             Double.parseDouble(super.basePrice.getValue());
         } catch (Exception e) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "Values isn't correct"));
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "Value(s) isn't correct"));
             return false;
         }
+
         if(super.name.getValue().trim().length() == 0
                 || super.duration.getValue().trim().length() == 0
                 || super.imdb.getValue().trim().length() == 0
                 || super.basePrice.getValue().trim().length() == 0
                 || super.periodicity.getValue().trim().length() == 0
                 || super.poster.getValue().trim().length() == 0
-                || super.startDate.isEmpty()
-                || super.endDate.isEmpty()
                 || super.description.isEmpty()) {
             UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "Please, fill all fields"));
             return false;
