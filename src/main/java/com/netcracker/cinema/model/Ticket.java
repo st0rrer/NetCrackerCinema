@@ -20,7 +20,7 @@ public class Ticket implements Serializable {
 
     @PodamLongValue(minValue = 1, maxValue = 200000)
     private long id;
-    @PodamLongValue(minValue = 100000, maxValue = 999999)
+    @PodamLongValue(minValue = 1115, maxValue = 1120)
     private long code;
     private String email;
     @PodamIntValue(minValue = 20, maxValue = 500)

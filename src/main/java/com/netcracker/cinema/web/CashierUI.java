@@ -25,7 +25,6 @@ import javax.servlet.annotation.WebServlet;
 public class CashierUI extends UI {
     private static final Logger logger = Logger.getLogger(AdminUI.class);
 
-
     @Autowired
     private SpringViewProvider viewProvider;
 
