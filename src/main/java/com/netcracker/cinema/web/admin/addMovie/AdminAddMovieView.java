@@ -52,7 +52,6 @@ public class AdminAddMovieView extends GridLayout implements View {
         initInfo();
 
 
-
         addComponent(titleAndDesc, 6, 2, 10, 4);
         addComponent(info,15, 2, 25, 29);
 

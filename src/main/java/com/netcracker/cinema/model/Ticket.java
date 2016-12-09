@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import uk.co.jemos.podam.common.PodamBooleanValue;
 import uk.co.jemos.podam.common.PodamIntValue;
 import uk.co.jemos.podam.common.PodamLongValue;
 
@@ -25,6 +26,7 @@ public class Ticket implements Serializable {
     private String email;
     @PodamIntValue(minValue = 20, maxValue = 500)
     private Integer price;
+    @PodamBooleanValue()
     private boolean isPaid;
     private long seanceId;
     private long placeId;
