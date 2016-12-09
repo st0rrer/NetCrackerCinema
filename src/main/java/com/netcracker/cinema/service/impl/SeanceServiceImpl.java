@@ -36,6 +36,6 @@ public class SeanceServiceImpl implements SeanceService {
     @Transactional
     @Override
     public void save(Seance seance) {
-        seanceDao.delete(seance);
+        seanceDao.save(seance);
     }
 }
