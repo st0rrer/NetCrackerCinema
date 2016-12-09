@@ -23,7 +23,7 @@
         <jdbc:script location="classpath:db/initDB.sql"/>
         <jdbc:script location="classpath:db/staticDB.sql"/>
         <jdbc:script location="classpath:db/populDB.sql"/>
-        <!--<jdbc:script location="classpath:db/procedure_save_ticket.sql"/>-->
-        <!--<jdbc:script location="classpath:db/function_sold_tickets.sql"/>-->
+        <jdbc:script separator="#" location="classpath:db/procedure_save_ticket.sql"/>
+        <jdbc:script separator="#" location="classpath:db/function_sold_tickets.sql"/>
     </jdbc:initialize-database>
 </beans>

@@ -58,5 +58,4 @@ ticket_id := get_obj_id.NEXTVAL;
     INTO OBJREFERENCE VALUES(sc_atr_id, ticket_id, seance_id_in)    
     INTO OBJREFERENCE VALUES(place_atr_id, ticket_id, place_id_in)
   SELECT * FROM dual;
-END;
-/
+END;#
