@@ -12,6 +12,13 @@ public interface TicketDao {
 
     List<Ticket> findAll();
 
+    /**
+     * @param id - id of seance or place
+     * @return list of tickets which have references
+     *      with seance or place in table objreference
+     */
+    List<Ticket> getBySeanceOrPlace(long id);
+
     Ticket getById(long id);
 
     void deleteById(long ticketId);
