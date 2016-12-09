@@ -20,5 +20,10 @@ public interface TicketDao {
 
     void save(Ticket ticket);
 
+    /**
+     * @param objName - NAME from table OBJECTS
+     * @return quantity of sold tickets or '-1' if 'objName' was not found
+     * @see db/function_sold_tickets.sql
+     */
     Integer soldTickets(String objName, Date startDate, Date endDate);
 }
