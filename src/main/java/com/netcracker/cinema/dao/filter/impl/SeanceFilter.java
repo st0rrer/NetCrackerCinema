@@ -4,16 +4,10 @@ import com.netcracker.cinema.dao.filter.Order;
 import com.netcracker.cinema.dao.filter.Where;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import static com.netcracker.cinema.dao.filter.impl.SeanceFilterQuery.*;
 
 public class SeanceFilter extends AbstractFilter {
-
-    public SeanceFilter() {
-        orders = new ArrayList<>(3);
-        wheres = new ArrayList<>(3);
-    }
 
     @Override
     protected String getQuery() {
