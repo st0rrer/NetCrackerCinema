@@ -16,7 +16,7 @@ import static com.netcracker.cinema.dao.impl.queries.HallDaoQuery.*;
 
 public class HallDaoImpl implements HallDao {
 
-    private static final Logger LOGGER = Logger.getLogger(MovieDaoImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(HallDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -38,16 +38,16 @@ public class HallDaoImpl implements HallDao {
 
     @Override
     public void save(Hall hall) {
-        jdbcTemplate.update(MERGE_HALL_OBJECT, new Object[]{hall.getId(), hall.getName()});
+        jdbcTemplate.update(MERGE_HALL_OBJECT, hall.getId(), hall.getName());
         LOGGER.info("");
     }
 
     @Override
     public void delete(Hall hall) {
-        jdbcTemplate.update(DELETE_HALL, new Object[]{hall.getId()});
+        jdbcTemplate.update(DELETE_HALL, hall.getId());
     }
 
-    class HallMapper implements RowMapper<Hall> {
+    private class HallMapper implements RowMapper<Hall> {
         @Override
         public Hall mapRow(ResultSet resultSet, int i) throws SQLException {
             Hall hall = new Hall();

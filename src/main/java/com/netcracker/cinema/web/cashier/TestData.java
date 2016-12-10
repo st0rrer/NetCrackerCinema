@@ -35,4 +35,24 @@ public class TestData {
         return tickets;
     }
 
+    public void save(Ticket ticket) {
+        for(int i = 0; i < ticketList.size(); i++) {
+            if(ticketList.get(i).getId() == ticket.getId()) {
+                if(ticket.isPaid() == true) {
+                    ticketList.set(i, ticket);
+                } else {
+                    ticketList.remove(i);
+                }
+            }
+        }
+    }
+
+    public void delete(Ticket ticket) {
+        for(int i = 0; i < ticketList.size(); i++) {
+            if(ticketList.get(i).getId() == ticket.getId()) {
+                ticketList.remove(i);
+            }
+        }
+    }
+
 }
