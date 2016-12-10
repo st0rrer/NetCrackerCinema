@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface SeanceService {
     List<Seance> findAll();
+    List<Seance> findAll(SeanceFilter filter);
     Seance getById(long id);
     void delete(Seance seance);
     void save(Seance seance);

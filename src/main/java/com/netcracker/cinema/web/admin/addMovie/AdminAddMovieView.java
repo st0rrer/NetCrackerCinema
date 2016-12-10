@@ -15,7 +15,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 
-
+@SpringView(name = AdminAddMovieView.VIEW_NAME, ui = AdminUI.class)
 public class AdminAddMovieView extends GridLayout implements View {
     public static final String VIEW_NAME = "addMovie";
 
