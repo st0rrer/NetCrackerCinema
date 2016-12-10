@@ -32,6 +32,13 @@ public class SeanceDaoImpl implements SeanceDao {
     }
 
     @Override
+    public List<Seance> findAll(SeanceFilter filter) {
+        List<Seance> seances = jdbcTemplate.query(filter.buildQuery(), new SeanceRowMapper());
+        logger.info("Find all seances with filter: found " + seances.size() + " seance objects");
+        return seances;
+    }
+
+    @Override
     public Seance getById(long id) {
         Seance seance = jdbcTemplate.queryForObject(FIND_SEANCE_BY_ID, new Object[]{id}, new SeanceRowMapper());
         logger.info("Get seance by id: found not null seance");

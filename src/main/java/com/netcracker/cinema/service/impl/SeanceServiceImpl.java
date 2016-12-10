@@ -26,6 +26,11 @@ public class SeanceServiceImpl implements SeanceService {
     }
 
     @Override
+    public List<Seance> findAll(SeanceFilter filter) {
+        return seanceDao.findAll(filter);
+    }
+
+    @Override
     public Seance getById(long id) {
         return seanceDao.getById(id);
     }

@@ -8,6 +8,7 @@ import java.util.List;
 public interface SeanceDao {
 
     List<Seance> findAll();
+    List<Seance> findAll(SeanceFilter filter);
     Seance getById(long id);
     void save(Seance seance);
     void delete(Seance seance);
