@@ -25,7 +25,10 @@ public interface TicketService {
 
     void deleteById(long ticketId);
 
-    void save(Ticket ticket);
+    /**
+     * @return id of new or updated ticket
+     */
+    long save(Ticket ticket);
 
     /**
      * @param objId - OBJECT_ID from table OBJECTS for Zone, Hall or Movie

@@ -45,8 +45,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void save(Ticket ticket) {
-        ticketDao.save(ticket);
+    public long save(Ticket ticket) {
+        return ticketDao.save(ticket);
     }
 
     @Override

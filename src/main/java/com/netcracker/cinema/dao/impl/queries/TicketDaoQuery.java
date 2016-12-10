@@ -31,6 +31,7 @@ public interface TicketDaoQuery {
                     "   AND atype_seance.code = 'SEANCE_REF'\n" +
                     "   AND atype_place.code = 'PLACE_REF'\n" +
                     "ORDER BY id";
+
     String FIND_TICKET_BY_SEANCE_OR_PLACE =
             "SELECT  obj.object_id AS id, attr_code.value AS code, attr_email.value AS email,\n" +
                     "   attr_price.value AS price, attr_paid.value AS paid,\n" +
@@ -85,7 +86,8 @@ public interface TicketDaoQuery {
 
     String DELETE_TICKET = "DELETE FROM objects WHERE object_id = ?";
 
-    String SAVE_TICKET = "{call Save_Ticket(?, ?, ?, ?, ?, ?, ?)}";
+    String SAVE_TICKET = "SELECT Save_Ticket(?, ?, ?, ?, ?, ?, ?) FROM dual";
 
     String SOLD_TICKETS = "SELECT Sold_Tickets(?, ?, ?) FROM dual";
+
 }

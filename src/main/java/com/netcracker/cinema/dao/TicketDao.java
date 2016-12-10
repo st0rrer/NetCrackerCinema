@@ -18,7 +18,7 @@ public interface TicketDao {
 
     void delete(long ticketId);
 
-    void save(Ticket ticket);
+    long save(Ticket ticket);
 
     int soldTickets(long objId, Date startDate, Date endDate);
 }
