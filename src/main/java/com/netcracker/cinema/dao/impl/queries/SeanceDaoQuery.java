@@ -106,6 +106,6 @@ public interface SeanceDaoQuery {
                     " INSERT(objref.ATTR_ID, objref.REFERENCE, objref.OBJECT_ID) " +
                     " VALUES(15, NVL(object.obj_id, GET_OBJ_ID.currval), object.hall_ref)";
 
-    String SELECT_ID =
+    String SELECT_ID_FOR_INSERTED_SEANCE =
             " SELECT GET_OBJ_ID.CURRVAL FROM DUAL ";
 }
