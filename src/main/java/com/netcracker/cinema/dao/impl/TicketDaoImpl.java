@@ -96,47 +96,6 @@ public class TicketDaoImpl implements TicketDao {
         }
     }
 
-    public void save2(Ticket ticket) {
-        jdbcTemplate.update(MERGE_TICKET_OBJECT, ticket.getId(), ticket.getCode());
-        jdbcTemplate.update(MERGE_TICKET_ATTR_CODE, ticket.getId(), ticket.getCode());
-        jdbcTemplate.update(MERGE_TICKET_ATTR_EMAIL, ticket.getId(), ticket.getEmail());
-        jdbcTemplate.update(MERGE_TICKET_ATTR_PRICE, ticket.getId(), ticket.getPrice());
-        jdbcTemplate.update(MERGE_TICKET_ATTR_PAID, ticket.getId(), (ticket.isPaid() + "").toUpperCase());
-        jdbcTemplate.update(MERGE_TICKET_REF_SEANCE, ticket.getId(), ticket.getSeanceId());
-        jdbcTemplate.update(MERGE_TICKET_REF_PLACE, ticket.getId(), ticket.getPlaceId());
-    }
-
-    public Integer soldTickets2(String objName, Date startDate, Date endDate) {
-        CallableStatementCreator creator = new CallableStatementCreator() {
-            public CallableStatement createCallableStatement(Connection con) {
-                CallableStatement cs = null;
-                try {
-                    cs = con.prepareCall(SOLD_TICKETS_VAR2);
-                    cs.registerOutParameter(1, Types.INTEGER);
-                    cs.setString(2, objName);
-                    cs.setDate(3, startDate);
-                    cs.setDate(4, endDate);
-                } catch (SQLException e) {
-                    LOGGER.trace("Error during create CallableStatement", e);
-                }
-                return cs;
-            }
-        };
-        CallableStatementCallback callback = new CallableStatementCallback() {
-            public Object doInCallableStatement(CallableStatement cs) {
-                int result = 0;
-                try {
-                    cs.execute();
-                    result = cs.getInt(1);
-                } catch (SQLException e) {
-                    LOGGER.trace("Error during execute CallableStatement", e);
-                }
-                return result;
-            }
-        };
-        return (Integer) jdbcTemplate.execute(creator, callback);
-    }
-
     @Override
     public int soldTickets(long objId, Date startDate, Date endDate) {
         if ((objId < 1) || (startDate.after(endDate))) {
