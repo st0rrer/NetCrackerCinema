@@ -8,7 +8,9 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.commons.validator.UrlValidator;
+import org.apache.commons.validator.routines.UrlValidator;
+
+import java.util.Date;
 
 @SpringComponent
 public class MovieForm extends MovieFormDesign {
@@ -18,7 +20,8 @@ public class MovieForm extends MovieFormDesign {
 
     private Movie movie;
 
-    private MyUI myUI;
+    private ModifyAdminMovieView modifyAdminMovieView;
+    private UI ui;
     private Window window;
 
     public MovieForm() {
@@ -38,15 +41,14 @@ public class MovieForm extends MovieFormDesign {
     }
 
 
-    public void setMovie(Movie movie, Window window, MyUI myUI) {
-        endDate.setReadOnly(true);
-        this.myUI = myUI;
+    public void setMovie(Movie movie, Window window, ModifyAdminMovieView modifyAdminMovieView, UI ui) {
+        this.ui = ui;
+        this.modifyAdminMovieView = modifyAdminMovieView;
         this.window = window;
         if(movie.getName() == null)
             initInfo(movie);
         this.movie = movie;
-        BeanFieldGroup.bindFieldsUnbuffered(movie, this);
-        System.out.println(movie.getId());
+        BeanFieldGroup<Movie> movieBeanFieldGroup = BeanFieldGroup.bindFieldsUnbuffered(movie, this);
         super.name.selectAll();
     }
 
@@ -60,26 +62,48 @@ public class MovieForm extends MovieFormDesign {
         }
 
         movieService.save(movie);
-        myUI.updateList();
+        modifyAdminMovieView.updateList();
         UI.getCurrent().removeWindow(window);
     }
 
     private boolean isCheck() {
 
         UrlValidator urlValidator = new UrlValidator();
-        if(urlValidator.isValid(super.poster.getValue())) {
-            System.out.println("url is not valid");
+        String firstValue = super.poster.getValue();
+        String http = "http://";
+        String https = "https://";
+
+        if(firstValue.contains(http) || firstValue.contains(https)) {
+            if(!urlValidator.isValid(firstValue)) {
+                UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Url is not valid: " + super.poster.getValue()));
+                return false;
+            }
+        } else {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Url must contain: " + http + " or " + https));
+            return false;
+        }
+
+        if(!firstValue.contains(".jpg") &&
+                !firstValue.contains(".jpeg") &&
+                !firstValue.contains(".png")) {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Format is not correct"));
+            return false;
         }
 
 
         if(super.startDate.isEmpty()
                 || super.endDate.isEmpty()) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "Value(s) is empty or isn't correct"));
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Value(s) is empty or isn't correct"));
+            return false;
+        }
+
+        if(startDate.getValue().getTime() < new Date().getTime()) {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Start date can not be less than the current"));
             return false;
         }
 
         if(super.endDate.getValue().getTime() < super.startDate.getValue().getTime()) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "\"Start date\" can't be older then the \"End date\""));
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "\"Start date\" can't be older then the \"End date\""));
             return false;
         }
 
@@ -89,7 +113,7 @@ public class MovieForm extends MovieFormDesign {
             Integer.parseInt(super.periodicity.getValue());
             Double.parseDouble(super.basePrice.getValue());
         } catch (Exception e) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "Value(s) isn't correct"));
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Value(s) isn't correct"));
             return false;
         }
 
@@ -100,7 +124,7 @@ public class MovieForm extends MovieFormDesign {
                 || super.periodicity.getValue().trim().length() == 0
                 || super.poster.getValue().trim().length() == 0
                 || super.description.isEmpty()) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(myUI, "Please, fill all fields"));
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Please, fill all fields"));
             return false;
         }
         return true;
