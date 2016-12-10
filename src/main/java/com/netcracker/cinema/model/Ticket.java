@@ -9,6 +9,8 @@ import uk.co.jemos.podam.common.PodamIntValue;
 import uk.co.jemos.podam.common.PodamLongValue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gaya on 05.11.2016.

@@ -14,13 +14,17 @@
 
     <tx:annotation-driven transaction-manager="txManager"/>
 
-    <bean id="movieDao" class="com.netcracker.cinema.dao.impl.MovieDaoImpl"></bean>
-
     <bean id="hallDao" class="com.netcracker.cinema.dao.impl.HallDaoImpl"></bean>
 
     <bean id="zoneDao" class="com.netcracker.cinema.dao.impl.ZoneDaoImpl"></bean>
 
+    <bean id="movieDao" class="com.netcracker.cinema.dao.impl.MovieDaoImpl"></bean>
+
     <bean id="ticketDao" class="com.netcracker.cinema.dao.impl.TicketDaoImpl"></bean>
+
+    <bean id="seanceDao" class="com.netcracker.cinema.dao.impl.SeanceDaoImpl"></bean>
+
+    <bean id="placeDao" class="com.netcracker.cinema.dao.impl.PlaceDaoImpl"></bean>
 
     <bean id="hallService" class="com.netcracker.cinema.service.impl.HallServiceImpl"></bean>
 
@@ -28,11 +32,9 @@
 
     <bean id="movieService" class="com.netcracker.cinema.service.impl.MovieServiceImpl"></bean>
 
-    <bean id="seanceDao" class="com.netcracker.cinema.dao.impl.SeanceDaoImpl"></bean>
+    <bean id="ticketService" class="com.netcracker.cinema.service.impl.TicketServiceImpl"></bean>
 
     <bean id="seanceService" class="com.netcracker.cinema.service.impl.SeanceServiceImpl"></bean>
-
-    <bean id="placeDao" class="com.netcracker.cinema.dao.impl.PlaceDaoImpl"></bean>
 
     <bean id="placeService" class="com.netcracker.cinema.service.impl.PlaceServiceImpl"></bean>
 
