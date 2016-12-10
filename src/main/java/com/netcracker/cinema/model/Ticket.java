@@ -9,6 +9,8 @@ import uk.co.jemos.podam.common.PodamIntValue;
 import uk.co.jemos.podam.common.PodamLongValue;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gaya on 05.11.2016.
@@ -31,4 +33,15 @@ public class Ticket implements Serializable {
     private long seanceId;
     private long placeId;
 
+    public List<Serializable> getAllFields() {
+        List<Serializable> ticket = new ArrayList<>();
+        ticket.add(id);
+        ticket.add(code);
+        ticket.add(email);
+        ticket.add(price);
+        ticket.add((isPaid + "").toUpperCase());
+        ticket.add(seanceId);
+        ticket.add(placeId);
+        return ticket;
+    }
 }
