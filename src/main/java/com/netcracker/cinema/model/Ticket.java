@@ -33,15 +33,4 @@ public class Ticket implements Serializable {
     private long seanceId;
     private long placeId;
 
-    public List<Serializable> getAllFields() {
-        List<Serializable> ticket = new ArrayList<>();
-        ticket.add(id);
-        ticket.add(code);
-        ticket.add(email);
-        ticket.add(price);
-        ticket.add((isPaid + "").toUpperCase());
-        ticket.add(seanceId);
-        ticket.add(placeId);
-        return ticket;
-    }
 }

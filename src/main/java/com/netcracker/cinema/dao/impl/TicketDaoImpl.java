@@ -86,8 +86,11 @@ public class TicketDaoImpl implements TicketDao {
         if (ticket == null) {
             LOGGER.info("Ticket == null");
         } else {
+            Object[] arrayOfFields = new Object[]{ticket.getId(), ticket.getCode(),
+                    ticket.getEmail(), ticket.getPrice(), (ticket.isPaid() + "").toUpperCase(),
+                    ticket.getSeanceId(), ticket.getPlaceId()};
             LOGGER.info("Saving ticket: " + ticket);
-            jdbcTemplate.update(SAVE_TICKET, ticket.getAllFields().toArray());
+            jdbcTemplate.update(SAVE_TICKET, arrayOfFields);
         }
     }
 
