@@ -28,28 +28,28 @@ public interface PlaceDaoQuery {
 
     String FIND_PLACE_BY_ID =
             "SELECT " +
-                    "PLACE.OBJECT_ID id" +
-                    ", NUMBER_ATT.VALUE numm \n" +
-                    ", ROW_ATT.VALUE roww \n" +
-                    ", HALL_REF.OBJECT_ID hall \n" +
-                    ", ZONE_REF.OBJECT_ID zonee \n" +
-                    "FROM " +
-                    "OBJECTS PLACE" +
-                    "LEFT JOIN ATTRIBUTES NUMBER_ATT \n" +
-                    "ON PLACE.OBJECT_ID = NUMBER_ATT.OBJECT_ID \n" +
-                    "LEFT JOIN ATTRIBUTES ROW_ATT \n" +
-                    "ON PLACE.OBJECT_ID = ROW_ATT.OBJECT_ID \n" +
-                    "LEFT JOIN OBJREFERENCE HALL_REF \n" +
-                    "ON PLACE.OBJECT_ID = HALL_REF.REFERENCE \n" +
-                    "LEFT JOIN OBJREFERENCE ZONE_REF \n" +
-                    "ON PLACE.OBJECT_ID = ZONE_REF.REFERENCE \n" +
-                    "WHERE " +
-                    "PLACE.OBJECT_ID = ? AND " +
-                    "PLACE.OBJECT_TYPE_ID = 4 AND " +
-                    "NUMBER_ATT.ATTR_ID = 9 AND " +
-                    "ROW_ATT.ATTR_ID = 10 AND " +
-                    "HALL_REF.ATTR_ID = 11 AND " +
-                    "ZONE_REF.ATTR_ID = 12";
+            "       PLACE.OBJECT_ID id" +
+            "       , NUMBER_ATT.VALUE numm \n" +
+            "       , ROW_ATT.VALUE roww \n" +
+            "       , HALL_REF.OBJECT_ID hall \n" +
+            "       , ZONE_REF.OBJECT_ID zonee \n" +
+            "FROM " +
+            "       OBJECTS PLACE \n" +
+            "       LEFT JOIN ATTRIBUTES NUMBER_ATT \n" +
+            "           ON PLACE.OBJECT_ID = NUMBER_ATT.OBJECT_ID \n" +
+            "       LEFT JOIN ATTRIBUTES ROW_ATT \n" +
+            "           ON PLACE.OBJECT_ID = ROW_ATT.OBJECT_ID \n" +
+            "       LEFT JOIN OBJREFERENCE HALL_REF \n" +
+            "           ON PLACE.OBJECT_ID = HALL_REF.REFERENCE \n" +
+            "       LEFT JOIN OBJREFERENCE ZONE_REF \n" +
+            "           ON PLACE.OBJECT_ID = ZONE_REF.REFERENCE \n" +
+            "WHERE " +
+            "       PLACE.OBJECT_ID = ? AND " +
+            "       PLACE.OBJECT_TYPE_ID = 4 AND " +
+            "       NUMBER_ATT.ATTR_ID = 9 AND " +
+            "       ROW_ATT.ATTR_ID = 10 AND " +
+            "       HALL_REF.ATTR_ID = 11 AND " +
+            "       ZONE_REF.ATTR_ID = 12";
 
     String FIND_PLACE_BY_HALL =
             "SELECT " +
