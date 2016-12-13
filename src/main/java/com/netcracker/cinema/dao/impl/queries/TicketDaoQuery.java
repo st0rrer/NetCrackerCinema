@@ -32,6 +32,38 @@ public interface TicketDaoQuery {
                     "   AND atype_place.code = 'PLACE_REF'\n" +
                     "ORDER BY id";
 
+    String FIND_TICKETS_BY_CODE = "SELECT\n" +
+            "      obj.object_id AS id\n" +
+            "      , attr_code.value AS code\n" +
+            "      , attr_email.value AS email\n" +
+            "      , attr_price.value AS price\n" +
+            "      , attr_paid.value AS paid\n" +
+            "      , ref_seance.object_id AS seance\n" +
+            "      , ref_place.object_id AS place\n" +
+            "FROM\n" +
+            "      objects obj\n" +
+            "      LEFT JOIN attributes attr_code\n" +
+            "            ON attr_code.object_id = obj.object_id\n" +
+            "      LEFT JOIN attributes attr_email\n" +
+            "            ON attr_email.object_id = obj.object_id\n" +
+            "      LEFT JOIN attributes attr_price\n" +
+            "            ON attr_price.object_id = obj.object_id\n" +
+            "      LEFT JOIN attributes attr_paid\n" +
+            "            ON attr_paid.object_id = obj.object_id\n" +
+            "      LEFT JOIN objreference ref_seance\n" +
+            "            ON ref_seance.reference = obj.object_id\n" +
+            "      LEFT JOIN objreference ref_place\n" +
+            "            ON ref_place.reference = obj.object_id\n" +
+            "WHERE\n" +
+            "      attr_code.VALUE = ?\n" +
+            "      AND obj.OBJECT_TYPE_ID = 6\n" +
+            "      AND attr_code.ATTR_ID = 16\n" +
+            "      AND attr_email.ATTR_ID = 17\n" +
+            "      AND attr_price.ATTR_ID = 18\n" +
+            "      AND attr_paid.ATTR_ID = 19\n" +
+            "      AND ref_seance.ATTR_ID = 20\n" +
+            "      AND ref_place.ATTR_ID = 21";
+
     String FIND_TICKET_BY_SEANCE_OR_PLACE =
             "SELECT  obj.object_id AS id, attr_code.value AS code, attr_email.value AS email,\n" +
                     "   attr_price.value AS price, attr_paid.value AS paid,\n" +
