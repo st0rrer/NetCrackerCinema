@@ -45,21 +45,21 @@ public class MovieDaoImpl implements MovieDao {
 
     @Override
     public void save(Movie movie) {
-        jdbcTemplate.update(MERGE_MOVIE_OBJECT, new Object[] {movie.getId(), movie.getName()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_DESCRIPTION, new Object[]{movie.getDescription(), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_DURATION, new Object[]{movie.getDuration(), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_IMDB, new Object[]{movie.getImdb(), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_PERIODICITY, new Object[]{movie.getPeriodicity(), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_BASE_PRICE, new Object[]{movie.getBasePrice(), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_START, new Object[]{new Date(movie.getStartDate().getTime()), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_END, new Object[]{new Date(movie.getEndDate().getTime()), movie.getId()});
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_POSTER, new Object[]{movie.getPoster(), movie.getId()});
+        jdbcTemplate.update(MERGE_MOVIE_OBJECT, movie.getId(), movie.getName());
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_DESCRIPTION, movie.getDescription(), movie.getId());
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_DURATION, movie.getDuration(), movie.getId());
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_IMDB, movie.getImdb(), movie.getId());
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_PERIODICITY, movie.getPeriodicity(), movie.getId());
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_BASE_PRICE, movie.getBasePrice(), movie.getId());
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_START, new Date(movie.getStartDate().getTime()), movie.getId());
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_END, new Date(movie.getEndDate().getTime()), movie.getId());
+        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_POSTER, movie.getPoster(), movie.getId());
         LOGGER.info("");
     }
 
     @Override
     public void delete(Movie movie) {
-        jdbcTemplate.update(DELETE_MOVIE, new Object[] {movie.getId()});
+        jdbcTemplate.update(DELETE_MOVIE, movie.getId());
     }
 
     class MovieMapper implements RowMapper<Movie> {

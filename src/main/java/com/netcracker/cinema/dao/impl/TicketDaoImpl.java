@@ -43,6 +43,13 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
+    public List<Ticket> getTicketsByCode(long code) {
+        List<Ticket> ticketsByCode = jdbcTemplate.query(FIND_TICKETS_BY_CODE, new TicketMapper(), String.valueOf(code));
+        LOGGER.info("Find all tickets by code " + code + " : found " + ticketsByCode.size() + " ticket objects");
+        return ticketsByCode;
+    }
+
+    @Override
     public List<Ticket> getBySeanceOrPlace(long id) {
         if (id > 0) {
             list = jdbcTemplate.query(FIND_TICKET_BY_SEANCE_OR_PLACE, new TicketMapper(), id);

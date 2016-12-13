@@ -12,6 +12,8 @@ public interface TicketDao {
 
     List<Ticket> findAll();
 
+    List<Ticket> getTicketsByCode(long code);
+
     List<Ticket> getBySeanceOrPlace(long id);
 
     Ticket get(long ticketId);
