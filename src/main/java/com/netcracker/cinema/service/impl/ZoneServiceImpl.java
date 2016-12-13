@@ -29,7 +29,7 @@ public class ZoneServiceImpl implements ZoneService {
     }
 
     @Override
-    public Zone getById(int id) {
+    public Zone getById(long id) {
         return zoneDao.getById(id);
     }
 

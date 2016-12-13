@@ -11,7 +11,7 @@ public interface ZoneService {
 
     List<Zone> findAll();
 
-    Zone getById(int id);
+    Zone getById(long id);
 
     void save(Zone zone);
 

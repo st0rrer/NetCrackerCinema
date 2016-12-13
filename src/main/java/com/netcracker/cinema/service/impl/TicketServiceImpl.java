@@ -25,6 +25,11 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public List<Ticket> getTicketsByCode(long code) {
+        return ticketDao.getTicketsByCode(code);
+    }
+
+    @Override
     public List<Ticket> getBySeanceOrPlace(long id) {
         return ticketDao.getBySeanceOrPlace(id);
     }
@@ -32,11 +37,6 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Ticket getById(long ticketId) {
         return ticketDao.get(ticketId);
-    }
-
-    @Override
-    public void delete(Ticket ticket) {
-        deleteById(ticket.getId());
     }
 
     @Override

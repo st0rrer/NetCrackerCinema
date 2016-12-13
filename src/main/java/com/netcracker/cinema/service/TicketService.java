@@ -19,9 +19,9 @@ public interface TicketService {
      */
     List<Ticket> getBySeanceOrPlace(long id);
 
-    Ticket getById(long id);
+    List<Ticket> getTicketsByCode(long code);
 
-    void delete(Ticket ticket);
+    Ticket getById(long id);
 
     void deleteById(long ticketId);
 

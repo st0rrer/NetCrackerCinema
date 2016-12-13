@@ -11,7 +11,7 @@ public interface HallService {
 
     List<Hall> findAll();
 
-    Hall getById(int id);
+    Hall getById(long id);
 
     void save(Hall hall);
 

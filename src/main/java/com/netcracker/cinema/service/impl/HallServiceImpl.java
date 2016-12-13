@@ -29,7 +29,7 @@ public class HallServiceImpl implements HallService {
     }
 
     @Override
-    public Hall getById(int id) {
+    public Hall getById(long id) {
         return hallDao.getById(id);
     }
 
