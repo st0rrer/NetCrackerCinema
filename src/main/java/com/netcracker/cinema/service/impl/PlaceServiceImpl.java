@@ -34,12 +34,12 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public Place getByHall(long id) {
+    public List<Place> getByHall(long id) {
         return placeDao.getByHall(id);
     }
 
     @Override
-    public Place getByZone(long id) {
+    public List<Place> getByZone(long id) {
         return placeDao.getByZone(id);
     }
 

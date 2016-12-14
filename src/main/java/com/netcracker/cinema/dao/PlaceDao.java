@@ -12,9 +12,9 @@ public interface PlaceDao {
 
     Place getById(long id);
 
-    Place getByHall(long id);
+    List<Place> getByHall(long id);
 
-    Place getByZone(long id);
+    List<Place> getByZone(long id);
 
     void save(Place place);
 
