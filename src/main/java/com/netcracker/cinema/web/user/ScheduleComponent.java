@@ -5,9 +5,9 @@ import com.netcracker.cinema.service.MovieService;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.*;
 
-public class SeanceComponent extends CustomComponent {
+public class ScheduleComponent extends CustomComponent {
 
-    public SeanceComponent(Seance seances, MovieService movieService) {
+    public ScheduleComponent(Seance seances, MovieService movieService) {
         VerticalLayout root = new VerticalLayout();
         HorizontalLayout posterAndTextDetails = new HorizontalLayout();
         posterAndTextDetails.setSpacing(true);
@@ -17,7 +17,7 @@ public class SeanceComponent extends CustomComponent {
         addPoster(seances, posterAndTextDetails, movieService);
         addSeanceAttributes(seances, posterAndTextDetails, movieService);
         setCompositionRoot(root);
-        root.addLayoutClickListener(event -> getUI().getNavigator().navigateTo(SeanceDetailsView.VIEW_NAME + "/" + seances.getId()));
+        root.addLayoutClickListener(event -> getUI().getNavigator().navigateTo(ScheduleDetailsView.VIEW_NAME + "/" + seances.getId()));
     }
 
     private void addSeanceAttributes(Seance seance, Layout posterAndTextDetails, MovieService movieService) {

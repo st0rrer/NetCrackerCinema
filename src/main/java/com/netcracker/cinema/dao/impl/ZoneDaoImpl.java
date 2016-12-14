@@ -15,7 +15,7 @@ import java.util.List;
 import static com.netcracker.cinema.dao.impl.queries.ZoneDaoQuery.*;
 
 public class ZoneDaoImpl implements ZoneDao {
-    private static final Logger LOGGER = Logger.getLogger(MovieDaoImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(ZoneDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
 
     @Autowired

@@ -7,7 +7,7 @@ import com.vaadin.ui.Label;
 
 import javax.annotation.PostConstruct;
 
-public class SeanceDetailsComponent extends CustomComponent implements View {
+public class ScheduleDetailsComponent extends CustomComponent implements View {
 
     @PostConstruct
     public void init() {

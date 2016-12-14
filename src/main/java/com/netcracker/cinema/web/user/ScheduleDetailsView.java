@@ -14,8 +14,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.annotation.PostConstruct;
 
-@SpringView(name = SeanceDetailsView.VIEW_NAME, ui = UserUI.class)
-public class SeanceDetailsView extends CustomComponent implements View {
+@SpringView(name = ScheduleDetailsView.VIEW_NAME, ui = UserUI.class)
+public class ScheduleDetailsView extends CustomComponent implements View {
 
     public static final String VIEW_NAME = "details";
 
@@ -35,7 +35,7 @@ public class SeanceDetailsView extends CustomComponent implements View {
             seanceId = Long.parseLong(event.getParameters());
         } catch (NumberFormatException e) {
             logger.info("Expected id, but was " + event.getParameters(), e);
-            getUI().getNavigator().navigateTo(SeanceView.VIEW_NAME);
+            getUI().getNavigator().navigateTo(ScheduleView.VIEW_NAME);
             return;
         }
         Seance seance = null;
@@ -47,6 +47,6 @@ public class SeanceDetailsView extends CustomComponent implements View {
             return;
         }
 
-        setCompositionRoot(new SeanceDetailsComponent());
+        setCompositionRoot(new ScheduleDetailsComponent());
     }
 }
