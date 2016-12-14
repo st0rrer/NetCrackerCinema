@@ -1,15 +1,15 @@
 package com.netcracker.cinema.web.user;
 
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.VerticalLayout;
 
 import java.util.ArrayList;
 
 class ScheduleFilterComponent extends CustomComponent {
 
     public ScheduleFilterComponent() {
-        VerticalLayout root = new VerticalLayout();
+        HorizontalLayout root = new HorizontalLayout();
         root.setMargin(true);
         root.setSpacing(true);
         setCompositionRoot(root);
@@ -18,7 +18,7 @@ class ScheduleFilterComponent extends CustomComponent {
         filterHall(root);
     }
 
-    private void filterDay(VerticalLayout layout) {
+    private void filterDay(HorizontalLayout layout) {
         ArrayList<String> list = new ArrayList<>();
         list.add("All days");
         list.add("Today");
@@ -34,7 +34,7 @@ class ScheduleFilterComponent extends CustomComponent {
         select.setImmediate(true);
     }
 
-    private void filterTime(VerticalLayout layout) {
+    private void filterTime(HorizontalLayout layout) {
         ArrayList<String> list = new ArrayList<>();
         list.add("Before noon");
         list.add("After noon");
@@ -49,7 +49,7 @@ class ScheduleFilterComponent extends CustomComponent {
         select.setImmediate(true);
     }
 
-    private void filterHall(VerticalLayout layout) {
+    private void filterHall(HorizontalLayout layout) {
         ArrayList<String> list = new ArrayList<>();
         list.add("All hall");
         list.add("Hall 1");

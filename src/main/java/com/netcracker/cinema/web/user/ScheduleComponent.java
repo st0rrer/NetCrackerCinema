@@ -3,46 +3,39 @@ package com.netcracker.cinema.web.user;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.MovieService;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 
-public class ScheduleComponent extends CustomComponent {
+import java.text.SimpleDateFormat;
+
+public class ScheduleComponent extends VerticalLayout {
 
     public ScheduleComponent(Seance seances, MovieService movieService) {
-        VerticalLayout root = new VerticalLayout();
-        HorizontalLayout posterAndTextDetails = new HorizontalLayout();
-        posterAndTextDetails.setSpacing(true);
-        root.setMargin(true);
-        root.setSpacing(true);
-        root.addComponent(posterAndTextDetails);
-        addPoster(seances, posterAndTextDetails, movieService);
-        addSeanceAttributes(seances, posterAndTextDetails, movieService);
-        setCompositionRoot(root);
-        root.addLayoutClickListener(event -> getUI().getNavigator().navigateTo(ScheduleDetailsView.VIEW_NAME + "/" + seances.getId()));
+        setMargin(true);
+        addPoster(seances, movieService);
+        addSeanceAttributes(seances, movieService);
+        addLayoutClickListener(event -> getUI().getNavigator().navigateTo(ScheduleDetailsView.VIEW_NAME + "/" + seances.getId()));
     }
 
-    private void addSeanceAttributes(Seance seance, Layout posterAndTextDetails, MovieService movieService) {
-        VerticalLayout textDetails = new VerticalLayout();
-        posterAndTextDetails.addComponent(textDetails);
-
+    private void addSeanceAttributes(Seance seance, MovieService movieService) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         Label name = new Label(movieService.getById(seance.getMovieId()).getName());
-        textDetails.addComponent(name);
-
-        Label date = new Label("Date: " + String.valueOf(seance.getSeanceDate()));
-        textDetails.addComponent(date);
-
-        Label time = new Label("Time: " + seance.getSeanceDate().getTime());
-        textDetails.addComponent(time);
-
+        addComponent(name);
+        Label date = new Label("Date: " + dateFormat.format(seance.getSeanceDate()));
+        addComponent(date);
+        Label time = new Label("Time: " + timeFormat.format(seance.getSeanceDate()));
+        addComponent(time);
         Label hall = new Label("Hall: " + seance.getHallId());
-        textDetails.addComponent(hall);
+        addComponent(hall);
     }
 
-    private void addPoster(Seance seance, Layout layout, MovieService movieService) {
+    private void addPoster(Seance seance, MovieService movieService) {
         ExternalResource resource = new ExternalResource(movieService.getById(seance.getMovieId()).getPoster());
         Image poster = new Image(null, resource);
         poster.setHeight("350px");
         poster.setWidth("230px");
-        layout.addComponent(poster);
+        addComponent(poster);
     }
-
 }
