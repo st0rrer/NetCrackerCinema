@@ -118,6 +118,28 @@ public interface TicketDaoQuery {
 
     String DELETE_TICKET = "DELETE FROM objects WHERE object_id = ?";
 
+    String DELETE_BLOCK_FOR_ONE_HOUR =
+            "delete from objects obj_ticket where obj_ticket.object_id in (\n" +
+            "          select distinct obj_ticket.object_id\n" +
+            "          from objtype obj_type_seance, objtype obj_type_ticket, \n" +
+            "              objects obj_seance,\n" +
+            "              attributes attr_seance, objreference ref_seance, attributes attr_ticket,\n" +
+            "              attrtype atype_seance, attrtype atype_ticket\n" +
+            "          where obj_type_seance.code = 'SEANCE'\n" +
+            "              and obj_type_seance.object_type_id = obj_seance.object_type_id\n" +
+            "              and obj_seance.object_id = attr_seance.object_id\n" +
+            "              and attr_seance.attr_id = atype_seance.attr_id\n" +
+            "              and obj_type_ticket.code = 'TICKET'\n" +
+            "              and obj_type_ticket.object_type_id = obj_ticket.object_type_id\n" +
+            "              and obj_ticket.object_id = ref_seance.reference\n" +
+            "              and obj_seance.object_id = ref_seance.object_id\n" +
+            "              and obj_ticket.object_id = attr_ticket.object_id\n" +
+            "              and attr_ticket.attr_id = atype_ticket.attr_id\n" +
+            "              and atype_seance.code = 'DATE'\n" +
+            "              and atype_ticket.code = 'IS_PAID'\n" +
+            "              and to_date(attr_seance.date_value, 'DD-MM-YYYY HH24:MI:SS') < to_date(sysdate - 1/24, 'DD-MM-YYYY HH24:MI:SS')\n" +
+            "              and attr_ticket.value = 'FALSE')";
+
     String SAVE_TICKET = "SELECT Save_Ticket(?, ?, ?, ?, ?, ?, ?) FROM dual";
 
     String SOLD_TICKETS = "SELECT Sold_Tickets(?, ?, ?) FROM dual";

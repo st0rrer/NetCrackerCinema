@@ -20,6 +20,8 @@ public interface TicketDao {
 
     void delete(long ticketId);
 
+    void deleteBlockForOneHour();
+
     long save(Ticket ticket);
 
     int soldTickets(long objId, Date startDate, Date endDate);

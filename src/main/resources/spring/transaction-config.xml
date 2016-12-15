@@ -2,13 +2,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:task="http://www.springframework.org/schema/task"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx.xsd
                            http://www.springframework.org/schema/aop
-                           http://www.springframework.org/schema/aop/spring-aop.xsd">
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/task
+                           http://www.springframework.org/schema/task/spring-task.xsd">
 
     <import resource="classpath:spring/datasource-config.xml"/>
 
@@ -38,4 +41,13 @@
 
     <bean id="placeService" class="com.netcracker.cinema.service.impl.PlaceServiceImpl"></bean>
 
+    <bean id="task" class="com.netcracker.cinema.service.schedule.Task"></bean>
+
+    <task:scheduler id="scheduler"/>
+    <task:scheduled-tasks scheduler="scheduler">
+        <task:scheduled
+                ref="task"
+                method="removeBlockForOneHour"
+                fixed-delay="#{1000*60}"/>
+    </task:scheduled-tasks>
 </beans>
