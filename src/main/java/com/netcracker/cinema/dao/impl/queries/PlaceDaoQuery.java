@@ -73,7 +73,7 @@ public interface PlaceDaoQuery {
                     "NUMBER_ATT.ATTR_ID = 9 AND " +
                     "ROW_ATT.ATTR_ID = 10 AND " +
                     "HALL_REF.ATTR_ID = 11 AND " +
-                    "ZONE_REF.ATTR_ID = 12"+
+                    "ZONE_REF.ATTR_ID = 12 AND"+
                     "HALL_REF.OBJECT_ID = ?";
 
     String FIND_PLACE_BY_ZONE =
@@ -98,7 +98,7 @@ public interface PlaceDaoQuery {
                     "NUMBER_ATT.ATTR_ID = 9 AND " +
                     "ROW_ATT.ATTR_ID = 10 AND " +
                     "HALL_REF.ATTR_ID = 11 AND " +
-                    "ZONE_REF.ATTR_ID = 12"+
+                    "ZONE_REF.ATTR_ID = 12 AND"+
                     "ZONE_REF.OBJECT_ID = ?";
 
 

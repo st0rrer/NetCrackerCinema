@@ -40,17 +40,17 @@ public class PlaceDaoImpl implements PlaceDao {
     }
 
     @Override
-    public Place getByHall(long id) {
-        Place place = jdbcTemplate.queryForObject(FIND_PLACE_BY_HALL, new Object[]{id}, new PlaceRowMapper());
+    public List<Place> getByHall(long id) {
+        List<Place> places = jdbcTemplate.query(FIND_PLACE_BY_HALL, new Object[]{id}, new PlaceRowMapper());
         LOGGER.info("Get place by id: found not null place");
-        return place;
+        return places;
     }
 
     @Override
-    public Place getByZone(long id) {
-        Place place = jdbcTemplate.queryForObject(FIND_PLACE_BY_ZONE, new Object[]{id}, new PlaceRowMapper());
+    public List<Place> getByZone(long id) {
+        List<Place> places = jdbcTemplate.query(FIND_PLACE_BY_ZONE, new Object[]{id}, new PlaceRowMapper());
         LOGGER.info("Get place by id: found not null place");
-        return place;
+        return places;
     }
 
     @Override
