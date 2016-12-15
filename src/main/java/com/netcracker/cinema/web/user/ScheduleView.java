@@ -46,4 +46,5 @@ public class ScheduleView extends GridLayout implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
     }
+
 }
