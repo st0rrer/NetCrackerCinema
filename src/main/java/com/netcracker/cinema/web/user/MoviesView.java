@@ -12,11 +12,14 @@ import com.netcracker.cinema.web.UserUI;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringView(name = MoviesView.VIEW_NAME, ui = UserUI.class)
-public class MoviesView extends GridLayout implements View {
+public class MoviesView extends VerticalLayout implements View {
 
 	@Autowired
 	private MovieService movieService;
@@ -36,6 +39,7 @@ public class MoviesView extends GridLayout implements View {
 			.orderByStartDateAsc()), hallService));
 		}
 	}
+
 	@Override
 	public void enter(ViewChangeEvent event) {
 	}

@@ -54,6 +54,7 @@ class MovieComponent extends HorizontalLayout {
 		root.addComponent(imdb);
 
 		Label duration = new Label("Duration: " + movie.getDuration());
+		root.addComponent(duration);
 
 		Label basePrice = new Label("Estimated price: " + movie.getBasePrice());
 		root.addComponent(basePrice);
