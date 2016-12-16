@@ -10,13 +10,20 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 class MovieComponent extends HorizontalLayout {
-	
+	private Movie movie;
+
 	public MovieComponent(Movie movie, List<Seance> seances, HallService hallService) {
+		this.movie = movie;
+
 		setMargin(true);
 		setSpacing(true);
 		addComponent(createPoster(movie));
 		addComponent(createDetails(movie));
 		addComponent(createSeances(seances, hallService));
+	}
+
+	public Movie getMovie() {
+		return movie;
 	}
 
 	private Component createSeances(List<Seance> seances, HallService hallService) {
@@ -69,4 +76,6 @@ class MovieComponent extends HorizontalLayout {
 		poster.setHeight("300px");
 		return poster;
 	}
+
+
 }
