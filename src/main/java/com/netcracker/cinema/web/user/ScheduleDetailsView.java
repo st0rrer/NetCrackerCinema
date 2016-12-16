@@ -19,7 +19,7 @@ public class ScheduleDetailsView extends CustomComponent implements View {
 
     public static final String VIEW_NAME = "details";
 
-    private static final Logger logger = Logger.getLogger(MovieDetailsView.class);
+    private static final Logger logger = Logger.getLogger(ScheduleDetailsView.class);
 
     @Autowired
     private SeanceService seanceService;

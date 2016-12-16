@@ -53,4 +53,9 @@ public class TicketServiceImpl implements TicketService {
     public int soldTickets(long objId, Date startDate, Date endDate) {
         return ticketDao.soldTickets(objId, startDate, endDate);
     }
+
+    @Override
+    public void deleteBlockForOneHour() {
+        ticketDao.deleteBlockForOneHour();
+    }
 }
