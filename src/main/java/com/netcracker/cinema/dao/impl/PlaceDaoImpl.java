@@ -41,7 +41,7 @@ public class PlaceDaoImpl implements PlaceDao {
 
     @Override
     public List<Place> getByHall(long id) {
-        List<Place> places = jdbcTemplate.query(FIND_PLACE_BY_HALL, new Object[]{id}, new PlaceRowMapper());
+        List<Place> places = jdbcTemplate.query(FIND_PLACE_BY_HALL, new Object[]{id},new PlaceRowMapper());
         LOGGER.info("Get place by id: found not null place");
         return places;
     }
