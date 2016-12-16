@@ -2,8 +2,12 @@ package com.netcracker.cinema.web.user;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
+
+import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Movie;
+import com.netcracker.cinema.service.HallService;
 import com.netcracker.cinema.service.MovieService;
+import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.UserUI;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -16,28 +20,22 @@ public class MoviesView extends GridLayout implements View {
 
 	@Autowired
 	private MovieService movieService;
+	@Autowired
+	private SeanceService seanceService;
+	@Autowired
+	private HallService hallService;
 
 	public static final String VIEW_NAME = "";
-	private final int GRID_COLUMNS = 4;
 
 	@PostConstruct
 	void init() {
 		List<Movie> movies = movieService.findAll();
 
-		setGridSize(movies);
-
 		for(Movie movie: movies) {
-			MovieComponent movieComponent = new MovieComponent(movie);
-			addComponent(movieComponent);
+			addComponent(new MovieComponent(movie, seanceService.findAll(new SeanceFilter().actual().forMovieId(movie.getId())
+			.orderByStartDateAsc()), hallService));
 		}
 	}
-
-	private void setGridSize(List<Movie> movies) {
-		int rows = movies.size() % GRID_COLUMNS + 1;
-		setColumns(GRID_COLUMNS);
-		setRows(rows);
-	}
-
 	@Override
 	public void enter(ViewChangeEvent event) {
 	}
