@@ -4,6 +4,7 @@ import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.service.HallService;
 import com.netcracker.cinema.service.SeanceService;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 import java.util.ArrayList;
@@ -15,13 +16,18 @@ public class MovieListContainer extends VerticalLayout {
     public MovieListContainer(List<Movie> movies, SeanceService seanceService, HallService hallService) {
         movieComponents = new ArrayList<>();
 
-        for(Movie movie: movies) {
-            movieComponents.add(new MovieComponent(movie, seanceService.findAll(new SeanceFilter().actual()
-                    .forMovieId(movie.getId()).orderByStartDateAsc()), hallService));
-        }
+        if(movies.size() != 0) {
+            for (Movie movie : movies) {
+                movieComponents.add(new MovieComponent(movie, seanceService.findAll(new SeanceFilter().actual()
+                        .forMovieId(movie.getId()).orderByStartDateAsc()), hallService));
+            }
 
-        for(MovieComponent movieComponent: movieComponents) {
-            addComponent(movieComponent);
+            for (MovieComponent movieComponent : movieComponents) {
+                addComponent(movieComponent);
+            }
+        } else {
+            Label noData = new Label("Sorry. Movies are not available now");
+            addComponent(noData);
         }
 
         setImmediate(true);

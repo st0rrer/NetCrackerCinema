@@ -39,6 +39,9 @@ class MovieComponent extends HorizontalLayout {
 			Label hall = new Label(hallService.getById(seance.getHallId()).getName());
 			seanceInfo.addComponent(hall);
 
+			seanceInfo.addLayoutClickListener(event -> getUI().getNavigator()
+					.navigateTo(ScheduleDetailsView.VIEW_NAME + "/" + seance.getId()));
+
 			root.addComponent(seanceInfo);
 		}
 
@@ -56,10 +59,10 @@ class MovieComponent extends HorizontalLayout {
 		description.setWidth("500px");
 		root.addComponent(description);
 
-		Label imdb = new Label("IMDB: " + movie.getImdb() / 10);
+		Label imdb = new Label("IMDB: " + (double)movie.getImdb() / 10);
 		root.addComponent(imdb);
 
-		Label duration = new Label("Duration: " + movie.getDuration());
+		Label duration = new Label("Duration: " + movie.getDuration() + " min");
 		root.addComponent(duration);
 
 		Label basePrice = new Label("Estimated price: " + movie.getBasePrice());
