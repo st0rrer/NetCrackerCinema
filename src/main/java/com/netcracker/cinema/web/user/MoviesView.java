@@ -30,7 +30,7 @@ public class MoviesView extends VerticalLayout implements View {
 
 	@PostConstruct
 	void init() {
-		movieListContainer = new MovieListContainer(movieService.findAll(), seanceService, hallService);
+		movieListContainer = new MovieListContainer(movieService.findMoviesWhichHaveSessionsForThisWeek(), seanceService, hallService);
 
 		addComponent(createSortButtons());
 		addComponent(movieListContainer);

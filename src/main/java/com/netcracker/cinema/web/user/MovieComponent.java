@@ -15,7 +15,6 @@ class MovieComponent extends HorizontalLayout {
 	public MovieComponent(Movie movie, List<Seance> seances, HallService hallService) {
 		this.movie = movie;
 
-		setMargin(true);
 		setSpacing(true);
 		addComponent(createPoster(movie));
 		addComponent(createDetails(movie));
