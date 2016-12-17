@@ -207,4 +207,60 @@ public interface MovieDaoQuery {
             "WHEN NOT MATCHED THEN\n" +
             "  INSERT(attr.ATTR_ID, attr.OBJECT_ID, attr.VALUE, attr.DATE_VALUE)\n" +
             "  VALUES(8, NVL(object.OBJECT_ID, GET_OBJ_ID.currval), object.poster, NULL)";
+
+    String FIND_HAVE_ACTUAL_SESSIONS_FOR_THIS_WEEK =
+            "SELECT " +
+                    "MOVIE.OBJECT_ID id" +
+                    ", MOVIE.NAME title" +
+                    ", DESC_ATT.VALUE description" +
+                    ", DUR_ATT.VALUE duration" +
+                    ", IMDB_ATT.VALUE IMDB" +
+                    ", PERIOD_ATT.VALUE periodicity" +
+                    ", BASE_ATT.VALUE basePrice" +
+                    ", RSTART_ATT.DATE_VALUE startDate" +
+                    ", REND_ATT.DATE_VALUE endDate" +
+                    ", POSTER_ATT.VALUE poster \n" +
+            "FROM " +
+                    "OBJECTS MOVIE LEFT JOIN ATTRIBUTES DESC_ATT \n" +
+                        "ON MOVIE.OBJECT_ID = DESC_ATT.OBJECT_ID \n" +
+                    "LEFT JOIN ATTRIBUTES DUR_ATT \n" +
+                        "ON MOVIE.OBJECT_ID = DUR_ATT.OBJECT_ID \n" +
+                    "LEFT JOIN ATTRIBUTES IMDB_ATT \n" +
+                        "ON MOVIE.OBJECT_ID = IMDB_ATT.OBJECT_ID \n" +
+                    "LEFT JOIN ATTRIBUTES PERIOD_ATT \n" +
+                        "ON MOVIE.OBJECT_ID = PERIOD_ATT.OBJECT_ID \n" +
+                    "LEFT JOIN ATTRIBUTES BASE_ATT \n" +
+                        "ON MOVIE.OBJECT_ID = BASE_ATT.OBJECT_ID \n" +
+                    "LEFT JOIN ATTRIBUTES RSTART_ATT \n" +
+                        "ON MOVIE.OBJECT_ID = RSTART_ATT.OBJECT_ID \n" +
+                    "LEFT JOIN ATTRIBUTES REND_ATT \n" +
+                        "ON MOVIE.OBJECT_ID = REND_ATT.OBJECT_ID \n" +
+                    "LEFT JOIN ATTRIBUTES POSTER_ATT \n" +
+                        "ON MOVIE.OBJECT_ID = POSTER_ATT.OBJECT_ID \n" +
+            "WHERE " +
+                    "MOVIE.OBJECT_TYPE_ID = 1 AND " +
+                    "DESC_ATT.ATTR_ID = 1 AND " +
+                    "DUR_ATT.ATTR_ID = 2 AND " +
+                    "IMDB_ATT.ATTR_ID = 3 AND " +
+                    "PERIOD_ATT.ATTR_ID = 4 AND " +
+                    "BASE_ATT.ATTR_ID = 5 AND " +
+                    "RSTART_ATT.ATTR_ID = 6 AND " +
+                    "REND_ATT.ATTR_ID = 7 AND " +
+                    "POSTER_ATT.ATTR_ID = 8 AND " +
+                    "EXISTS(" +
+                        " SELECT " +
+                            " SEANCE.OBJECT_ID " +
+                        " FROM " +
+                            " OBJECTS SEANCE " +
+                            " LEFT JOIN ATTRIBUTES DATE_ATTR" +
+                                " ON  SEANCE.OBJECT_ID = DATE_ATTR.OBJECT_ID " +
+                            " LEFT JOIN OBJREFERENCE SEANCE_MOVIE_REF " +
+                                " ON SEANCE.OBJECT_ID = SEANCE_MOVIE_REF.REFERENCE " +
+                            " WHERE " +
+                                " SEANCE.OBJECT_TYPE_ID = 5 AND " +
+                                " DATE_ATTR.ATTR_ID = 13 AND " +
+                                " SEANCE_MOVIE_REF.ATTR_ID = 14 AND " +
+                                " SEANCE_MOVIE_REF.OBJECT_ID = MOVIE.OBJECT_ID AND " +
+                                " DATE_ATTR.DATE_VALUE BETWEEN SYSDATE AND SYSDATE + 7)";
+
 }

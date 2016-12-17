@@ -38,6 +38,12 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
+    public List<Movie> findMoviesWhichHaveSessionsForThisWeek() {
+        List<Movie> movies = jdbcTemplate.query(FIND_HAVE_ACTUAL_SESSIONS_FOR_THIS_WEEK, new MovieMapper());
+        return movies;
+    }
+
+    @Override
     public Movie getById(long id) {
         Movie movie = jdbcTemplate.queryForObject(FIND_MOVIE_BY_ID, new Object[]{id}, new MovieMapper());
         return movie;

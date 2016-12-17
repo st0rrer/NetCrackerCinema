@@ -2,6 +2,7 @@ package com.netcracker.cinema.web.adminModifyMovie;
 
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.service.MovieService;
+import com.netcracker.cinema.utils.ConfirmationDialog;
 import com.netcracker.cinema.web.AdminUI;
 import com.netcracker.cinema.web.admin.AdminMenu;
 import com.vaadin.annotations.Theme;
@@ -35,7 +36,6 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
 
     @PostConstruct
     protected void init() {
-        //final VerticalLayout layout = new VerticalLayout();
 
         UI ui = UI.getCurrent();
 
@@ -84,7 +84,7 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
         // Button "Add new movie"
         Button addMovieBtn = new Button("Add new movie");
         addMovieBtn.addClickListener(e -> {
-            movieForm.setMovie(new Movie(), subWindow, this, ui);
+            movieForm.setMovie(new Movie(), subWindow, this);
             UI.getCurrent().addWindow(subWindow);
         });
 
@@ -94,10 +94,10 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
             if(!grid.getSelectionModel().getSelectedRows().isEmpty()) {
                 Long temp = ((Movie) grid.getSelectedRow()).getId();
                 Movie movie = movieService.getById(temp);
-                movieForm.setMovie(movie, subWindow, this, ui);
+                movieForm.setMovie(movie, subWindow, this);
                 UI.getCurrent().addWindow(subWindow);
             } else {
-                UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Select the movie"));
+                UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("Select the movie"));
             }
         });
 
@@ -110,7 +110,7 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
                 this.updateList();
                 grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, search(filterText.getValue())));
             } else {
-                UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Select the movie"));
+                UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("Select the movie"));
             }
         });
 
@@ -128,7 +128,6 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
 
         setMargin(true);
         setSpacing(true);
-       // setContent(layout);
     }
 
     public void updateList() {
@@ -160,9 +159,4 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
 
     }
-//
-//    @WebServlet(urlPatterns = "/VAADIN/adminModifyMovieUI/*", name = "adminModifyMovieUiUIServlet", asyncSupported = true)
-//    @VaadinServletConfiguration(ui = ModifyAdminMovieView.class, productionMode = false)
-//    public static class MyUIServlet extends SpringVaadinServlet {
-//    }
 }

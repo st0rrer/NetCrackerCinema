@@ -12,6 +12,8 @@ public interface MovieService {
 
     List<Movie> findAll();
 
+    List<Movie> findMoviesWhichHaveSessionsForThisWeek();
+
     Movie getById(long id);
 
     void save(Movie movie);

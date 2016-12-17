@@ -89,6 +89,11 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
+    public void deleteBlockForOneHour() {
+        jdbcTemplate.update(DELETE_BLOCK_FOR_ONE_HOUR);
+    }
+
+    @Override
     public long save(Ticket ticket) {
         if (ticket == null) {
             LOGGER.info("Ticket == null");

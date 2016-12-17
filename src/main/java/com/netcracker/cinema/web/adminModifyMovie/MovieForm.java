@@ -2,15 +2,16 @@ package com.netcracker.cinema.web.adminModifyMovie;
 
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.service.MovieService;
+import com.netcracker.cinema.utils.ConfirmationDialog;
+import com.netcracker.cinema.validation.MovieUIValidation;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.commons.validator.routines.UrlValidator;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 @SpringComponent
 public class MovieForm extends MovieFormDesign {
@@ -21,7 +22,6 @@ public class MovieForm extends MovieFormDesign {
     private Movie movie;
 
     private ModifyAdminMovieView modifyAdminMovieView;
-    private UI ui;
     private Window window;
 
     public MovieForm() {
@@ -30,26 +30,26 @@ public class MovieForm extends MovieFormDesign {
         super.close.addClickListener(e -> this.close());
     }
 
-    private void initInfo(Movie movie) {
-        movie.setName("");
-        movie.setImdb(0);
-        movie.setDuration(0);
-        movie.setBasePrice(0);
-        movie.setDescription("");
-        movie.setPeriodicity(0);
-        movie.setPoster("");
+    private void initInfo() {
+        name.setNullRepresentation("");
+        imdb.setNullRepresentation("");
+        duration.setNullRepresentation("");
+        basePrice.setNullRepresentation("");
+        description.setNullRepresentation("");
+        periodicity.setNullRepresentation("");
+        poster.setNullRepresentation("");
+        startDate.setTextFieldEnabled(false);
+        endDate.setTextFieldEnabled(false);
     }
 
 
-    public void setMovie(Movie movie, Window window, ModifyAdminMovieView modifyAdminMovieView, UI ui) {
-        this.ui = ui;
+    public void setMovie(Movie movie, Window window, ModifyAdminMovieView modifyAdminMovieView) {
         this.modifyAdminMovieView = modifyAdminMovieView;
         this.window = window;
-        if(movie.getName() == null)
-            initInfo(movie);
+        initInfo();
         this.movie = movie;
         BeanFieldGroup<Movie> movieBeanFieldGroup = BeanFieldGroup.bindFieldsUnbuffered(movie, this);
-        super.name.selectAll();
+        name.selectAll();
     }
 
     private void close() {
@@ -68,65 +68,38 @@ public class MovieForm extends MovieFormDesign {
 
     private boolean isCheck() {
 
-        UrlValidator urlValidator = new UrlValidator();
-        String firstValue = super.poster.getValue();
-        String http = "http://";
-        String https = "https://";
+        ArrayList<String> list = new ArrayList<>();
+        list.add(duration.getValue());
+        list.add(imdb.getValue());
+        list.add(periodicity.getValue());
+        list.add(basePrice.getValue());
 
-        if(firstValue.contains(http) || firstValue.contains(https)) {
-            if(!urlValidator.isValid(firstValue)) {
-                UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Url is not valid: " + super.poster.getValue()));
-                return false;
-            }
-        } else {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Url must contain: " + http + " or " + https));
+        ArrayList<String> empty = new ArrayList<>();
+        empty.addAll(list);
+        empty.add(name.getValue());
+        empty.add(description.getValue());
+        empty.add(poster.getValue());
+
+        MovieUIValidation movieUIValidation = new MovieUIValidation();
+
+        if(movieUIValidation.fieldsAreEmpty(empty)) {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("Please, fill all fields"));
             return false;
         }
 
-        if(!firstValue.contains(".jpg") &&
-                !firstValue.contains(".jpeg") &&
-                !firstValue.contains(".png")) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Format is not correct"));
+        if(!movieUIValidation.isValidUrl(poster.getValue())) {
             return false;
         }
 
-
-        if(super.startDate.isEmpty()
-                || super.endDate.isEmpty()) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Value(s) is empty or isn't correct"));
+        if(!movieUIValidation.isValuesInteger(list)) {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("Value(s) isn't correct"));
             return false;
         }
 
-        if(startDate.getValue().getTime() < new Date().getTime()) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Start date can not be less than the current"));
+        if(!movieUIValidation.isDateValid(startDate.getValue(), endDate.getValue())) {
             return false;
         }
 
-        if(super.endDate.getValue().getTime() < super.startDate.getValue().getTime()) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "\"Start date\" can't be older then the \"End date\""));
-            return false;
-        }
-
-        try {
-            Integer.parseInt(super.duration.getValue());
-            Integer.parseInt(super.imdb.getValue());
-            Integer.parseInt(super.periodicity.getValue());
-            Double.parseDouble(super.basePrice.getValue());
-        } catch (Exception e) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Value(s) isn't correct"));
-            return false;
-        }
-
-        if(super.name.getValue().trim().length() == 0
-                || super.duration.getValue().trim().length() == 0
-                || super.imdb.getValue().trim().length() == 0
-                || super.basePrice.getValue().trim().length() == 0
-                || super.periodicity.getValue().trim().length() == 0
-                || super.poster.getValue().trim().length() == 0
-                || super.description.isEmpty()) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(ui, "Please, fill all fields"));
-            return false;
-        }
         return true;
     }
 }
