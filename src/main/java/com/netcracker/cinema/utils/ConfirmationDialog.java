@@ -1,4 +1,4 @@
-package com.netcracker.cinema.web.adminModifyMovie;
+package com.netcracker.cinema.utils;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
@@ -6,7 +6,7 @@ import com.vaadin.ui.*;
 
 public class ConfirmationDialog {
 
-    public Window infoDialog(UI myUI, String message) {
+    public Window infoDialog(String message) {
         Window subWindow = new Window("Confirmation");
         subWindow.setHeight("225px");
         subWindow.setWidth("300px");
@@ -21,7 +21,7 @@ public class ConfirmationDialog {
         Button button = new Button("OK");
         button.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         button.addClickListener(e -> {
-            myUI.removeWindow(subWindow);
+            UI.getCurrent().removeWindow(subWindow);
         });
         Label label = new Label(message);
 
