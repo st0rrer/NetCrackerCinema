@@ -28,7 +28,7 @@ public class ScheduleView extends GridLayout implements View {
     @PostConstruct
     void init() {
         ScheduleFilterComponent SeanceFilter = new ScheduleFilterComponent();
-        addComponent(SeanceFilter);
+       // addComponent(SeanceFilter);
         List<Seance> seances = seanceService.findAll();
         setGridSize(seances);
         for (Seance seance : seances) {

@@ -15,7 +15,7 @@ public class ScheduleComponent extends VerticalLayout {
         setMargin(true);
         addPoster(seances, movieService);
         addSeanceAttributes(seances, movieService);
-        addLayoutClickListener(event -> getUI().getNavigator().navigateTo(ScheduleDetailsView.VIEW_NAME + "/" + seances.getId()));
+        addLayoutClickListener(event -> getUI().getNavigator().navigateTo(HallDetailsView.VIEW_NAME + "/" + seances.getId()));
     }
 
     private void addSeanceAttributes(Seance seance, MovieService movieService) {
