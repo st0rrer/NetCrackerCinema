@@ -4,6 +4,7 @@ import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,6 +69,6 @@ class ScheduleFilterComponent extends CustomComponent {
         String hallFilter = (String) selectHall.getValue();
         String dateFilter = (String) selectDate.getValue();
         Date today = new Date();
-       // seanceFilter = new SeanceFilter().forHallId(Integer.parseInt(hallFilter)).forDateRange(new Date(today.getTime() + (1000 * 60 * 60 * 24)));
+        seanceFilter = new SeanceFilter().forHallId(Integer.parseInt(hallFilter)).forDateRange(new Date(), DateUtils.addDays(new Date(), 1));
     }
 }

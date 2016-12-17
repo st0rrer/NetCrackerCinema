@@ -30,6 +30,11 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public List<Movie> findMoviesWhichHaveSessionsForThisWeek() {
+        return movieDao.findMoviesWhichHaveSessionsForThisWeek();
+    }
+
+    @Override
     public Movie getById(long id) {
         return movieDao.getById(id);
     }
