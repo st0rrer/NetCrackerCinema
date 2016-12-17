@@ -7,6 +7,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.log4j.Logger;
@@ -18,6 +19,7 @@ import java.util.Iterator;
 /**
  * Created by dimka on 01.12.2016.
  */
+@UIScope
 @SpringView(name = PaymentView.VIEW_NAME, ui = CashierUI.class)
 public class PaymentView extends VerticalLayout implements View {
 
@@ -71,7 +73,6 @@ public class PaymentView extends VerticalLayout implements View {
         areaForTicketsTable.setMargin(true);
         areaForTicketsTable.setSizeFull();
         areaForTicketsTable.addComponents(ticketsTable, ticketsTable.getButtonsForTicketsTable());
-        areaForTicketsTable.setComponentAlignment(ticketsTable, Alignment.BOTTOM_CENTER);
 
         addComponent(areaForTicketsTable);
     }

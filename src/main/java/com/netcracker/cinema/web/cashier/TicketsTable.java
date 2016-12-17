@@ -62,14 +62,6 @@ public class TicketsTable extends Grid {
         buttonsForTicketsTable = new HorizontalLayout();
         sellTickets = new Button("Sell tickets");
         printTickets = new Button("Print tickets");
-        printTickets.setEnabled(false);
-
-        for(Object ticket : this.getContainerDataSource().getItemIds()) {
-            if(((Ticket) ticket).isPaid() == true) {
-                printTickets.setEnabled(true);
-                break;
-            }
-        }
 
         printTickets.addClickListener(event -> {
             clickPrintTickets();
@@ -125,6 +117,16 @@ public class TicketsTable extends Grid {
         if(codeTicket != null) {
 
             tickets = ticketService.getTicketsByCode(codeTicket);
+            if(tickets.isEmpty()) {
+                Notification.show("Tickets don't exist by this code!", Notification.Type.WARNING_MESSAGE);
+                this.setVisible(false);
+                sellTickets.setVisible(false);
+                printTickets.setVisible(false);
+            } else {
+                this.setVisible(true);
+                sellTickets.setVisible(true);
+                printTickets.setVisible(true);
+            }
             BeanItemContainer<Ticket> ticketsContainer = new BeanItemContainer<>(Ticket.class, tickets);
 
             GeneratedPropertyContainer ticketsGeneratedContainer = new GeneratedPropertyContainer(ticketsContainer);
@@ -158,6 +160,15 @@ public class TicketsTable extends Grid {
                     return String.class;
                 }
             });
+
+            for(Object ticket : this.getContainerDataSource().getItemIds()) {
+                if(((Ticket) ticket).isPaid() == true) {
+                    printTickets.setEnabled(true);
+                    break;
+                } else {
+                    printTickets.setEnabled(false);
+                }
+            }
 
             this.setContainerDataSource(ticketsGeneratedContainer);
             this.setColumnOrder("code", "Seance", "Place", "price", "email", "paid", "id");
@@ -195,6 +206,7 @@ public class TicketsTable extends Grid {
                         ticketService.deleteById(ticket.getId());
                     }
                 }
+
                 updateList();
                 printTickets.setEnabled(true);
                 getUI().removeWindow(this);
