@@ -3,6 +3,7 @@ package com.netcracker.cinema.web.user;
 import com.netcracker.cinema.model.Hall;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.HallService;
+import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.PlaceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.UserUI;
@@ -26,6 +27,9 @@ public class HallDetailsView extends CustomComponent implements View {
 
     @Autowired
     private SeanceService seanceService;
+
+    @Autowired
+    private MovieService movieService;
 
     @Autowired
     private HallService hallService;
@@ -72,6 +76,6 @@ public class HallDetailsView extends CustomComponent implements View {
             return;
         }
 
-        setCompositionRoot(new HallView(hall, placeService));
+        setCompositionRoot(new HallView(hall, placeService, seance, movieService));
     }
 }
