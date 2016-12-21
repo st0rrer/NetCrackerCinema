@@ -4,6 +4,7 @@ import com.netcracker.cinema.dao.TicketDao;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import java.sql.Date;
 import java.util.List;
@@ -30,8 +31,20 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> getBySeanceOrPlace(long id) {
-        return ticketDao.getBySeanceOrPlace(id);
+    public boolean isAlreadyBookedTicket(long seanceId, long placeId) {
+        try {
+            if(ticketDao.getBySeanceAndPlace(seanceId, placeId) != null) {
+                return true;
+            }
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public List<Ticket> getBySeance(long seanceId) {
+        return ticketDao.getBySeance(seanceId);
     }
 
     @Override

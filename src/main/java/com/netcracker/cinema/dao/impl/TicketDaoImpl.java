@@ -23,8 +23,6 @@ import static com.netcracker.cinema.dao.impl.queries.TicketDaoQuery.*;
  */
 @Repository
 public class TicketDaoImpl implements TicketDao {
-    private List<Ticket> list;
-
     private static final Logger LOGGER = Logger.getLogger(TicketDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
 
@@ -35,31 +33,31 @@ public class TicketDaoImpl implements TicketDao {
 
     @Override
     public List<Ticket> findAll() {
-        list = jdbcTemplate.query(FIND_ALL_TICKETS, new TicketMapper());
-        LOGGER.info("There are " + list.size() + " tickets in DB");
-        return list;
+        List<Ticket> tickets = jdbcTemplate.query(FIND_ALL_TICKETS, new TicketMapper());
+        LOGGER.info("There are " + tickets.size() + " tickets in DB");
+        return tickets;
     }
 
     @Override
     public List<Ticket> getTicketsByCode(long code) {
         if (code > 0) {
-            list = jdbcTemplate.query(FIND_TICKETS_BY_CODE, new TicketMapper(), code);
+            List<Ticket> tickets = jdbcTemplate.query(FIND_TICKETS_BY_CODE, new TicketMapper(), code);
+            LOGGER.info("There are found " + tickets.size() + " tickets with code = " + code);
+            return tickets;
         } else {
-            list = Collections.emptyList();
+            return Collections.emptyList();
         }
-        LOGGER.info("There are found " + list.size() + " tickets with code = " + code);
-        return list;
+
     }
 
     @Override
-    public List<Ticket> getBySeanceOrPlace(long id) {
-        if (id > 0) {
-            list = jdbcTemplate.query(FIND_TICKET_BY_SEANCE_OR_PLACE, new TicketMapper(), id);
-        } else {
-            list = Collections.emptyList();
-        }
-        LOGGER.info(list.size() + " tickets found for seance or place with id = " + id);
-        return list;
+    public Ticket getBySeanceAndPlace(long seanceId, long placeId) {
+        return jdbcTemplate.queryForObject(FIND_TICKET_BY_SEANCE_AND_PLACE, new TicketMapper(), seanceId, placeId);
+    }
+
+    @Override
+    public List<Ticket> getBySeance(long seanceId) {
+        return jdbcTemplate.query(FIND_TICKET_BY_SEANCE, new TicketMapper(), seanceId);
     }
 
     @Override
