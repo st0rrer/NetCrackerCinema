@@ -6,13 +6,11 @@ import com.netcracker.cinema.model.Zone;
 import com.netcracker.cinema.service.PlaceService;
 import com.netcracker.cinema.service.TicketService;
 import com.netcracker.cinema.service.ZoneService;
-import com.vaadin.shared.EventId;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -85,8 +83,10 @@ public class TicketSelect extends GridLayout {
             this.selected = false;
 
             Zone ticketZone = zoneService.getById(place.getZoneId());
-            setCaption(ticketZone.getName());
+            setCaption(ticketZone.getName() + " " + place.getRowNumber() + " " + place.getNumber());
+            //todo: maybe better use own css styles
             setStyleName("primary");
+            setWidth("100px");
 
             if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
                 setEnabled(false);
