@@ -14,6 +14,8 @@ public interface TicketService {
 
     boolean isAlreadyBookedTicket(long seanceId, long placeId);
 
+    List<Ticket> getBySeance(long seanceId);
+
     List<Ticket> getTicketsByCode(long code);
 
     Ticket getById(long id);

@@ -62,7 +62,7 @@ public class SeanceServiceImpl implements SeanceService {
 
     @Override
     public boolean editableSeance(long id) {
-        List<Ticket> list = ticketService.getBySeanceOrPlace(id);
+        List<Ticket> list = ticketService.getBySeance(id);
         if(list.size() > 0){
             return false;
         }

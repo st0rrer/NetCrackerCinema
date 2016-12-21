@@ -43,6 +43,11 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public List<Ticket> getBySeance(long seanceId) {
+        return ticketDao.getBySeance(seanceId);
+    }
+
+    @Override
     public Ticket getById(long ticketId) {
         return ticketDao.get(ticketId);
     }

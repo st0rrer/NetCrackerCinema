@@ -56,6 +56,11 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
+    public List<Ticket> getBySeance(long seanceId) {
+        return jdbcTemplate.query(FIND_TICKET_BY_SEANCE, new TicketMapper(), seanceId);
+    }
+
+    @Override
     public Ticket get(long ticketId) {
         Ticket ticket = null;
         if (ticketId < 1) {

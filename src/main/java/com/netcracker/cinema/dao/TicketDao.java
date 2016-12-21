@@ -16,6 +16,8 @@ public interface TicketDao {
 
     Ticket getBySeanceAndPlace(long seanceId, long placeId);
 
+    List<Ticket> getBySeance(long seanceId);
+
     Ticket get(long ticketId);
 
     void delete(long ticketId);
