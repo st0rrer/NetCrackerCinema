@@ -74,7 +74,8 @@ public interface PlaceDaoQuery {
                     "ROW_ATT.ATTR_ID = 10 AND " +
                     "HALL_REF.ATTR_ID = 11 AND " +
                     "ZONE_REF.ATTR_ID = 12 AND "+
-                    "HALL_REF.OBJECT_ID = ?";
+                    "HALL_REF.OBJECT_ID = ? " +
+                    "ORDER BY NUMBER_ATT.VALUE, ROW_ATT.VALUE";
 
 
     String FIND_PLACE_BY_ZONE =

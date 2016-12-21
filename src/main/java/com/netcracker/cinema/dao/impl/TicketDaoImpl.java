@@ -23,8 +23,6 @@ import static com.netcracker.cinema.dao.impl.queries.TicketDaoQuery.*;
  */
 @Repository
 public class TicketDaoImpl implements TicketDao {
-    private List<Ticket> list;
-
     private static final Logger LOGGER = Logger.getLogger(TicketDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
 
@@ -35,20 +33,21 @@ public class TicketDaoImpl implements TicketDao {
 
     @Override
     public List<Ticket> findAll() {
-        list = jdbcTemplate.query(FIND_ALL_TICKETS, new TicketMapper());
-        LOGGER.info("There are " + list.size() + " tickets in DB");
-        return list;
+        List<Ticket> tickets = jdbcTemplate.query(FIND_ALL_TICKETS, new TicketMapper());
+        LOGGER.info("There are " + tickets.size() + " tickets in DB");
+        return tickets;
     }
 
     @Override
     public List<Ticket> getTicketsByCode(long code) {
         if (code > 0) {
-            list = jdbcTemplate.query(FIND_TICKETS_BY_CODE, new TicketMapper(), code);
+            List<Ticket> tickets = jdbcTemplate.query(FIND_TICKETS_BY_CODE, new TicketMapper(), code);
+            LOGGER.info("There are found " + tickets.size() + " tickets with code = " + code);
+            return tickets;
         } else {
-            list = Collections.emptyList();
+            return Collections.emptyList();
         }
-        LOGGER.info("There are found " + list.size() + " tickets with code = " + code);
-        return list;
+
     }
 
     @Override
