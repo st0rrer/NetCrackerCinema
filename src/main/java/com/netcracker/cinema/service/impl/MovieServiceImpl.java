@@ -65,7 +65,7 @@ public class MovieServiceImpl implements MovieService {
         int i = 0;
         for(Seance seance: list){
             if(i > 0) break;
-           List<Ticket> tickets = ticketService.getBySeanceOrPlace(seance.getId());
+           List<Ticket> tickets = ticketService.getBySeance(seance.getId());
             i += tickets.size();
         }
         if(i > 0) {
