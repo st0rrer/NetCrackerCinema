@@ -3,8 +3,10 @@ package com.netcracker.cinema.service.impl;
 import com.netcracker.cinema.dao.SeanceDao;
 import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Seance;
+import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.dao.Paginator;
+import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,8 @@ import java.util.List;
 public class SeanceServiceImpl implements SeanceService {
 
     private SeanceDao seanceDao;
+    @Autowired
+    private TicketService ticketService;
 
     @Autowired
     public SeanceServiceImpl(SeanceDao seanceDao) {
@@ -55,4 +59,17 @@ public class SeanceServiceImpl implements SeanceService {
     public Paginator<Seance> getPaginator(int pageSize, SeanceFilter filter) {
         return seanceDao.getPaginator(pageSize, filter);
     }
+
+    @Override
+    public boolean editableSeance(long id) {
+        List<Ticket> list = ticketService.getBySeanceOrPlace(id);
+        if(list.size() > 0){
+            return false;
+        }
+        else{
+            return  true;
+        }
+    }
+
+
 }
