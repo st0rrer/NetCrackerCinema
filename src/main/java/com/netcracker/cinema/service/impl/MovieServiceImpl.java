@@ -1,8 +1,13 @@
 package com.netcracker.cinema.service.impl;
 
 import com.netcracker.cinema.dao.MovieDao;
+import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Movie;
+import com.netcracker.cinema.model.Seance;
+import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.MovieService;
+import com.netcracker.cinema.service.SeanceService;
+import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -18,6 +23,10 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService {
 
     private MovieDao movieDao;
+    @Autowired
+    private SeanceService seanceService;
+    @Autowired
+    TicketService ticketService;
 
     @Autowired
     MovieServiceImpl(MovieDao movieDao) {
@@ -48,5 +57,25 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void delete(Movie movie) {
         movieDao.delete(movie);
+    }
+
+    @Override
+    public boolean editableMovie(long id) {
+        List<Seance> list = seanceService.findAll(new SeanceFilter().forMovieId(id));
+        int i = 0;
+        for(Seance seance: list){
+            if(i > 0) break;
+           List<Ticket> tickets = ticketService.getBySeanceOrPlace(seance.getId());
+            i += tickets.size();
+        }
+
+        if(i > 0) {
+            System.out.println("Билетов -" + i);
+            return false;
+        }
+        else {
+            System.out.println("Билетов -" + i);
+            return true;
+        }
     }
 }
