@@ -61,20 +61,17 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public boolean editableMovie(long id) {
-        List<Seance> list = seanceService.findAll(new SeanceFilter().forMovieId(id));
+        List<Seance> list = seanceService.findAll(new SeanceFilter().forMovieId(id).actual());
         int i = 0;
         for(Seance seance: list){
             if(i > 0) break;
            List<Ticket> tickets = ticketService.getBySeanceOrPlace(seance.getId());
             i += tickets.size();
         }
-
         if(i > 0) {
-            System.out.println("Билетов -" + i);
             return false;
         }
         else {
-            System.out.println("Билетов -" + i);
             return true;
         }
     }
