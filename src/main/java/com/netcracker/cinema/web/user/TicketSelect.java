@@ -11,6 +11,7 @@ import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class TicketSelect extends GridLayout {
         List<Place> places = placeService.getByHall(seance.getHallId());
         placeButtons = new ArrayList<>(places.size());
         adjustGridSize(places);
-        for(Place place: places) {
+        for (Place place : places) {
             PlaceButton placeButton = new PlaceButton(place);
             placeButtons.add(placeButton);
             addComponent(placeButton);
@@ -42,8 +43,8 @@ public class TicketSelect extends GridLayout {
 
     public List<Place> getSelectedPlaces() {
         List<Place> selectedPlaces = new ArrayList<>();
-        for(PlaceButton placeButton: placeButtons) {
-            if(placeButton.isSelected())
+        for (PlaceButton placeButton : placeButtons) {
+            if (placeButton.isSelected())
                 selectedPlaces.add(placeButton.getPlace());
         }
         return selectedPlaces;
@@ -51,11 +52,11 @@ public class TicketSelect extends GridLayout {
 
     private void adjustGridSize(List<Place> places) {
         int rows = 0, columns = 0;
-        for (Place place: places) {
-            if(place.getNumber() > columns) {
+        for (Place place : places) {
+            if (place.getNumber() > columns) {
                 columns = place.getNumber();
             }
-            if(place.getRowNumber() > rows) {
+            if (place.getRowNumber() > rows) {
                 rows = place.getRowNumber();
             }
         }
@@ -72,16 +73,16 @@ public class TicketSelect extends GridLayout {
             this.selected = false;
 
             Zone ticketZone = zoneService.getById(place.getZoneId());
-            setCaption(ticketZone.getName() + "R" +  place.getRowNumber() + "C" + place.getNumber());
+            setCaption(ticketZone.getName() + "R" + place.getRowNumber() + "C" + place.getNumber());
             setStyleName("primary");
 
-            if(ticketService.isAlreadyTicket(seance.getId(), place.getId())) {
+            if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
                 setEnabled(false);
             }
 
             addClickListener((ClickListener) event -> {
                 selected = !selected;
-                if(selected) {
+                if (selected) {
                     setStyleName("danger");
                 } else {
                     setStyleName("primary");
