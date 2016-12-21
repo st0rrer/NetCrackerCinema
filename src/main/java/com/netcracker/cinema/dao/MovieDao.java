@@ -11,7 +11,7 @@ public interface MovieDao {
 
     List<Movie> findAll();
 
-    List<Movie> findMoviesWhichHaveSessionsForThisWeek();
+    List<Movie> findWhereRollingPeriodWasStarted();
 
     Movie getById(long id);
 
