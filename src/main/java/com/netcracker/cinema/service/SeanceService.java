@@ -15,4 +15,5 @@ public interface SeanceService {
     void save(Seance seance);
     Paginator<Seance> getPaginator(int pageSize);
     Paginator<Seance> getPaginator(int pageSize, SeanceFilter seanceFilter);
+    boolean editableSeance(long id);
 }

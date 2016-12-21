@@ -23,7 +23,7 @@ import static com.netcracker.cinema.dao.impl.queries.TicketDaoQuery.*;
  */
 @Repository
 public class TicketDaoImpl implements TicketDao {
-    private List<Ticket> list = Collections.emptyList();
+    private List<Ticket> list;
 
     private static final Logger LOGGER = Logger.getLogger(TicketDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
@@ -36,17 +36,19 @@ public class TicketDaoImpl implements TicketDao {
     @Override
     public List<Ticket> findAll() {
         list = jdbcTemplate.query(FIND_ALL_TICKETS, new TicketMapper());
-        if (list.size() < 1) {
-            LOGGER.info("There are no any tickets in DB");
-        }
+        LOGGER.info("There are " + list.size() + " tickets in DB");
         return list;
     }
 
     @Override
     public List<Ticket> getTicketsByCode(long code) {
-        List<Ticket> ticketsByCode = jdbcTemplate.query(FIND_TICKETS_BY_CODE, new TicketMapper(), String.valueOf(code));
-        LOGGER.info("Find all tickets by code " + code + " : found " + ticketsByCode.size() + " ticket objects");
-        return ticketsByCode;
+        if (code > 0) {
+            list = jdbcTemplate.query(FIND_TICKETS_BY_CODE, new TicketMapper(), code);
+        } else {
+            list = Collections.emptyList();
+        }
+        LOGGER.info("There are found " + list.size() + " tickets with code = " + code);
+        return list;
     }
 
     @Override
@@ -56,18 +58,17 @@ public class TicketDaoImpl implements TicketDao {
 
     @Override
     public Ticket get(long ticketId) {
+        Ticket ticket = null;
         if (ticketId < 1) {
             LOGGER.info("Id should be > 0");
-            return null;
         } else {
-            Ticket ticket = null;
             try {
                 ticket = jdbcTemplate.queryForObject(FIND_TICKET_BY_ID, new TicketMapper(), ticketId);
             } catch (EmptyResultDataAccessException e) {
                 LOGGER.error("Id is not exist for tickets", e);
             }
-            return ticket;
         }
+        return ticket;
     }
 
     @Override
@@ -87,27 +88,30 @@ public class TicketDaoImpl implements TicketDao {
 
     @Override
     public long save(Ticket ticket) {
+        long ticketId;
         if (ticket == null) {
             LOGGER.info("Ticket == null");
-            return 0;
+            ticketId = 0;
         } else {
             Object[] arrayOfFields = new Object[]{ticket.getId(), ticket.getCode(),
                     ticket.getEmail(), ticket.getPrice(), (ticket.isPaid() + "").toUpperCase(),
                     ticket.getSeanceId(), ticket.getPlaceId()};
             LOGGER.info("Saving ticket: " + ticket);
-            return jdbcTemplate.queryForObject(
-                    SAVE_TICKET, long.class, arrayOfFields);
+            ticketId = jdbcTemplate.queryForObject(SAVE_TICKET, long.class, arrayOfFields);
         }
+        return ticketId;
     }
 
     @Override
     public int soldTickets(long objId, Date startDate, Date endDate) {
         if ((objId < 1) || (startDate.after(endDate))) {
-            LOGGER.info("Id should be > 0");
-            return 0;
+            LOGGER.info("Id should be > 0 and startDate before endDate");
+            return -1;
         } else {
-            return jdbcTemplate.queryForObject(
+            int count = jdbcTemplate.queryForObject(
                     SOLD_TICKETS, int.class, objId, startDate, endDate);
+            LOGGER.info("For id = " + objId + " sold " + count + " tickets");
+            return count;
         }
     }
 
