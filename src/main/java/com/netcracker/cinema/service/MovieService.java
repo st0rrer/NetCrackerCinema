@@ -19,4 +19,6 @@ public interface MovieService {
     void save(Movie movie);
 
     void delete(Movie movie);
+
+    boolean editableMovie(long id);
 }
