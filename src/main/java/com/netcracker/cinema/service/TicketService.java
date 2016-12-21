@@ -12,12 +12,7 @@ public interface TicketService {
 
     List<Ticket> findAll();
 
-    /**
-     * @param id - id of seance or place
-     * @return list of tickets which have references
-     *    with seance or place in table objreference
-     */
-    List<Ticket> getBySeanceOrPlace(long id);
+    boolean isAlreadyBookedTicket(long seanceId, long placeId);
 
     List<Ticket> getTicketsByCode(long code);
 

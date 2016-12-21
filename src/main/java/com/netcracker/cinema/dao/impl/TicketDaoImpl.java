@@ -50,16 +50,8 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public List<Ticket> getBySeanceOrPlace(long id) {
-        if (id > 0) {
-            list = jdbcTemplate.query(FIND_TICKET_BY_SEANCE_OR_PLACE, new TicketMapper(), id);
-        }
-        if (list.size() < 1) {
-            LOGGER.info("There are no tickets for seance or place with id = " + id);
-        } else {
-            LOGGER.info("There are + " + list.size() + " tickets for id = " + id);
-        }
-        return list;
+    public Ticket getBySeanceAndPlace(long seanceId, long placeId) {
+        return jdbcTemplate.queryForObject(FIND_TICKET_BY_SEANCE_AND_PLACE, new TicketMapper(), seanceId, placeId);
     }
 
     @Override

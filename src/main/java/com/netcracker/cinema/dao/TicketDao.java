@@ -14,7 +14,7 @@ public interface TicketDao {
 
     List<Ticket> getTicketsByCode(long code);
 
-    List<Ticket> getBySeanceOrPlace(long id);
+    Ticket getBySeanceAndPlace(long seanceId, long placeId);
 
     Ticket get(long ticketId);
 
