@@ -6,6 +6,7 @@ import com.netcracker.cinema.model.Zone;
 import com.netcracker.cinema.service.PlaceService;
 import com.netcracker.cinema.service.TicketService;
 import com.netcracker.cinema.service.ZoneService;
+import com.vaadin.shared.EventId;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.Button;
@@ -13,7 +14,9 @@ import com.vaadin.ui.GridLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @SpringComponent
 @ViewScope
@@ -26,18 +29,19 @@ public class TicketSelect extends GridLayout {
     private ZoneService zoneService;
 
     private Seance seance;
-
     private List<PlaceButton> placeButtons;
+    private Set<PlaceSelectedListener> listeners;
 
     public void buildForThisSeance(Seance seance) {
         this.seance = seance;
+        listeners = new HashSet<>();
         List<Place> places = placeService.getByHall(seance.getHallId());
         placeButtons = new ArrayList<>(places.size());
         adjustGridSize(places);
         for (Place place : places) {
             PlaceButton placeButton = new PlaceButton(place);
             placeButtons.add(placeButton);
-            addComponent(placeButton);
+            addComponent(placeButton, place.getNumber() - 1, place.getRowNumber() - 1);
         }
     }
 
@@ -48,6 +52,14 @@ public class TicketSelect extends GridLayout {
                 selectedPlaces.add(placeButton.getPlace());
         }
         return selectedPlaces;
+    }
+
+    public void addPlaceSelectedListener(PlaceSelectedListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removePlaceSelectedListener(PlaceSelectedListener listener) {
+        listeners.remove(listener);
     }
 
     private void adjustGridSize(List<Place> places) {
@@ -73,7 +85,7 @@ public class TicketSelect extends GridLayout {
             this.selected = false;
 
             Zone ticketZone = zoneService.getById(place.getZoneId());
-            setCaption(ticketZone.getName() + "R" + place.getRowNumber() + "C" + place.getNumber());
+            setCaption(ticketZone.getName());
             setStyleName("primary");
 
             if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
@@ -87,6 +99,10 @@ public class TicketSelect extends GridLayout {
                 } else {
                     setStyleName("primary");
                 }
+
+                for(PlaceSelectedListener placeSelectedListener: listeners) {
+                    placeSelectedListener.placeClicked(place, selected);
+                }
             });
         }
 
@@ -97,5 +113,9 @@ public class TicketSelect extends GridLayout {
         public boolean isSelected() {
             return selected;
         }
+    }
+
+    public interface PlaceSelectedListener {
+        void placeClicked(Place place, boolean selected);
     }
 }
