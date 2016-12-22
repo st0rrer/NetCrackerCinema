@@ -2,14 +2,17 @@ package com.netcracker.cinema.service.impl;
 
 import com.netcracker.cinema.dao.SeanceDao;
 import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
+import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Ticket;
+import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.dao.Paginator;
 import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 //TODO: need to think about transactional
@@ -18,6 +21,8 @@ public class SeanceServiceImpl implements SeanceService {
     private SeanceDao seanceDao;
     @Autowired
     private TicketService ticketService;
+    @Autowired
+    private MovieService movieService;
 
     @Autowired
     public SeanceServiceImpl(SeanceDao seanceDao) {
@@ -63,13 +68,15 @@ public class SeanceServiceImpl implements SeanceService {
     @Override
     public boolean editableSeance(long id) {
         List<Ticket> list = ticketService.getBySeance(id);
-        if(list.size() > 0){
-            return false;
-        }
-        else{
-            return  true;
-        }
+        return !(list.size()> 0);
     }
 
+    @Override
+    public boolean checkDate(long filmId, long seanceId) {
+        Movie movie = movieService.getById(filmId);
+        if(seanceDao.getById(seanceId).getSeanceDate().compareTo(movie.getStartDate()) >= 0){
+            return true;
+        } else return false;
+    }
 
 }
