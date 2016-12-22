@@ -103,7 +103,7 @@ public class HallDetailsView extends VerticalLayout implements View {
         addComponent(date);
         Label time = new Label("Time: " + timeFormat.format(seance.getSeanceDate()));
         addComponent(time);
-        Label hall = new Label("Hall: " + seance.getHallId());
+        Label hall = new Label("Hall: " + hallService.getById(seance.getHallId()).getName());
         addComponent(hall);
     }
 }
