@@ -39,8 +39,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<Movie> findMoviesWhichHaveSessionsForThisWeek() {
-        return movieDao.findMoviesWhichHaveSessionsForThisWeek();
+    public List<Movie> findWhereRollingPeriodWasStarted() {
+        return movieDao.findWhereRollingPeriodWasStarted();
     }
 
     @Override
@@ -68,11 +68,6 @@ public class MovieServiceImpl implements MovieService {
            List<Ticket> tickets = ticketService.getBySeance(seance.getId());
             i += tickets.size();
         }
-        if(i > 0) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return i > 0;
     }
 }

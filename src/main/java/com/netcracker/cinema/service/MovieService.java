@@ -12,7 +12,7 @@ public interface MovieService {
 
     List<Movie> findAll();
 
-    List<Movie> findMoviesWhichHaveSessionsForThisWeek();
+    List<Movie> findWhereRollingPeriodWasStarted();
 
     Movie getById(long id);
 

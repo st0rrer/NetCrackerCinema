@@ -38,8 +38,8 @@ public class MovieDaoImpl implements MovieDao {
     }
 
     @Override
-    public List<Movie> findMoviesWhichHaveSessionsForThisWeek() {
-        List<Movie> movies = jdbcTemplate.query(FIND_HAVE_ACTUAL_SESSIONS_FOR_THIS_WEEK, new MovieMapper());
+    public List<Movie> findWhereRollingPeriodWasStarted() {
+        List<Movie> movies = jdbcTemplate.query(FIND_WHERE_ROLLING_PERIOD_WAS_STARTED, new MovieMapper());
         return movies;
     }
 

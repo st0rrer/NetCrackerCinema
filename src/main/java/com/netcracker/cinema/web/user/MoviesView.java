@@ -1,16 +1,12 @@
 package com.netcracker.cinema.web.user;
 
-import com.netcracker.cinema.service.HallService;
 import com.netcracker.cinema.service.MovieService;
-import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.UserUI;
 import com.vaadin.data.Property;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -21,16 +17,13 @@ public class MoviesView extends VerticalLayout implements View {
 	@Autowired
 	private MovieService movieService;
 	@Autowired
-	private SeanceService seanceService;
-	@Autowired
-	private HallService hallService;
 	private MovieListContainer movieListContainer;
 
 	public static final String VIEW_NAME = "";
 
 	@PostConstruct
 	void init() {
-		movieListContainer = new MovieListContainer(movieService.findMoviesWhichHaveSessionsForThisWeek(), seanceService, hallService);
+		movieListContainer.buildForMovies(movieService.findWhereRollingPeriodWasStarted());
 
 		addComponent(createSortButtons());
 		addComponent(movieListContainer);
@@ -43,8 +36,9 @@ public class MoviesView extends VerticalLayout implements View {
 	public void enter(ViewChangeEvent event) {
 	}
 
+
 	private Component createSortButtons() {
-		NativeSelect selector = new NativeSelect("Order by: ");
+		NativeSelect selector = new NativeSelect("Sort by");
 		selector.addItem("IMDB");
 		selector.addItem("Price");
 
