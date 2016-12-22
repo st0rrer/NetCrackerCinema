@@ -4,22 +4,24 @@ import com.netcracker.cinema.model.Hall;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.HallService;
 import com.netcracker.cinema.service.MovieService;
-import com.netcracker.cinema.service.PlaceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.UserUI;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
 
 @SpringView(name = HallDetailsView.VIEW_NAME, ui = UserUI.class)
-public class HallDetailsView extends CustomComponent implements View {
+public class HallDetailsView extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "details";
 
@@ -35,10 +37,11 @@ public class HallDetailsView extends CustomComponent implements View {
     private HallService hallService;
 
     @Autowired
-    private PlaceService placeService;
+    private TicketSelect ticketSelect;
 
     @PostConstruct
     public void init() {
+
     }
 
     @Override
@@ -58,7 +61,7 @@ public class HallDetailsView extends CustomComponent implements View {
             seance = seanceService.getById(seanceId);
         } catch (EmptyResultDataAccessException e) {
             logger.info("Can't find seance with this id " + seanceId, e);
-            setCompositionRoot(new Label("Can't find seance with this id " + seanceId));
+            addComponent(new Label("Can't find seance with this id " + seanceId));
             return;
         }
         try {
@@ -72,10 +75,35 @@ public class HallDetailsView extends CustomComponent implements View {
             hall = hallService.getById(hallId);
         } catch (EmptyResultDataAccessException e) {
             logger.info("Can't find hall with this id " + hallId, e);
-            setCompositionRoot(new Label("Can't find seance with this id " + hallId));
+            addComponent(new Label("Can't find seance with this id " + hallId));
             return;
         }
+        setMargin(true);
+        setSpacing(true);
+        addPoster(seance);
+        addSeanceAttributes(seance);
+        ticketSelect.buildForThisSeance(seance);
+        addComponent(ticketSelect);
+    }
 
-        setCompositionRoot(new HallView(hall, placeService, seance, movieService));
+    private void addPoster(Seance seance) {
+        ExternalResource resource = new ExternalResource(movieService.getById(seance.getMovieId()).getPoster());
+        Image poster = new Image(null, resource);
+        poster.setHeight("250px");
+        poster.setWidth("175px");
+        addComponent(poster);
+    }
+
+    private void addSeanceAttributes(Seance seance) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        Label name = new Label(movieService.getById(seance.getMovieId()).getName());
+        addComponent(name);
+        Label date = new Label("Date: " + dateFormat.format(seance.getSeanceDate()));
+        addComponent(date);
+        Label time = new Label("Time: " + timeFormat.format(seance.getSeanceDate()));
+        addComponent(time);
+        Label hall = new Label("Hall: " + seance.getHallId());
+        addComponent(hall);
     }
 }
