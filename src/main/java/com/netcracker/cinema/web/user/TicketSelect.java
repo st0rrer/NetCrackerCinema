@@ -2,16 +2,16 @@ package com.netcracker.cinema.web.user;
 
 import com.netcracker.cinema.model.Place;
 import com.netcracker.cinema.model.Seance;
-import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.model.Zone;
 import com.netcracker.cinema.service.PlaceService;
-import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.TicketService;
 import com.netcracker.cinema.service.ZoneService;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.GridLayout;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,18 +21,18 @@ import java.util.Set;
 @SpringComponent
 @ViewScope
 public class TicketSelect extends GridLayout {
+    private static final String SELECTED_PLACE_STYLE = "danger";
+    private static final String UNSELECTED_PLACE_STYLE = "primary";
+    private Seance seance;
+    private List<PlaceButton> placeButtons;
+    private Set<PlaceSelectedListener> listeners;
+
     @Autowired
     private PlaceService placeService;
     @Autowired
     private TicketService ticketService;
     @Autowired
     private ZoneService zoneService;
-    @Autowired
-    private PriceService priceService;
-
-    private Seance seance;
-    private List<PlaceButton> placeButtons;
-    private Set<PlaceSelectedListener> listeners;
 
     public void buildForThisSeance(Seance seance) {
         this.seance = seance;
@@ -56,47 +56,9 @@ public class TicketSelect extends GridLayout {
         return selectedPlaces;
     }
 
-    public void addButtonBook(Seance seance) {
-        Button book = new Button("Book");
-        Ticket ticket = new Ticket();
-        addComponent(book);
-        book.addClickListener(clickEvent -> {
-            for (Place place : getSelectedPlaces()) {
-                if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
-                    return;
-                } else {
-                    emailBox(place, ticket);
-                }
-            }
-        });
-    }
-
-    public void emailBox(Place place, Ticket ticket) {
-        Button button = new Button("OK");
-        VerticalLayout subContent = new VerticalLayout();
-        subContent.setMargin(true);
-        TextField textField = new TextField("Enter your email:");
-        textField.setValue("");
-        textField.addTextChangeListener(textChangeEvent -> {
-            ticket.setEmail(textField.getValue());
-        });
-        subContent.addComponent(textField);
-        subContent.addComponent(button);
-        button.addClickListener(clickEvent -> {
-            ticket.setEmail(textField.getValue());
-            ticket.setPrice(144);
-            ticket.setCode(7777);
-            ticket.setPlaceId(place.getId());
-            ticket.setSeanceId(seance.getId());
-            ticketService.save(ticket);
-        });
-        addComponent(subContent);
-    }
-
     public void addPlaceSelectedListener(PlaceSelectedListener listener) {
         listeners.add(listener);
     }
-
 
     public void removePlaceSelectedListener(PlaceSelectedListener listener) {
         listeners.remove(listener);
@@ -123,26 +85,26 @@ public class TicketSelect extends GridLayout {
         public PlaceButton(Place place) {
             this.place = place;
             this.selected = false;
-
-            Zone ticketZone = zoneService.getById(place.getZoneId());
-            setCaption(ticketZone.getName() + " " + place.getRowNumber() + " " + place.getNumber());
+            Zone placeZone = zoneService.getById(place.getZoneId());
+            setCaption(placeZone.getName() + " " + place.getRowNumber() + " " + place.getNumber());
             //todo: maybe better use own css styles
-            setStyleName("primary");
             setWidth("100px");
-
             if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
+                setStyleName(SELECTED_PLACE_STYLE);
                 setEnabled(false);
+            } else {
+                setStyleName(UNSELECTED_PLACE_STYLE);
             }
 
             addClickListener((ClickListener) event -> {
                 selected = !selected;
                 if (selected) {
-                    setStyleName("danger");
+                    setStyleName(SELECTED_PLACE_STYLE);
                 } else {
-                    setStyleName("primary");
+                    setStyleName(UNSELECTED_PLACE_STYLE);
                 }
 
-                for (PlaceSelectedListener placeSelectedListener : listeners) {
+                for(PlaceSelectedListener placeSelectedListener: listeners) {
                     placeSelectedListener.placeClicked(place, selected);
                 }
             });

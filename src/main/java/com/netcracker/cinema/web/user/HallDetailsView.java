@@ -87,7 +87,6 @@ public class HallDetailsView extends HorizontalLayout implements View {
         setSpacing(true);
         addSeanceInfo(seance);
         ticketSelect.buildForThisSeance(seance);
-        ticketSelect.addButtonBook(seance);
         addComponent(ticketSelect);
     }
 
