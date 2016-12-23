@@ -29,6 +29,8 @@
 
     <bean id="placeDao" class="com.netcracker.cinema.dao.impl.PlaceDaoImpl"></bean>
 
+    <bean id="priceDao" class="com.netcracker.cinema.dao.impl.PriceDaoImpl"></bean>
+
     <bean id="hallService" class="com.netcracker.cinema.service.impl.HallServiceImpl"></bean>
 
     <bean id="zoneService" class="com.netcracker.cinema.service.impl.ZoneServiceImpl"></bean>
@@ -40,6 +42,8 @@
     <bean id="seanceService" class="com.netcracker.cinema.service.impl.SeanceServiceImpl"></bean>
 
     <bean id="placeService" class="com.netcracker.cinema.service.impl.PlaceServiceImpl"></bean>
+
+    <bean id="priceService" class="com.netcracker.cinema.service.impl.PriceServiceImpl"></bean>
 
     <bean id="task" class="com.netcracker.cinema.service.schedule.Task"></bean>
 

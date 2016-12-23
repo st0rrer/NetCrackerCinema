@@ -2,15 +2,17 @@ package com.netcracker.cinema.web.user;
 
 import com.netcracker.cinema.model.Place;
 import com.netcracker.cinema.model.Seance;
+import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.model.Zone;
 import com.netcracker.cinema.service.PlaceService;
+import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.TicketService;
 import com.netcracker.cinema.service.ZoneService;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +27,8 @@ public class TicketSelect extends GridLayout {
     private TicketService ticketService;
     @Autowired
     private ZoneService zoneService;
+    @Autowired
+    private PriceService priceService;
 
     private Seance seance;
     private List<PlaceButton> placeButtons;
@@ -52,9 +56,47 @@ public class TicketSelect extends GridLayout {
         return selectedPlaces;
     }
 
+    public void addButtonBook(Seance seance) {
+        Button book = new Button("Book");
+        Ticket ticket = new Ticket();
+        addComponent(book);
+        book.addClickListener(clickEvent -> {
+            for (Place place : getSelectedPlaces()) {
+                if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
+                    return;
+                } else {
+                    emailBox(place, ticket);
+                }
+            }
+        });
+    }
+
+    public void emailBox(Place place, Ticket ticket) {
+        Button button = new Button("OK");
+        VerticalLayout subContent = new VerticalLayout();
+        subContent.setMargin(true);
+        TextField textField = new TextField("Enter your email:");
+        textField.setValue("");
+        textField.addTextChangeListener(textChangeEvent -> {
+            ticket.setEmail(textField.getValue());
+        });
+        subContent.addComponent(textField);
+        subContent.addComponent(button);
+        button.addClickListener(clickEvent -> {
+            ticket.setEmail(textField.getValue());
+            ticket.setPrice(144);
+            ticket.setCode(7777);
+            ticket.setPlaceId(place.getId());
+            ticket.setSeanceId(seance.getId());
+            ticketService.save(ticket);
+        });
+        addComponent(subContent);
+    }
+
     public void addPlaceSelectedListener(PlaceSelectedListener listener) {
         listeners.add(listener);
     }
+
 
     public void removePlaceSelectedListener(PlaceSelectedListener listener) {
         listeners.remove(listener);
@@ -100,7 +142,7 @@ public class TicketSelect extends GridLayout {
                     setStyleName("primary");
                 }
 
-                for(PlaceSelectedListener placeSelectedListener: listeners) {
+                for (PlaceSelectedListener placeSelectedListener : listeners) {
                     placeSelectedListener.placeClicked(place, selected);
                 }
             });

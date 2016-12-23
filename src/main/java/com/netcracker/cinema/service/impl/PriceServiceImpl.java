@@ -4,12 +4,16 @@ import com.netcracker.cinema.dao.PriceDao;
 import com.netcracker.cinema.model.Price;
 import com.netcracker.cinema.service.PriceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Created by User on 16.12.2016.
  */
+@Service
 public class PriceServiceImpl implements PriceService {
 
     private PriceDao priceDao;
@@ -29,6 +33,7 @@ public class PriceServiceImpl implements PriceService {
         return priceDao.getById(id);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @Override
     public void save(Price price) {
         priceDao.save(price);
