@@ -1,17 +1,16 @@
 package com.netcracker.cinema.web.user;
 
 import com.netcracker.cinema.model.Hall;
+import com.netcracker.cinema.model.Place;
 import com.netcracker.cinema.model.Seance;
+import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
 import com.netcracker.cinema.web.UserUI;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,7 +19,7 @@ import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 
 @SpringView(name = HallDetailsView.VIEW_NAME, ui = UserUI.class)
-public class HallDetailsView extends HorizontalLayout implements View {
+public class HallDetailsView extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "details";
 
@@ -85,22 +84,22 @@ public class HallDetailsView extends HorizontalLayout implements View {
         }
         setMargin(true);
         setSpacing(true);
-        addSeanceInfo(seance);
         ticketSelect.buildForThisSeance(seance);
-        ticketSelect.addButtonBook(seance);
+        addSeanceInfo(seance);
         addComponent(ticketSelect);
+        addComponent(addButtonBook(seance));
     }
 
-    private void addSeanceInfo(Seance seance) {
+    private Component addSeanceInfo(Seance seance) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        VerticalLayout layout = new VerticalLayout();
-        addComponent(layout);
+        GridLayout layout = new GridLayout();
         ExternalResource resource = new ExternalResource(movieService.getById(seance.getMovieId()).getPoster());
         Image poster = new Image(null, resource);
         poster.setHeight("250px");
         poster.setWidth("175px");
         layout.addComponent(poster);
+        addComponent(layout);
         Label name = new Label(movieService.getById(seance.getMovieId()).getName());
         layout.addComponent(name);
         Label date = new Label("Date: " + dateFormat.format(seance.getSeanceDate()));
@@ -111,6 +110,46 @@ public class HallDetailsView extends HorizontalLayout implements View {
         layout.addComponent(hall);
         Label pricesum = new Label("Price: ");
         layout.addComponent(pricesum);
-        addComponent(layout);
+        return layout;
+    }
+
+    private Component addButtonBook(Seance seance) {
+        GridLayout layout = new GridLayout();
+        Button book = new Button("Book");
+        Ticket ticket = new Ticket();
+        layout.addComponent(book);
+        book.addClickListener(clickEvent -> {
+            for (Place place : ticketSelect.getSelectedPlaces()) {
+                if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
+                    return;
+                } else {
+                    layout.addComponent(emailBox(place, ticket, seance));
+                }
+            }
+        });
+        return layout;
+    }
+
+    private Component emailBox(Place place, Ticket ticket, Seance seance) {
+        Button button = new Button("OK");
+        HorizontalLayout subContent = new HorizontalLayout();
+        subContent.setMargin(true);
+        subContent.setSpacing(true);
+        TextField textField = new TextField("Enter your email:");
+        textField.setValue("");
+        textField.addTextChangeListener(textChangeEvent -> {
+            ticket.setEmail(textField.getValue());
+        });
+        subContent.addComponent(textField);
+        subContent.addComponent(button);
+        button.addClickListener(clickEvent -> {
+            ticket.setEmail(textField.getValue());
+            ticket.setPrice(144);
+            ticket.setCode(7777);
+            ticket.setPlaceId(place.getId());
+            ticket.setSeanceId(seance.getId());
+            ticketService.save(ticket);
+        });
+        return subContent;
     }
 }
