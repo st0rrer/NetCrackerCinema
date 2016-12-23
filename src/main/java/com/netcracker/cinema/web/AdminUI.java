@@ -8,7 +8,6 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.spring.server.SpringVaadinServlet;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -21,7 +20,6 @@ import javax.servlet.annotation.WebServlet;
 @Theme("valo")
 public class AdminUI extends UI {
     private static final Logger logger = Logger.getLogger(AdminUI.class);
-
 
     @Autowired
     private SpringViewProvider viewProvider;
@@ -37,18 +35,13 @@ public class AdminUI extends UI {
 
         layout.addComponent(adminMenu);
 
-
         final Panel panel = new Panel();
         panel.setSizeFull();
         layout.addComponent(panel);
         layout.setExpandRatio(panel, 1.0f);
 
-
-
         Navigator adminNavigator = new Navigator(this, panel);
         adminNavigator.addProvider(viewProvider);
-
-
     }
 
     @WebServlet(urlPatterns = "/VAADIN/*", name = "AdminUIServlet", asyncSupported = true)

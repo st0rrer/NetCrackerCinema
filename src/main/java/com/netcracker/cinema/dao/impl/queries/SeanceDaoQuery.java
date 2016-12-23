@@ -43,6 +43,28 @@ public interface SeanceDaoQuery {
                 " SEANCE_MOVIE_REF.ATTR_ID = 14 AND " +
                 " SEANCE_HALL_REF.ATTR_ID = 15";
 
+    String FIND_SEANCE_BY_HALL_AND_DATE =
+            "SELECT " +
+                    "    SEANCE.OBJECT_ID ID " +
+                    "  , DATE_ATTR.DATE_VALUE START_DATE " +
+                    "  , SEANCE_MOVIE_REF.OBJECT_ID MOVIE_ID " +
+                    "  , SEANCE_HALL_REF.OBJECT_ID HALL_ID " +
+                    "FROM " +
+                    "  OBJECTS SEANCE " +
+                    "  LEFT JOIN ATTRIBUTES DATE_ATTR " +
+                    "    ON  SEANCE.OBJECT_ID = DATE_ATTR.OBJECT_ID " +
+                    "  LEFT JOIN OBJREFERENCE SEANCE_MOVIE_REF " +
+                    "    ON SEANCE.OBJECT_ID = SEANCE_MOVIE_REF.REFERENCE " +
+                    "  LEFT JOIN OBJREFERENCE SEANCE_HALL_REF " +
+                    "    ON SEANCE.OBJECT_ID = SEANCE_HALL_REF.REFERENCE " +
+                    "WHERE " +
+                    "  SEANCE.OBJECT_TYPE_ID = 5 AND " +
+                    "  DATE_ATTR.ATTR_ID = 13 AND " +
+                    "  SEANCE_MOVIE_REF.ATTR_ID = 14 AND " +
+                    "  SEANCE_HALL_REF.ATTR_ID = 15 AND " +
+                    "  SEANCE_HALL_REF.OBJECT_ID = ? AND " +
+                    "  TRUNC(DATE_ATTR.DATE_VALUE) = ?";
+
     String DELETE_SEANCE =
             " DELETE " +
                 " FROM OBJECTS " +

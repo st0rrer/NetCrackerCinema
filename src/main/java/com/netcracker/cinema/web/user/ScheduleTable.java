@@ -1,12 +1,9 @@
 package com.netcracker.cinema.web.user;
 
-import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.MovieService;
-import com.netcracker.cinema.service.SeanceService;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.GridLayout;
 import org.springframework.beans.factory.annotation.Autowired;
