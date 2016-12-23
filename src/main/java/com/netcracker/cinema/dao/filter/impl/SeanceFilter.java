@@ -40,6 +40,10 @@ public class SeanceFilter extends AbstractFilter {
     }
 
     public SeanceFilter forDateRange(Date startDate, Date endDate) {
+        if(startDate == null || endDate == null) {
+            throw new IllegalArgumentException("startDate or endDate can't be null");
+        }
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm:ss");
         wheres.add(Where.between("DATE_ATTR.DATE_VALUE", "TO_DATE('" + dateFormat.format(startDate) + "', 'DD-MM-YYYY HH24:MI:SS')",
                 "TO_DATE('" + dateFormat.format(endDate) + "', 'DD-MM-YYYY HH24:MI:SS')"));
