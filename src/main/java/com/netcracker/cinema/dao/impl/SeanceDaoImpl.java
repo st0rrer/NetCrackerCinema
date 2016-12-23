@@ -8,8 +8,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+
 import static com.netcracker.cinema.dao.impl.queries.SeanceDaoQuery.*;
+
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -46,13 +49,21 @@ public class SeanceDaoImpl implements SeanceDao {
     }
 
     @Override
+    public List<Seance> getByHallAndDate(long hallId, Date date) {
+        List<Seance> seances = jdbcTemplate.query(
+                FIND_SEANCE_BY_HALL_AND_DATE, new SeanceRowMapper(), hallId, date);
+        logger.info(seances.size() + " was found for hall_id = " + hallId);
+        return seances;
+    }
+
+    @Override
     public void save(Seance seance) {
         int affected = jdbcTemplate.update(MERGE_SEANCE_OBJECT, seance.getId());
         jdbcTemplate.update(MERGE_SEANCE_ATTRIBUTE_DATE, seance.getSeanceDate(), seance.getId());
         jdbcTemplate.update(MERGE_SEANCE_ATTRIBUTE_MOVIE, seance.getMovieId(), seance.getId());
         jdbcTemplate.update(MERGE_SEANCE_ATTRIBUTE_HALL, seance.getHallId(), seance.getId());
 
-        if(seance.getId() == 0) {
+        if (seance.getId() == 0) {
             seance.setId(jdbcTemplate.queryForObject(SELECT_ID_FOR_INSERTED_SEANCE, Long.class));
         }
 

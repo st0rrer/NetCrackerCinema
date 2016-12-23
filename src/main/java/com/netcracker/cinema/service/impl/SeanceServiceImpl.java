@@ -12,7 +12,7 @@ import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 //TODO: need to think about transactional
@@ -42,6 +42,11 @@ public class SeanceServiceImpl implements SeanceService {
     @Override
     public Seance getById(long id) {
         return seanceDao.getById(id);
+    }
+
+    @Override
+    public List<Seance> getByHallAndDate(long id, Date date) {
+        return seanceDao.getByHallAndDate(id, date);
     }
 
     @Override
