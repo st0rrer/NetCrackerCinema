@@ -5,6 +5,7 @@ import com.netcracker.cinema.model.Ticket;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -52,12 +53,16 @@ public class TicketDaoImpl implements TicketDao {
 
     @Override
     public Ticket getBySeanceAndPlace(long seanceId, long placeId) {
-        return jdbcTemplate.queryForObject(FIND_TICKET_BY_SEANCE_AND_PLACE, new TicketMapper(), seanceId, placeId);
+        Ticket ticket = null;
+        try {
+            ticket = jdbcTemplate.queryForObject(FIND_TICKET_BY_SEANCE_AND_PLACE, new TicketMapper(), seanceId, placeId);
+        } catch (EmptyResultDataAccessException e) {} //Just this place for this seance are free
+        return ticket;
     }
 
     @Override
     public List<Ticket> getBySeance(long seanceId) {
-        return jdbcTemplate.query(FIND_TICKET_BY_SEANCE, new TicketMapper(), seanceId);
+        return jdbcTemplate.query(FIND_TICKETS_BY_SEANCE, new TicketMapper(), seanceId);
     }
 
     @Override

@@ -32,14 +32,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public boolean isAlreadyBookedTicket(long seanceId, long placeId) {
-        try {
-            if(ticketDao.getBySeanceAndPlace(seanceId, placeId) != null) {
-                return true;
-            }
-        } catch (IncorrectResultSizeDataAccessException e) {
-            return false;
-        }
-        return false;
+        return ticketDao.getBySeanceAndPlace(seanceId, placeId) != null;
     }
 
     @Override

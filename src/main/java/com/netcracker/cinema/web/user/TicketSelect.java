@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 @SpringComponent
-@ViewScope
 public class TicketSelect extends GridLayout {
     private static final String SELECTED_PLACE_STYLE = "danger";
     private static final String UNSELECTED_PLACE_STYLE = "primary";
@@ -39,6 +38,7 @@ public class TicketSelect extends GridLayout {
         listeners = new HashSet<>();
         List<Place> places = placeService.getByHall(seance.getHallId());
         placeButtons = new ArrayList<>(places.size());
+        removeAllComponents();
         adjustGridSize(places);
         for (Place place : places) {
             PlaceButton placeButton = new PlaceButton(place);
