@@ -10,6 +10,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 
 @SpringView(name = HallDetailsView.VIEW_NAME, ui = UserUI.class)
+@UIScope
 public class HallDetailsView extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "details";

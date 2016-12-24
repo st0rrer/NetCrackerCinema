@@ -7,6 +7,7 @@ import com.netcracker.cinema.service.PlaceService;
 import com.netcracker.cinema.service.TicketService;
 import com.netcracker.cinema.service.ZoneService;
 import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.GridLayout;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 @SpringComponent
+@UIScope
 public class TicketSelect extends GridLayout {
     private static final String SELECTED_PLACE_STYLE = "danger";
     private static final String UNSELECTED_PLACE_STYLE = "primary";
