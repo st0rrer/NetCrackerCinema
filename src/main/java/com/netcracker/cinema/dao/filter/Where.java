@@ -19,6 +19,10 @@ public class Where {
         return new Where(column + " > " + value);
     }
 
+    public static Where like(String column, Object value) {
+        return new Where(column + " LIKE '%" + value + "%'");
+    }
+
     public static Where greaterOrEq(String column, Object value) {
         return new Where(column + " >= " + value);
     }

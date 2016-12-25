@@ -8,6 +8,7 @@ import com.netcracker.cinema.service.HallService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.cashier.ScheduleTableCashier;
 import com.netcracker.cinema.web.user.ScheduleTableUser;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
@@ -182,12 +183,22 @@ public abstract class ScheduleView extends VerticalLayout implements View {
                 hallFilter = event.getProperty().getValue();
                 updateSeanceFilter();
             });
+
+            clearFilterByName.addClickListener(event -> {
+                filterByName.clear();
+                updateSeanceFilter();
+            });
+
+            findByFilterName.addClickListener(event -> {
+                updateSeanceFilter();
+            });
         }
 
         private void createLayoutForFilterName() {
             filterByName = new TextField();
             clearFilterByName = new Button(FontAwesome.TIMES);
-            findByFilterName = new Button();
+            findByFilterName = new Button("Find seance by movie's name");
+            findByFilterName.setClickShortcut(ShortcutAction.KeyCode.ENTER);
             CssLayout areaForFilterName = new CssLayout(filterByName, clearFilterByName);
             areaForFilterName.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
             HorizontalLayout layoutForFilterName = new HorizontalLayout(areaForFilterName, findByFilterName);
@@ -255,6 +266,10 @@ public abstract class ScheduleView extends VerticalLayout implements View {
 
             if(hallFilter.getClass() != String.class) {
                 seanceFilter.forHallId(((Hall) hallFilter).getId());
+            }
+
+            if(filterByName.getValue() != null & !filterByName.getValue().equals(" ")) {
+                seanceFilter.forMovieName(filterByName.getValue());
             }
             updatePaginator(seanceFilter);
         }
