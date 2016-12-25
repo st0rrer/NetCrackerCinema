@@ -1,6 +1,5 @@
 package com.netcracker.cinema.web.cashier;
 
-import com.netcracker.cinema.web.user.ScheduleView;
 import com.vaadin.ui.MenuBar;
 
 /**
@@ -11,7 +10,7 @@ public class CashierMenu extends MenuBar {
     public CashierMenu() {
         MenuBar.Command command = selectedItem -> {
             if (selectedItem.getText().equals("Schedule")) {
-                getUI().getNavigator().navigateTo(ScheduleView.VIEW_NAME);
+                getUI().getNavigator().navigateTo(ScheduleViewCashier.VIEW_NAME);
             }
 
             if (selectedItem.getText().equals("Payment confirmation")) {

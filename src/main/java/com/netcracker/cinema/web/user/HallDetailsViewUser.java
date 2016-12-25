@@ -6,11 +6,11 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
 import com.netcracker.cinema.web.UserUI;
+import com.netcracker.cinema.web.common.TicketSelect;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 
-@SpringView(name = HallDetailsView.VIEW_NAME, ui = UserUI.class)
-@UIScope
-public class HallDetailsView extends VerticalLayout implements View {
+/**
+ * Created by dimka on 25.12.2016.
+ */
+@SpringView(name = HallDetailsViewUser.VIEW_NAME, ui = UserUI.class)
+public class HallDetailsViewUser extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "details";
 
-    private static final Logger logger = Logger.getLogger(HallDetailsView.class);
+    private static final Logger logger = Logger.getLogger(HallDetailsViewUser.class);
 
     @Autowired
     private SeanceService seanceService;
@@ -58,7 +60,7 @@ public class HallDetailsView extends VerticalLayout implements View {
             seanceId = Long.parseLong(event.getParameters());
         } catch (NumberFormatException e) {
             logger.info("Expected id, but was " + event.getParameters(), e);
-            getUI().getNavigator().navigateTo(ScheduleView.VIEW_NAME);
+            getUI().getNavigator().navigateTo(ScheduleViewUser.VIEW_NAME);
             return;
         }
         Seance seance = null;
@@ -74,7 +76,7 @@ public class HallDetailsView extends VerticalLayout implements View {
             hallId = seance.getHallId();
         } catch (NumberFormatException e) {
             logger.info("Expected id, but was " + event.getParameters(), e);
-            getUI().getNavigator().navigateTo(ScheduleView.VIEW_NAME);
+            getUI().getNavigator().navigateTo(ScheduleViewUser.VIEW_NAME);
             return;
         }
         try {
@@ -87,9 +89,12 @@ public class HallDetailsView extends VerticalLayout implements View {
         setMargin(true);
         setSpacing(true);
         ticketSelect.buildForThisSeance(seance);
-        addSeanceInfo(seance);
-        addComponent(ticketSelect);
-        addComponent(addButtonBook(seance));
+        if(UI.getCurrent().getUI().getClass() == UserUI.class) {
+            addSeanceInfo(seance);
+            addComponent(ticketSelect);
+            addComponent(addButtonBook(seance));
+        }
+
     }
 
     private Component addSeanceInfo(Seance seance) {

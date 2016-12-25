@@ -111,7 +111,7 @@ public class MovieListContainer extends VerticalLayout {
                 seanceInfo.addComponent(hall);
 
                 seanceInfo.addLayoutClickListener(event -> getUI().getNavigator()
-                        .navigateTo(HallDetailsView.VIEW_NAME + "/" + seance.getId()));
+                        .navigateTo(HallDetailsViewUser.VIEW_NAME + "/" + seance.getId()));
 
                 root.addComponent(seanceInfo);
             }

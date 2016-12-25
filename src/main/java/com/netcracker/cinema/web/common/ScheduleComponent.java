@@ -1,5 +1,6 @@
-package com.netcracker.cinema.web.user;
+package com.netcracker.cinema.web.common;
 
+import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.MovieService;
 import com.vaadin.server.ExternalResource;
@@ -11,17 +12,16 @@ import java.text.SimpleDateFormat;
 
 public class ScheduleComponent extends VerticalLayout {
 
-    public ScheduleComponent(Seance seances, MovieService movieService) {
+    public ScheduleComponent(Seance seances, Movie movie) {
         setMargin(true);
-        addPoster(seances, movieService);
-        addSeanceAttributes(seances, movieService);
-        addLayoutClickListener(event -> getUI().getNavigator().navigateTo(HallDetailsView.VIEW_NAME + "/" + seances.getId()));
+        addPoster(seances, movie);
+        addSeanceAttributes(seances, movie);
     }
 
-    private void addSeanceAttributes(Seance seance, MovieService movieService) {
+    private void addSeanceAttributes(Seance seance, Movie movie) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        Label name = new Label(movieService.getById(seance.getMovieId()).getName());
+        Label name = new Label(movie.getName());
         addComponent(name);
         Label date = new Label("Date: " + dateFormat.format(seance.getSeanceDate()));
         addComponent(date);
@@ -31,8 +31,8 @@ public class ScheduleComponent extends VerticalLayout {
         addComponent(hall);
     }
 
-    private void addPoster(Seance seance, MovieService movieService) {
-        ExternalResource resource = new ExternalResource(movieService.getById(seance.getMovieId()).getPoster());
+    private void addPoster(Seance seance, Movie movie) {
+        ExternalResource resource = new ExternalResource(movie.getPoster());
         Image poster = new Image(null, resource);
         poster.setHeight("350px");
         poster.setWidth("230px");

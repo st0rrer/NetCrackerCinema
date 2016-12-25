@@ -11,7 +11,7 @@ public class UserMenu extends MenuBar {
             }
 
             if (selectedItem.getText().equals("Schedule")) {
-                getUI().getNavigator().navigateTo(ScheduleView.VIEW_NAME);
+                getUI().getNavigator().navigateTo(ScheduleViewUser.VIEW_NAME);
             }
         };
 

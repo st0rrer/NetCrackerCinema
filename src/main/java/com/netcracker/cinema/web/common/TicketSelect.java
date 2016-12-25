@@ -1,4 +1,4 @@
-package com.netcracker.cinema.web.user;
+package com.netcracker.cinema.web.common;
 
 import com.netcracker.cinema.model.Place;
 import com.netcracker.cinema.model.Seance;
