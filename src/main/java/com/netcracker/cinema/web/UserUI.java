@@ -2,17 +2,15 @@ package com.netcracker.cinema.web;
 
 import com.netcracker.cinema.web.user.UserMenu;
 import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
-import com.vaadin.spring.server.SpringVaadinServlet;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.servlet.annotation.WebServlet;
 
 @Theme("valo")
 @SpringUI
@@ -46,10 +44,5 @@ public class UserUI extends UI {
         UserMenu userMenu = new UserMenu();
         userMenu.setWidth("100%");
         root.addComponent(userMenu);
-    }
-
-    @WebServlet(urlPatterns = "/*", name = "UserUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = UserUI.class, productionMode = false)
-    public static class UserUIServlet extends SpringVaadinServlet {
     }
 }
