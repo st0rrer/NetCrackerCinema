@@ -5,9 +5,13 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.AdminUI;
+import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.sass.internal.selector.Selector;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -29,111 +34,151 @@ public class AdminSeanceView extends GridLayout implements View {
     private SeanceService seanceService;
     @Autowired
     private MovieService movieService;
-    private List<Seance> seanceList1;
-    private List<Seance> seanceList2;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     private FormLayout formLayout;
+    private VerticalLayout verticalLayout1 = new VerticalLayout();
+    private VerticalLayout verticalLayout2 = new VerticalLayout();
+    private VerticalLayout verticalLayout3 = new VerticalLayout();
 
     @PostConstruct
     protected void init() {
-//        setRows(30);
-//        setColumns(30);
-        seanceList1 = seanceService.getByHallAndDate(1, sqlDate);
-        seanceList2 = seanceService.getByHallAndDate(2, sqlDate);
-        HorizontalLayout horizontalLayout1 = new HorizontalLayout();
-        VerticalLayout verticalLayout1 = new VerticalLayout();
-        VerticalLayout verticalLayout2 = new VerticalLayout();
-        VerticalLayout verticalLayout3 = new VerticalLayout();
+//        setRows(4);
+        setColumns(4);
 
         InlineDateField calendar = new InlineDateField();
         calendar.setShowISOWeekNumbers(true);
         calendar.setValue(date);
-        verticalLayout1.addComponent(calendar);
 
-        Label hallLabel1 = new Label("Hall 1");
-        hallLabel1.setStyleName(ValoTheme.LABEL_H2);
-        verticalLayout2.addComponent(hallLabel1);
-
-        Label dateLabel1 = new Label(dateFormat.format(date));
-        verticalLayout2.addComponent(dateLabel1);
-
-        for (Seance seance : seanceList1) {
-            HorizontalLayout horizontalLayout = getSeanceRow(seance);
-            verticalLayout2.addComponent(horizontalLayout);
-        }
-
-        Label hallLabel2 = new Label("Hall 2");
-        hallLabel2.setStyleName(ValoTheme.LABEL_H2);
-        verticalLayout3.addComponent(hallLabel2);
-
-        Label dateLabel2 = new Label(dateFormat.format(date));
-        verticalLayout3.addComponent(dateLabel2);
-
-        for (Seance seance : seanceList2) {
-            HorizontalLayout horizontalLayout = getSeanceRow(seance);
-            verticalLayout3.addComponent(horizontalLayout);
-        }
-
-        Button button = new Button("Show");
+        Button button = new Button("Show seances");
         button.addClickListener(e -> {
-            sqlDate = new java.sql.Date(calendar.getValue().getTime());
-            dateLabel1.setValue(dateFormat.format(date));
-
-            seanceList1 = seanceService.getByHallAndDate(1, sqlDate);
-            verticalLayout2.removeAllComponents();
-            verticalLayout2.addComponent(hallLabel1);
-            verticalLayout2.addComponent(dateLabel1);
-            for (Seance seance : seanceList1) {
-                HorizontalLayout horizontalLayout = getSeanceRow(seance);
-                verticalLayout2.addComponent(horizontalLayout);
-            }
-
-            seanceList2 = seanceService.getByHallAndDate(2, sqlDate);
-            verticalLayout3.removeAllComponents();
-            verticalLayout3.addComponent(hallLabel2);
-            verticalLayout3.addComponent(dateLabel2);
-            for (Seance seance : seanceList2) {
-                HorizontalLayout horizontalLayout = getSeanceRow(seance);
-                verticalLayout3.addComponent(horizontalLayout);
-            }
+            date = calendar.getValue();
+            sqlDate = new java.sql.Date(date.getTime());
+            getHall(1, verticalLayout2);
+            getHall(2, verticalLayout3);
         });
-        button.setWidth("260px");
-        verticalLayout1.addComponent(button);
+        button.setWidth("270px");
+
+        Window subWindow = new Window("Add new seance");
+        subWindow.setContent(getComponents());
+        subWindow.center();
+        subWindow.setHeight("380");
+        subWindow.setWidth("600");
+        subWindow.setResizable(false);
+
+        final Button open = new Button("Add new seance");
+        open.addClickListener(e -> UI.getCurrent().addWindow(subWindow));
 
         verticalLayout1.setSpacing(true);
-        verticalLayout2.setSpacing(true);
-        verticalLayout3.setSpacing(true);
-        horizontalLayout1.setSpacing(true);
+        verticalLayout1.setMargin(true);
+        verticalLayout1.addComponents(calendar, button, open);
 
-        horizontalLayout1.addComponent(verticalLayout1);
-        horizontalLayout1.addComponent(verticalLayout2);
-        horizontalLayout1.addComponent(verticalLayout3);
-        addComponent(horizontalLayout1);
+        getHall(1, verticalLayout2);
+        getHall(2, verticalLayout3);
+
+        addComponents(verticalLayout1, verticalLayout2, verticalLayout3);
         setSizeFull();
+    }
+
+    private Layout getComponents() {
+        List<Movie> movieList = movieService.findAll();
+
+        VerticalLayout subContent2 = new VerticalLayout();
+
+        VerticalLayout subContent = new VerticalLayout();
+        subContent.setSpacing(true);
+        subContent.setMargin(true);
+
+        DateField seanceDate = new DateField("Select date:");
+        seanceDate.setResolution(Resolution.MINUTE);
+        seanceDate.setWidth("240px");
+
+        ComboBox movieName = new ComboBox("Select movie");
+        movieName.setFilteringMode(FilteringMode.CONTAINS);
+        movieName.setInputPrompt("start type...");
+        movieName.setWidth("240px");
+        for (Movie movie : movieList) {
+            movieName.addItem(movie.getName());
+        }
+        movieName.addBlurListener(e -> {
+            subContent2.removeAllComponents();
+            for (Movie movie : movieList) {
+                if (movie.getName().equals(movieName.getValue())) {
+                    subContent2.addComponent(createPoster(movie, "250px"));
+                }
+            }
+        });
+
+        NativeSelect hallId = new NativeSelect("Select hall");
+        hallId.addItems(1, 2);
+
+        Button save = new Button("Save seance");
+        save.addClickListener(e -> {
+            for (Movie movie : movieList) {
+                if (movie.getName().equals(movieName.getValue())) {
+                    Seance newSeance = new Seance();
+                    newSeance.setSeanceDate(seanceDate.getValue());
+                    newSeance.setMovieId(movie.getId());
+                    newSeance.setHallId(Long.parseLong(hallId.getValue().toString()));
+                    seanceService.save(newSeance);
+                    break;
+                }
+            }
+        });
+        subContent.addComponents(seanceDate, movieName, hallId, save);
+
+        HorizontalLayout horizontSub = new HorizontalLayout();
+        horizontSub.addComponents(subContent, subContent2);
+
+        return horizontSub;
+    }
+
+    private void getHall(long hallId, VerticalLayout layout) {
+        List<Seance> seanceList = seanceService.getByHallAndDate(hallId, sqlDate);
+        seanceList.sort((s1, s2) -> s1.getSeanceDate().compareTo(s2.getSeanceDate()));
+        layout.removeAllComponents();
+        layout.setSpacing(true);
+        layout.setMargin(true);
+
+        Label hallLabel = new Label("Hall " + hallId);
+        hallLabel.setStyleName(ValoTheme.LABEL_H2);
+        Label dateLabel = new Label(dateFormat.format(date));
+
+        VerticalLayout verticalLayout = new VerticalLayout();
+        for (Seance seance : seanceList) {
+            HorizontalLayout horizontalLayout = getSeanceRow(seance);
+            verticalLayout.addComponent(horizontalLayout);
+        }
+
+        Panel hallPanel = new Panel();
+        hallPanel.setHeight("720px");
+        hallPanel.setContent(verticalLayout);
+
+        layout.addComponents(hallLabel, dateLabel, hallPanel);
     }
 
     private HorizontalLayout getSeanceRow(Seance seance) {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        Label time = new Label(timeFormat.format(seance.getSeanceDate()));
-        Button edit = new Button("Edit");
-        Button remove = new Button("Remove");
         horizontalLayout.setSpacing(true);
-
         Movie movie = movieService.getById(seance.getMovieId());
 
-        horizontalLayout.addComponent(createPoster(movie));
-        horizontalLayout.addComponent(time);
-        horizontalLayout.addComponent(edit);
-        horizontalLayout.addComponent(remove);
+        VerticalLayout movieInfo = new VerticalLayout();
+        movieInfo.setWidth("170px");
+        Label name = new Label(movie.getName());
+        Label time = new Label(timeFormat.format(seance.getSeanceDate()));
+        movieInfo.addComponents(name, time);
+
+        Button edit = new Button("Edit");
+        Button remove = new Button("Remove");
+
+        horizontalLayout.addComponents(createPoster(movie, "80px"), movieInfo, edit, remove);
         return horizontalLayout;
     }
 
-    private Component createPoster(Movie movie) {
+    private Component createPoster(Movie movie, String height) {
         ExternalResource res = new ExternalResource(movie.getPoster());
         Image poster = new Image(null, res);
-//        poster.setWidth("70px");
-        poster.setHeight("100px");
+        poster.setHeight(height);
         return poster;
     }
 
