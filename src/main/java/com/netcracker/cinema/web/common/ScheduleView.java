@@ -1,32 +1,29 @@
-package com.netcracker.cinema.web.user;
+package com.netcracker.cinema.web.common;
 
 import com.netcracker.cinema.dao.Paginator;
 import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Hall;
-import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.HallService;
-import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
-import com.netcracker.cinema.web.UserUI;
-import com.vaadin.data.Property;
-import com.vaadin.event.LayoutEvents;
+import com.netcracker.cinema.web.cashier.ScheduleTableCashier;
+import com.netcracker.cinema.web.user.ScheduleTableUser;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@SpringView(name = ScheduleView.VIEW_NAME, ui = UserUI.class)
-public class ScheduleView extends VerticalLayout implements View {
+public abstract class ScheduleView extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "seance";
     private static final Integer SIZE_PAGE = 8;
@@ -35,8 +32,6 @@ public class ScheduleView extends VerticalLayout implements View {
     SeanceService seanceService;
     @Autowired
     HallService hallService;
-    @Autowired
-    private ScheduleTable scheduleTable;
 
     private SeanceFilter seanceFilter = new SeanceFilter().actual().orderByStartDateDesc();
     private Paginator<Seance> paginator;
@@ -44,14 +39,14 @@ public class ScheduleView extends VerticalLayout implements View {
 
     private PaginationBar paginationBar;
     private ScheduleFilterComponent scheduleFilterComponent;
+
     @PostConstruct
-    void init() {
+    public void init() {
 
         scheduleFilterComponent = new ScheduleFilterComponent();
         paginationBar = new PaginationBar();
 
         addComponent(scheduleFilterComponent);
-        addComponent(scheduleTable);
         addComponent(paginationBar);
         setComponentAlignment(paginationBar, Alignment.TOP_CENTER);
 
@@ -68,13 +63,16 @@ public class ScheduleView extends VerticalLayout implements View {
             seances = paginator.getPage(1);
             paginationBar.setMaxPage(paginator.availablePages());
             paginationBar.setVisible(true);
-            scheduleTable.updateGrid(seances);
-        } else if (paginator.availablePages() == 0) {
+            updateGrid(seances);
+        } else if (paginator.availablePages() >= 0 || paginator.availablePages() <= 1){
             seances = paginator.getPage(1);
             paginationBar.setVisible(false);
-            scheduleTable.updateGrid(seances);
+            paginationBar.setMaxPage(1);
+            updateGrid(seances);
         }
     }
+
+    public abstract void updateGrid(List<Seance> seances);
 
     private class PaginationBar extends HorizontalLayout {
         private CssLayout buttonsForPaging;
@@ -117,7 +115,8 @@ public class ScheduleView extends VerticalLayout implements View {
                         previous.setEnabled(true);
                     }
                 }
-                scheduleTable.updateGrid(paginator.getPage(currentPage));
+                List<Seance> seances = paginator.getPage(currentPage);
+                updateGrid(seances);
                 currentPageView.setValue(String.valueOf(currentPage) + " page");
             }
         };
@@ -139,9 +138,10 @@ public class ScheduleView extends VerticalLayout implements View {
             previous.setStyleName(ValoTheme.BUTTON_BORDERLESS);
             buttonsForPaging = new CssLayout(first, last, next, previous);
             addComponent(currentPageView);
+            setComponentAlignment(currentPageView, Alignment.MIDDLE_CENTER);
             this.setExpandRatio(currentPageView, 1.0f);
             addComponent(buttonsForPaging);
-            setComponentAlignment(buttonsForPaging, Alignment.TOP_CENTER);
+            setComponentAlignment(buttonsForPaging, Alignment.BOTTOM_CENTER);
         }
 
         public void setMaxPage(long maxPage) {
@@ -159,6 +159,9 @@ public class ScheduleView extends VerticalLayout implements View {
 
         private NativeSelect selectDate;
         private NativeSelect selectHall;
+        private TextField filterByName;
+        private Button clearFilterByName;
+        private Button findByFilterName;
 
         private Object dateFilter = DEFAULT_DATE;
         private Object hallFilter = DEFAULT_HALL;
@@ -168,6 +171,8 @@ public class ScheduleView extends VerticalLayout implements View {
             this.setSpacing(true);
             filterDay();
             filterHall();
+            createLayoutForFilterName();
+            this.setDefaultComponentAlignment(Alignment.MIDDLE_RIGHT);
 
             selectDate.addValueChangeListener(event -> {
                 dateFilter = event.getProperty().getValue();
@@ -178,10 +183,35 @@ public class ScheduleView extends VerticalLayout implements View {
                 hallFilter = event.getProperty().getValue();
                 updateSeanceFilter();
             });
+
+            clearFilterByName.addClickListener(event -> {
+                filterByName.clear();
+                updateSeanceFilter();
+            });
+
+            findByFilterName.addClickListener(event -> {
+                updateSeanceFilter();
+            });
+        }
+
+        private void createLayoutForFilterName() {
+            filterByName = new TextField();
+            clearFilterByName = new Button(FontAwesome.TIMES);
+            findByFilterName = new Button("Find seance by movie's name");
+            findByFilterName.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+            CssLayout areaForFilterName = new CssLayout(filterByName, clearFilterByName);
+            areaForFilterName.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+            HorizontalLayout layoutForFilterName = new HorizontalLayout(areaForFilterName, findByFilterName);
+            layoutForFilterName.setHeight("40px");
+            layoutForFilterName.setDefaultComponentAlignment(Alignment.TOP_RIGHT);
+            layoutForFilterName.setSpacing(true);
+            this.addComponent(layoutForFilterName);
+            this.setComponentAlignment(layoutForFilterName, Alignment.BOTTOM_CENTER);
         }
 
         private void filterDay() {
             selectDate = new NativeSelect("Filter by Day");
+            selectDate.setSizeFull();
             fillScrollOfDate(selectDate);
             setDefaultNativeSelect(selectDate);
             this.addComponent(selectDate);
@@ -189,6 +219,7 @@ public class ScheduleView extends VerticalLayout implements View {
 
         private void filterHall() {
             selectHall = new NativeSelect("Filter by hall");
+            selectHall.setSizeFull();
             fillScrollOfHalls(selectHall);
             setDefaultNativeSelect(selectHall);
             this.addComponent(selectHall);
@@ -196,9 +227,8 @@ public class ScheduleView extends VerticalLayout implements View {
 
         private void setDefaultNativeSelect(NativeSelect nativeSelect) {
             nativeSelect.setNullSelectionAllowed(false);
-            nativeSelect.setWidth("100px");
-            nativeSelect.setHeight("50px");
-            nativeSelect.setSizeFull();
+            nativeSelect.setWidth("200px");
+            nativeSelect.setHeight("40px");
             nativeSelect.setImmediate(true);
         }
 
@@ -236,6 +266,10 @@ public class ScheduleView extends VerticalLayout implements View {
 
             if(hallFilter.getClass() != String.class) {
                 seanceFilter.forHallId(((Hall) hallFilter).getId());
+            }
+
+            if(filterByName.getValue() != null & !filterByName.getValue().equals(" ")) {
+                seanceFilter.forMovieName(filterByName.getValue());
             }
             updatePaginator(seanceFilter);
         }

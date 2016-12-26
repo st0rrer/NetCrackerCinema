@@ -66,70 +66,70 @@ public interface TicketDaoQuery {
 
     String FIND_TICKET_BY_SEANCE_AND_PLACE =
             " SELECT " +
-                " TICKET.OBJECT_ID id " +
-                ", CODE_ATTR.VALUE code " +
-                ", EMAIL_ATTR.VALUE email " +
-                ", PRICE_ATTR.VALUE price " +
-                ", IS_PAID_ATTR.VALUE paid " +
-                ", TICKET_SEANCE_REF.OBJECT_ID seance " +
-                ", TICKET_PLACE_REF.OBJECT_ID place" +
-            " FROM " +
-                " OBJECTS TICKET " +
-            " LEFT JOIN ATTRIBUTES CODE_ATTR" +
-                " ON  TICKET.OBJECT_ID = CODE_ATTR.OBJECT_ID " +
-            " LEFT JOIN ATTRIBUTES EMAIL_ATTR " +
-                " ON TICKET.OBJECT_ID = EMAIL_ATTR.OBJECT_ID " +
-            " LEFT JOIN ATTRIBUTES PRICE_ATTR " +
-                " ON TICKET.OBJECT_ID = PRICE_ATTR.OBJECT_ID " +
-            " LEFT JOIN ATTRIBUTES IS_PAID_ATTR " +
-                " ON TICKET.OBJECT_ID = IS_PAID_ATTR.OBJECT_ID " +
-            " LEFT JOIN OBJREFERENCE TICKET_SEANCE_REF " +
-                " ON TICKET.OBJECT_ID = TICKET_SEANCE_REF.REFERENCE " +
-            " LEFT JOIN OBJREFERENCE TICKET_PLACE_REF " +
-                " ON TICKET.OBJECT_ID = TICKET_PLACE_REF.REFERENCE " +
-            " WHERE " +
-                " TICKET.OBJECT_TYPE_ID = 6 AND " +
-                " CODE_ATTR.ATTR_ID = 16 AND " +
-                " EMAIL_ATTR.ATTR_ID = 17 AND " +
-                " PRICE_ATTR.ATTR_ID = 18 AND " +
-                " IS_PAID_ATTR.ATTR_ID = 19 AND " +
-                " TICKET_SEANCE_REF.ATTR_ID = 20 AND" +
-                " TICKET_PLACE_REF.ATTR_ID = 21 AND" +
-                " TICKET_SEANCE_REF.OBJECT_ID = ? AND " +
-                " TICKET_PLACE_REF.OBJECT_ID = ?";
+                    " TICKET.OBJECT_ID id " +
+                    ", CODE_ATTR.VALUE code " +
+                    ", EMAIL_ATTR.VALUE email " +
+                    ", PRICE_ATTR.VALUE price " +
+                    ", IS_PAID_ATTR.VALUE paid " +
+                    ", TICKET_SEANCE_REF.OBJECT_ID seance " +
+                    ", TICKET_PLACE_REF.OBJECT_ID place" +
+                    " FROM " +
+                    " OBJECTS TICKET " +
+                    " LEFT JOIN ATTRIBUTES CODE_ATTR" +
+                    " ON  TICKET.OBJECT_ID = CODE_ATTR.OBJECT_ID " +
+                    " LEFT JOIN ATTRIBUTES EMAIL_ATTR " +
+                    " ON TICKET.OBJECT_ID = EMAIL_ATTR.OBJECT_ID " +
+                    " LEFT JOIN ATTRIBUTES PRICE_ATTR " +
+                    " ON TICKET.OBJECT_ID = PRICE_ATTR.OBJECT_ID " +
+                    " LEFT JOIN ATTRIBUTES IS_PAID_ATTR " +
+                    " ON TICKET.OBJECT_ID = IS_PAID_ATTR.OBJECT_ID " +
+                    " LEFT JOIN OBJREFERENCE TICKET_SEANCE_REF " +
+                    " ON TICKET.OBJECT_ID = TICKET_SEANCE_REF.REFERENCE " +
+                    " LEFT JOIN OBJREFERENCE TICKET_PLACE_REF " +
+                    " ON TICKET.OBJECT_ID = TICKET_PLACE_REF.REFERENCE " +
+                    " WHERE " +
+                    " TICKET.OBJECT_TYPE_ID = 6 AND " +
+                    " CODE_ATTR.ATTR_ID = 16 AND " +
+                    " EMAIL_ATTR.ATTR_ID = 17 AND " +
+                    " PRICE_ATTR.ATTR_ID = 18 AND " +
+                    " IS_PAID_ATTR.ATTR_ID = 19 AND " +
+                    " TICKET_SEANCE_REF.ATTR_ID = 20 AND" +
+                    " TICKET_PLACE_REF.ATTR_ID = 21 AND" +
+                    " TICKET_SEANCE_REF.OBJECT_ID = ? AND " +
+                    " TICKET_PLACE_REF.OBJECT_ID = ?";
 
     String FIND_TICKETS_BY_SEANCE =
             " SELECT " +
-                " TICKET.OBJECT_ID id " +
-                ", CODE_ATTR.VALUE code " +
-                ", EMAIL_ATTR.VALUE email " +
-                ", PRICE_ATTR.VALUE price " +
-                ", IS_PAID_ATTR.VALUE paid " +
-                ", TICKET_SEANCE_REF.OBJECT_ID seance " +
-                ", TICKET_PLACE_REF.OBJECT_ID place" +
-            " FROM " +
-                " OBJECTS TICKET " +
-            " LEFT JOIN ATTRIBUTES CODE_ATTR" +
-                " ON  TICKET.OBJECT_ID = CODE_ATTR.OBJECT_ID " +
-            " LEFT JOIN ATTRIBUTES EMAIL_ATTR " +
-                " ON TICKET.OBJECT_ID = EMAIL_ATTR.OBJECT_ID " +
-            " LEFT JOIN ATTRIBUTES PRICE_ATTR " +
-                " ON TICKET.OBJECT_ID = PRICE_ATTR.OBJECT_ID " +
-            " LEFT JOIN ATTRIBUTES IS_PAID_ATTR " +
-                " ON TICKET.OBJECT_ID = IS_PAID_ATTR.OBJECT_ID " +
-            " LEFT JOIN OBJREFERENCE TICKET_SEANCE_REF " +
-                " ON TICKET.OBJECT_ID = TICKET_SEANCE_REF.REFERENCE " +
-            " LEFT JOIN OBJREFERENCE TICKET_PLACE_REF " +
-                " ON TICKET.OBJECT_ID = TICKET_PLACE_REF.REFERENCE " +
-            " WHERE " +
-                " TICKET.OBJECT_TYPE_ID = 6 AND " +
-                " CODE_ATTR.ATTR_ID = 16 AND " +
-                " EMAIL_ATTR.ATTR_ID = 17 AND " +
-                " PRICE_ATTR.ATTR_ID = 18 AND " +
-                " IS_PAID_ATTR.ATTR_ID = 19 AND " +
-                " TICKET_SEANCE_REF.ATTR_ID = 20 AND" +
-                " TICKET_PLACE_REF.ATTR_ID = 21 AND" +
-                " TICKET_SEANCE_REF.OBJECT_ID = ?";
+                    " TICKET.OBJECT_ID id " +
+                    ", CODE_ATTR.VALUE code " +
+                    ", EMAIL_ATTR.VALUE email " +
+                    ", PRICE_ATTR.VALUE price " +
+                    ", IS_PAID_ATTR.VALUE paid " +
+                    ", TICKET_SEANCE_REF.OBJECT_ID seance " +
+                    ", TICKET_PLACE_REF.OBJECT_ID place" +
+                    " FROM " +
+                    " OBJECTS TICKET " +
+                    " LEFT JOIN ATTRIBUTES CODE_ATTR" +
+                    " ON  TICKET.OBJECT_ID = CODE_ATTR.OBJECT_ID " +
+                    " LEFT JOIN ATTRIBUTES EMAIL_ATTR " +
+                    " ON TICKET.OBJECT_ID = EMAIL_ATTR.OBJECT_ID " +
+                    " LEFT JOIN ATTRIBUTES PRICE_ATTR " +
+                    " ON TICKET.OBJECT_ID = PRICE_ATTR.OBJECT_ID " +
+                    " LEFT JOIN ATTRIBUTES IS_PAID_ATTR " +
+                    " ON TICKET.OBJECT_ID = IS_PAID_ATTR.OBJECT_ID " +
+                    " LEFT JOIN OBJREFERENCE TICKET_SEANCE_REF " +
+                    " ON TICKET.OBJECT_ID = TICKET_SEANCE_REF.REFERENCE " +
+                    " LEFT JOIN OBJREFERENCE TICKET_PLACE_REF " +
+                    " ON TICKET.OBJECT_ID = TICKET_PLACE_REF.REFERENCE " +
+                    " WHERE " +
+                    " TICKET.OBJECT_TYPE_ID = 6 AND " +
+                    " CODE_ATTR.ATTR_ID = 16 AND " +
+                    " EMAIL_ATTR.ATTR_ID = 17 AND " +
+                    " PRICE_ATTR.ATTR_ID = 18 AND " +
+                    " IS_PAID_ATTR.ATTR_ID = 19 AND " +
+                    " TICKET_SEANCE_REF.ATTR_ID = 20 AND" +
+                    " TICKET_PLACE_REF.ATTR_ID = 21 AND" +
+                    " TICKET_SEANCE_REF.OBJECT_ID = ?";
 
     String FIND_TICKET_BY_ID =
             "SELECT  obj.object_id AS id, attr_code.value AS code, attr_email.value AS email,\n" +
@@ -156,29 +156,31 @@ public interface TicketDaoQuery {
                     "   AND atype_seance.code = 'SEANCE_REF'\n" +
                     "   AND atype_place.code  = 'PLACE_REF'";
 
+    String FIND_CODE_TICKET = "SELECT code_number.nextval FROM DUAL";
+
     String DELETE_TICKET = "DELETE FROM objects WHERE object_id = ?";
 
     String DELETE_BLOCK_FOR_ONE_HOUR =
             "delete from objects obj_ticket where obj_ticket.object_id in (\n" +
-            "          select distinct obj_ticket.object_id\n" +
-            "          from objtype obj_type_seance, objtype obj_type_ticket, \n" +
-            "              objects obj_seance,\n" +
-            "              attributes attr_seance, objreference ref_seance, attributes attr_ticket,\n" +
-            "              attrtype atype_seance, attrtype atype_ticket\n" +
-            "          where obj_type_seance.code = 'SEANCE'\n" +
-            "              and obj_type_seance.object_type_id = obj_seance.object_type_id\n" +
-            "              and obj_seance.object_id = attr_seance.object_id\n" +
-            "              and attr_seance.attr_id = atype_seance.attr_id\n" +
-            "              and obj_type_ticket.code = 'TICKET'\n" +
-            "              and obj_type_ticket.object_type_id = obj_ticket.object_type_id\n" +
-            "              and obj_ticket.object_id = ref_seance.reference\n" +
-            "              and obj_seance.object_id = ref_seance.object_id\n" +
-            "              and obj_ticket.object_id = attr_ticket.object_id\n" +
-            "              and attr_ticket.attr_id = atype_ticket.attr_id\n" +
-            "              and atype_seance.code = 'DATE'\n" +
-            "              and atype_ticket.code = 'IS_PAID'\n" +
-            "              and to_date(attr_seance.date_value, 'DD-MM-YYYY HH24:MI:SS') < to_date(sysdate - 1/24, 'DD-MM-YYYY HH24:MI:SS')\n" +
-            "              and attr_ticket.value = 'FALSE')";
+                    "          select distinct obj_ticket.object_id\n" +
+                    "          from objtype obj_type_seance, objtype obj_type_ticket, \n" +
+                    "              objects obj_seance,\n" +
+                    "              attributes attr_seance, objreference ref_seance, attributes attr_ticket,\n" +
+                    "              attrtype atype_seance, attrtype atype_ticket\n" +
+                    "          where obj_type_seance.code = 'SEANCE'\n" +
+                    "              and obj_type_seance.object_type_id = obj_seance.object_type_id\n" +
+                    "              and obj_seance.object_id = attr_seance.object_id\n" +
+                    "              and attr_seance.attr_id = atype_seance.attr_id\n" +
+                    "              and obj_type_ticket.code = 'TICKET'\n" +
+                    "              and obj_type_ticket.object_type_id = obj_ticket.object_type_id\n" +
+                    "              and obj_ticket.object_id = ref_seance.reference\n" +
+                    "              and obj_seance.object_id = ref_seance.object_id\n" +
+                    "              and obj_ticket.object_id = attr_ticket.object_id\n" +
+                    "              and attr_ticket.attr_id = atype_ticket.attr_id\n" +
+                    "              and atype_seance.code = 'DATE'\n" +
+                    "              and atype_ticket.code = 'IS_PAID'\n" +
+                    "              and to_date(attr_seance.date_value, 'DD-MM-YYYY HH24:MI:SS') < to_date(sysdate - 1/24, 'DD-MM-YYYY HH24:MI:SS')\n" +
+                    "              and attr_ticket.value = 'FALSE')";
 
     String SAVE_TICKET = "SELECT Save_Ticket(?, ?, ?, ?, ?, ?, ?) FROM dual";
 

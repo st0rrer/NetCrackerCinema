@@ -27,6 +27,7 @@ public class HallDaoImpl implements HallDao {
     @Override
     public List<Hall> findAll() {
         List<Hall> halls = jdbcTemplate.query(FIND_ALL_SQL, new HallMapper());
+        LOGGER.info("Find all seances: found " + halls.size() + " seance objects");
         return halls;
     }
 

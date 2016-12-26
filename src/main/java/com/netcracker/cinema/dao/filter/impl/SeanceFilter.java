@@ -34,6 +34,11 @@ public class SeanceFilter extends AbstractFilter {
         return this;
     }
 
+    public SeanceFilter forMovieName(String movieName) {
+        wheres.add(Where.like("MOVIE.NAME", movieName));
+        return this;
+    }
+
     public SeanceFilter actual() {
         wheres.add(Where.greater("DATE_ATTR.DATE_VALUE", "SYSDATE"));
         return this;

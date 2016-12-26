@@ -28,7 +28,7 @@ public class PaymentView extends VerticalLayout implements View {
 
     private HorizontalLayout areaForCode;
     private TextField ticketCode;
-    private Button cleatTicketCode;
+    private Button clearTicketCode;
     private Button inputCode;
 
     private VerticalLayout areaForTicketsTable;
@@ -108,8 +108,8 @@ public class PaymentView extends VerticalLayout implements View {
         ticketCode.setImmediate(true);
         ticketCode.setMaxLength(16);
 
-        cleatTicketCode = new Button(FontAwesome.TIMES);
-        cleatTicketCode.addClickListener(e -> {
+        clearTicketCode = new Button(FontAwesome.TIMES);
+        clearTicketCode.addClickListener(e -> {
             ticketCode.clear();
             if(hasChildComponent(areaForTicketsTable)) {
                 areaForTicketsTable.removeAllComponents();
@@ -118,7 +118,7 @@ public class PaymentView extends VerticalLayout implements View {
         });
 
         CssLayout areaInputTicketCode = new CssLayout();
-        areaInputTicketCode.addComponents(ticketCode, cleatTicketCode);
+        areaInputTicketCode.addComponents(ticketCode, clearTicketCode);
         areaInputTicketCode.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 
         inputCode = new Button("Find tickets");

@@ -22,6 +22,8 @@ public interface TicketDao {
 
     void delete(long ticketId);
 
+    void getCode(long ticketCode);
+
     void deleteBlockForOneHour();
 
     long save(Ticket ticket);
