@@ -19,11 +19,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 
-/**
- * Created by dimka on 25.12.2016.
- */
 @SpringView(name = HallDetailsViewUser.VIEW_NAME, ui = UserUI.class)
-public class HallDetailsViewUser extends VerticalLayout implements View {
+public class HallDetailsViewUser extends HorizontalLayout implements View {
 
     public static final String VIEW_NAME = "details";
 
@@ -89,9 +86,8 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
         setMargin(true);
         setSpacing(true);
         ticketSelect.buildForThisSeance(seance);
-        if(UI.getCurrent().getUI().getClass() == UserUI.class) {
+        if (UI.getCurrent().getUI().getClass() == UserUI.class) {
             addSeanceInfo(seance);
-            addComponent(ticketSelect);
             addComponent(addButtonBook(seance));
         }
 
@@ -121,42 +117,36 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
     }
 
     private Component addButtonBook(Seance seance) {
-        GridLayout layout = new GridLayout();
+        VerticalLayout layout = new VerticalLayout();
+        layout.addComponent(ticketSelect);
         Button book = new Button("Book");
-        Ticket ticket = new Ticket();
         layout.addComponent(book);
         book.addClickListener(clickEvent -> {
+            TextField textField = new TextField("Enter your email:");
+            Button buttonEnter = new Button("OK");
             for (Place place : ticketSelect.getSelectedPlaces()) {
                 if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
                     return;
                 } else {
-                    layout.addComponent(emailBox(place, ticket, seance));
+                    Ticket ticket = new Ticket();
+                    textField.addTextChangeListener(textChangeEvent -> {
+                        textField.setValue(textChangeEvent.getText());
+                        textField.setNullSettingAllowed(true);
+                        ticket.setEmail(textField.getValue());
+                    });
+                    ticket.setId(ticket.getId());
+                    ticket.setPrice(144);
+                    ticket.setCode(ticket.getCode());
+                    ticket.setPlaceId(place.getId());
+                    ticket.setSeanceId(seance.getId());
+                    buttonEnter.addClickListener(clickEventt -> {
+                        ticketService.save(ticket);
+                    });
                 }
             }
+            layout.addComponent(textField);
+            layout.addComponent(buttonEnter);
         });
         return layout;
-    }
-
-    private Component emailBox(Place place, Ticket ticket, Seance seance) {
-        Button button = new Button("OK");
-        HorizontalLayout subContent = new HorizontalLayout();
-        subContent.setMargin(true);
-        subContent.setSpacing(true);
-        TextField textField = new TextField("Enter your email:");
-        textField.setValue("");
-        textField.addTextChangeListener(textChangeEvent -> {
-            ticket.setEmail(textField.getValue());
-        });
-        subContent.addComponent(textField);
-        subContent.addComponent(button);
-        button.addClickListener(clickEvent -> {
-            ticket.setEmail(textField.getValue());
-            ticket.setPrice(144);
-            ticket.setCode(7777);
-            ticket.setPlaceId(place.getId());
-            ticket.setSeanceId(seance.getId());
-            ticketService.save(ticket);
-        });
-        return subContent;
     }
 }
