@@ -5,10 +5,8 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.AdminUI;
-import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.sass.internal.selector.Selector;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.datefield.Resolution;
@@ -19,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -44,93 +41,155 @@ public class AdminSeanceView extends GridLayout implements View {
     @PostConstruct
     protected void init() {
 //        setRows(4);
-        setColumns(4);
+//        setColumns(10);
 
         InlineDateField calendar = new InlineDateField();
         calendar.setShowISOWeekNumbers(true);
         calendar.setValue(date);
 
-        Button button = new Button("Show seances");
-        button.addClickListener(e -> {
+        Button showButton = new Button("Show seances");
+        showButton.setWidth("270px");
+        showButton.addClickListener(e -> {
             date = calendar.getValue();
             sqlDate = new java.sql.Date(date.getTime());
             getHall(1, verticalLayout2);
             getHall(2, verticalLayout3);
         });
-        button.setWidth("270px");
 
-        Window subWindow = new Window("Add new seance");
-        subWindow.setContent(getComponents());
-        subWindow.center();
-        subWindow.setHeight("380");
-        subWindow.setWidth("600");
-        subWindow.setResizable(false);
+        Window subWindow = getSubWindow(new Seance());
 
-        final Button open = new Button("Add new seance");
-        open.addClickListener(e -> UI.getCurrent().addWindow(subWindow));
+        Button windowButton = new Button("Add new seance");
+        windowButton.setWidth("270px");
+        windowButton.addClickListener(e -> UI.getCurrent().addWindow(subWindow));
 
         verticalLayout1.setSpacing(true);
         verticalLayout1.setMargin(true);
-        verticalLayout1.addComponents(calendar, button, open);
+        verticalLayout1.addComponents(calendar, showButton, windowButton);
 
         getHall(1, verticalLayout2);
         getHall(2, verticalLayout3);
 
-        addComponents(verticalLayout1, verticalLayout2, verticalLayout3);
+        verticalLayout1.setWidth("380px");
+        verticalLayout2.setWidth("600px");
+        verticalLayout3.setWidth("600px");
+
+//        addComponents(verticalLayout1, verticalLayout2, verticalLayout3);
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.addComponents(verticalLayout1, verticalLayout2, verticalLayout3);
+        addComponent(horizontalLayout);
+
         setSizeFull();
     }
 
-    private Layout getComponents() {
+    private Window getSubWindow(Seance seance) {
+        Window subWindow = new Window();
+        if (seance.getId() == 0) {
+            subWindow.setCaption("Add new seance");
+        } else {
+            subWindow.setCaption("Change seance");
+        }
+
+        subWindow.setContent(getComponents(seance));
+        subWindow.center();
+        subWindow.setHeight("350px");
+        subWindow.setWidth("500px");
+        subWindow.setResizable(false);
+        return subWindow;
+    }
+
+    private Layout getComponents(Seance seance) {
         List<Movie> movieList = movieService.findAll();
 
-        VerticalLayout subContent2 = new VerticalLayout();
+        AbsoluteLayout layout = new AbsoluteLayout();
+
+        VerticalLayout poster = new VerticalLayout();
+        poster.setWidth("160px");
 
         VerticalLayout subContent = new VerticalLayout();
+        subContent.setWidth("250px");
         subContent.setSpacing(true);
-        subContent.setMargin(true);
 
-        DateField seanceDate = new DateField("Select date:");
+        DateField seanceDate = new DateField("Date:");
         seanceDate.setResolution(Resolution.MINUTE);
-        seanceDate.setWidth("240px");
+        seanceDate.setWidth("250px");
 
-        ComboBox movieName = new ComboBox("Select movie");
+        NativeSelect hallId = new NativeSelect("Hall:");
+        hallId.setNullSelectionAllowed(false);
+        hallId.addItems(1, 2);
+
+        ComboBox movieName = new ComboBox("Movie:");
         movieName.setFilteringMode(FilteringMode.CONTAINS);
         movieName.setInputPrompt("start type...");
-        movieName.setWidth("240px");
+        movieName.setNullSelectionAllowed(false);
+        movieName.setWidth("250px");
         for (Movie movie : movieList) {
             movieName.addItem(movie.getName());
         }
         movieName.addBlurListener(e -> {
-            subContent2.removeAllComponents();
+            poster.removeAllComponents();
             for (Movie movie : movieList) {
                 if (movie.getName().equals(movieName.getValue())) {
-                    subContent2.addComponent(createPoster(movie, "250px"));
+                    poster.addComponent(createPoster(movie, "220px"));
                 }
             }
         });
 
-        NativeSelect hallId = new NativeSelect("Select hall");
-        hallId.addItems(1, 2);
+        Button eraseButton = new Button("Erase all");
+        eraseButton.setWidth("150px");
+        eraseButton.addClickListener(e -> {
+            hallId.setValue(null);
+            movieName.setValue(null);
+            seanceDate.setValue(null);
+            poster.removeAllComponents();
+        });
 
-        Button save = new Button("Save seance");
-        save.addClickListener(e -> {
+        if (seance != null && seance.getId() != 0) {
+            seanceDate.setValue(seance.getSeanceDate());
+            hallId.setValue(seance.getHallId());
+            for (Movie movie : movieList) {
+                if (movie.getId() == seance.getMovieId()) {
+                    movieName.setValue(movie.getName());
+                }
+            }
+        }
+
+        Button saveButton = new Button("Save seance");
+        saveButton.setWidth("250px");
+        saveButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        saveButton.addClickListener(e -> {
             for (Movie movie : movieList) {
                 if (movie.getName().equals(movieName.getValue())) {
-                    Seance newSeance = new Seance();
-                    newSeance.setSeanceDate(seanceDate.getValue());
-                    newSeance.setMovieId(movie.getId());
-                    newSeance.setHallId(Long.parseLong(hallId.getValue().toString()));
-                    seanceService.save(newSeance);
+                    Seance sc = (seance.getId() == 0 ? new Seance() : seance);
+                    long oldId = sc.getId();
+                    Date oldDate = sc.getSeanceDate();
+                    sc.setSeanceDate(seanceDate.getValue());
+                    sc.setMovieId(movie.getId());
+                    sc.setHallId(Long.parseLong(hallId.getValue().toString()));
+                    seanceService.save(sc);
+                    if (dateFormat.format(date).equals(dateFormat.format(sc.getSeanceDate())) ||
+                            (oldDate != null &&
+                                    dateFormat.format(date).equals(dateFormat.format(oldDate)))) {
+                        getHall(1, verticalLayout2);
+                        getHall(2, verticalLayout3);
+                    }
+                    if (oldId == 0) {
+                        sc.setId(0);
+                    }
+                    Notification.show("Success!");
                     break;
                 }
             }
         });
-        subContent.addComponents(seanceDate, movieName, hallId, save);
 
-        HorizontalLayout horizontSub = new HorizontalLayout();
-        horizontSub.addComponents(subContent, subContent2);
+        subContent.addComponents(hallId, movieName, seanceDate);
 
-        return horizontSub;
+        layout.addComponent(subContent, "left: 20px; top: 10px;");
+        layout.addComponent(poster, "right: 20px; top: 10px;");
+        layout.addComponent(eraseButton, "left: 20px; bottom: 20px;");
+        layout.addComponent(saveButton, "right: 20px; bottom: 20px;");
+
+        return layout;
     }
 
     private void getHall(long hallId, VerticalLayout layout) {
@@ -147,11 +206,12 @@ public class AdminSeanceView extends GridLayout implements View {
         VerticalLayout verticalLayout = new VerticalLayout();
         for (Seance seance : seanceList) {
             HorizontalLayout horizontalLayout = getSeanceRow(seance);
+            horizontalLayout.setMargin(true);
             verticalLayout.addComponent(horizontalLayout);
         }
 
         Panel hallPanel = new Panel();
-        hallPanel.setHeight("720px");
+        hallPanel.setHeight("750px");
         hallPanel.setContent(verticalLayout);
 
         layout.addComponents(hallLabel, dateLabel, hallPanel);
@@ -163,16 +223,55 @@ public class AdminSeanceView extends GridLayout implements View {
         Movie movie = movieService.getById(seance.getMovieId());
 
         VerticalLayout movieInfo = new VerticalLayout();
-        movieInfo.setWidth("170px");
+        movieInfo.setWidth("200px");
         Label name = new Label(movie.getName());
         Label time = new Label(timeFormat.format(seance.getSeanceDate()));
         movieInfo.addComponents(name, time);
+        Window subWindow = getSubWindow(seance);
+        Button editButton = new Button("Edit");
+        editButton.addClickListener(e -> UI.getCurrent().addWindow(subWindow));
+        Button removeButton = new Button("Remove");
+        removeButton.addClickListener(e -> UI.getCurrent().addWindow(confirmWindow(seance)));
 
-        Button edit = new Button("Edit");
-        Button remove = new Button("Remove");
-
-        horizontalLayout.addComponents(createPoster(movie, "80px"), movieInfo, edit, remove);
+        horizontalLayout.addComponents(
+                createPoster(movie, "80px"), movieInfo, editButton, removeButton);
         return horizontalLayout;
+    }
+
+    private Window confirmWindow(Seance seance) {
+        Window removalWindow = new Window("Confirm erasing");
+        removalWindow.setHeight("200px");
+        removalWindow.setWidth("400px");
+        removalWindow.setResizable(false);
+        removalWindow.setModal(true);
+        removalWindow.center();
+
+        Label seanceDate = new Label();
+        seanceDate.setValue("Seance date: " + seance.getSeanceDate());
+        Label message = new Label();
+        message.setValue("Do you really want to delete this seance?");
+        Button yesButton = new Button("Yes");
+        yesButton.addClickListener(e -> {
+            seanceService.delete(seance);
+            removalWindow.close();
+            getHall(seance.getHallId(),
+                    seance.getHallId() == 1 ? verticalLayout2 : verticalLayout3);
+            Notification.show("Seance deleted");
+        });
+        Button noButton = new Button("No");
+        noButton.addClickListener(e -> removalWindow.close());
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(true);
+        horizontalLayout.addComponents(yesButton, noButton);
+
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.addComponents(seanceDate, message, horizontalLayout);
+        verticalLayout.setMargin(true);
+        verticalLayout.setSpacing(true);
+
+        removalWindow.setContent(verticalLayout);
+        return removalWindow;
     }
 
     private Component createPoster(Movie movie, String height) {
