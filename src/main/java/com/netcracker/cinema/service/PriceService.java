@@ -17,4 +17,6 @@ public interface PriceService {
 
     void delete(Price price);
 
+    int getPriceBySeanceColRow(int seanceId, int col, int row);
+
 }

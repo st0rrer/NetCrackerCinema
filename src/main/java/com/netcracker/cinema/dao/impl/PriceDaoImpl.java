@@ -64,6 +64,11 @@ public class PriceDaoImpl implements PriceDao {
         LOGGER.info("Delete price: affected " + affected + " rows");
     }
 
+    @Override
+    public int getPriceBySeanceColRow(int seanceId, int col, int row) {
+        return jdbcTemplate.queryForObject(SELECT_PRICE_SEANCE_COL_ROW, new Object[]{ String.valueOf(col), String.valueOf(row), seanceId}, Integer.class);
+    }
+
     class PriceMapper implements RowMapper<Price> {
         @Override
         public Price mapRow(ResultSet resultSet, int i) throws SQLException {

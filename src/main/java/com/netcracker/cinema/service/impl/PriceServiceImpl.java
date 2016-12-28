@@ -43,4 +43,9 @@ public class PriceServiceImpl implements PriceService {
     public void delete(Price price) {
         priceDao.delete(price);
     }
+
+    @Override
+    public int getPriceBySeanceColRow(int seanceId, int col, int row) {
+        return priceDao.getPriceBySeanceColRow(seanceId, col, row);
+    }
 }

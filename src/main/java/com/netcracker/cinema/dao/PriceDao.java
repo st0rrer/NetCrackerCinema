@@ -17,4 +17,6 @@ public interface PriceDao {
 
     void delete(Price price);
 
+    int getPriceBySeanceColRow(int seanceId, int col, int row);
+
 }

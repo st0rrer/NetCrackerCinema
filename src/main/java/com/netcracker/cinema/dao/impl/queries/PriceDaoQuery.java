@@ -131,4 +131,45 @@ public interface PriceDaoQuery {
     String SELECT_ID_FOR_INSERTED_PRICE =
             " SELECT GET_OBJ_ID.CURRVAL FROM DUAL ";
 
+    String SELECT_PRICE_SEANCE_COL_ROW =
+            "SELECT ATTR_PRICE.VALUE PRICE\n" +
+                    "FROM OBJTYPE OBJ_TYPE_PRICE, OBJTYPE OBJ_TYPE_PLACE, OBJTYPE OBJ_TYPE_ZONE,\n" +
+                    "     OBJECTS OBJ_PRICE, OBJECTS OBJ_PLACE, OBJECTS OBJ_ZONE,\n" +
+                    "     ATTRIBUTES ATTR_PRICE,  ATTRIBUTES ATTR_PLACE_COL, ATTRIBUTES ATTR_PLACE_ROW,\n" +
+                    "     OBJREFERENCE REF_ZONE, OBJREFERENCE REF_SEANCE, OBJREFERENCE REF_ZONE_PLACE,\n" +
+                    "     ATTRTYPE AT_PRICE, ATTRTYPE AT_ZONE, ATTRTYPE AT_SEANCE, ATTRTYPE AT_ZONE_PLACE, ATTRTYPE AT_PLACE_COL, ATTRTYPE AT_PLACE_ROW\n" +
+                    "WHERE\n" +
+                    "  OBJ_TYPE_PRICE.CODE = 'PRICE'\n" +
+                    "  AND OBJ_TYPE_PRICE.OBJECT_TYPE_ID = OBJ_PRICE.OBJECT_TYPE_ID\n" +
+                    "  AND OBJ_PRICE.OBJECT_ID = ATTR_PRICE.OBJECT_ID\n" +
+                    "  AND ATTR_PRICE.ATTR_ID = AT_PRICE.ATTR_ID\n" +
+                    "  AND AT_PRICE.CODE = 'PRICE'\n" +
+                    "  AND OBJ_PRICE.OBJECT_ID = REF_ZONE.REFERENCE\n" +
+                    "  AND REF_ZONE.ATTR_ID = AT_ZONE.ATTR_ID\n" +
+                    "  AND AT_ZONE.CODE = 'ZONE_REF'\n" +
+                    "  AND OBJ_PRICE.OBJECT_ID = REF_SEANCE.REFERENCE\n" +
+                    "  AND REF_SEANCE.ATTR_ID = AT_SEANCE.ATTR_ID\n" +
+                    "  AND AT_SEANCE.CODE = 'SEANCE_REF'\n" +
+                    "  \n" +
+                    "  AND OBJ_TYPE_ZONE.CODE = 'ZONE'\n" +
+                    "  AND OBJ_TYPE_ZONE.OBJECT_TYPE_ID = OBJ_ZONE.OBJECT_TYPE_ID\n" +
+                    "  \n" +
+                    "  AND OBJ_TYPE_PLACE.CODE = 'PLACE'\n" +
+                    "  AND OBJ_TYPE_PLACE.OBJECT_TYPE_ID = OBJ_PLACE.OBJECT_TYPE_ID\n" +
+                    "  AND OBJ_PLACE.OBJECT_ID = REF_ZONE_PLACE.REFERENCE\n" +
+                    "  AND REF_ZONE_PLACE.ATTR_ID = AT_ZONE_PLACE.ATTR_ID\n" +
+                    "  AND AT_ZONE_PLACE.CODE = 'ZONE_REF'\n" +
+                    "  AND OBJ_PLACE.OBJECT_ID = ATTR_PLACE_COL.OBJECT_ID\n" +
+                    "  AND ATTR_PLACE_COL.ATTR_ID = AT_PLACE_COL.ATTR_ID\n" +
+                    "  AND AT_PLACE_COL.CODE = 'NUMBER'\n" +
+                    "  AND OBJ_PLACE.OBJECT_ID = ATTR_PLACE_ROW.OBJECT_ID\n" +
+                    "  AND ATTR_PLACE_ROW.ATTR_ID = AT_PLACE_ROW.ATTR_ID\n" +
+                    "  AND AT_PLACE_ROW.CODE = 'ROW'\n" +
+                    "  \n" +
+                    "  AND REF_ZONE.OBJECT_ID = OBJ_ZONE.OBJECT_ID\n" +
+                    "  AND OBJ_ZONE.OBJECT_ID = REF_ZONE_PLACE.OBJECT_ID\n" +
+                    "  AND ATTR_PLACE_COL.VALUE = ?\n" +
+                    "  AND ATTR_PLACE_ROW.VALUE = ?\n" +
+                    "  AND REF_SEANCE.OBJECT_ID = ?";
+
 }
