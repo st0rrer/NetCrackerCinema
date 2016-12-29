@@ -2,8 +2,8 @@
 
 CREATE OR REPLACE FUNCTION Sold_Tickets
   ( obj_id_in IN VARCHAR2
-    ,	start_date_in IN DATE
-    ,	end_date_in IN DATE
+  ,	start_date_in IN DATE
+  ,	end_date_in IN DATE
   )
   RETURN INTEGER
 IS
@@ -11,8 +11,8 @@ IS
   quantity INTEGER(6);
   BEGIN
     SELECT OBJTYPE.CODE INTO entity
-    FROM OBJTYPE JOIN OBJECTS obj ON obj.OBJECT_TYPE_ID = OBJTYPE.OBJECT_TYPE_ID
-    WHERE obj.OBJECT_ID = obj_id_in;
+      FROM OBJTYPE JOIN OBJECTS obj ON obj.OBJECT_TYPE_ID = OBJTYPE.OBJECT_TYPE_ID
+      WHERE obj.OBJECT_ID = obj_id_in;
     IF entity = 'ZONE' THEN
       SELECT COUNT(tick_obj.NAME) INTO quantity
       FROM OBJTYPE tick_obj_typ
@@ -36,7 +36,7 @@ IS
             AND place_obj_typ.CODE = 'PLACE'
             AND sc_atyp.CODE = 'DATE'
             AND sc_attr.DATE_VALUE BETWEEN start_date_in
-            AND end_date_in
+                                       AND end_date_in
             AND zone_obj.OBJECT_ID = obj_id_in;
     ELSIF entity = 'HALL' OR entity = 'MOVIE' THEN
       SELECT COUNT(tick_obj.NAME) INTO quantity
@@ -57,7 +57,7 @@ IS
             AND tick_atyp.VALUE = 'TRUE'
             AND sc_atyp.CODE = 'DATE'
             AND sc_attr.DATE_VALUE BETWEEN start_date_in
-            AND end_date_in
+                                       AND end_date_in
             AND hm_obj.OBJECT_ID = obj_id_in;
     ELSE
       RETURN -1;
