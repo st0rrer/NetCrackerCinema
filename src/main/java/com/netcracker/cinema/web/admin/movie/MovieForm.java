@@ -1,4 +1,4 @@
-package com.netcracker.cinema.web.adminModifyMovie;
+package com.netcracker.cinema.web.admin.movie;
 
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.service.MovieService;
