@@ -17,6 +17,6 @@ public interface SeanceService {
     void save(Seance seance);
     Paginator<Seance> getPaginator(int pageSize);
     Paginator<Seance> getPaginator(int pageSize, SeanceFilter seanceFilter);
-    boolean editableSeance(long id);
-    boolean checkDate(long filmId, long seanceId);
+    boolean editableSeance(long seanceId);
+    boolean checkDate(Seance seance);
 }
