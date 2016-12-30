@@ -71,17 +71,15 @@ public class SeanceServiceImpl implements SeanceService {
     }
 
     @Override
-    public boolean editableSeance(long id) {
-        List<Ticket> list = ticketService.getBySeance(id);
-        return !(list.size()> 0);
+    public boolean editableSeance(long seanceId) {
+        List<Ticket> list = ticketService.getBySeance(seanceId);
+        return list.size() == 0;
     }
 
     @Override
-    public boolean checkDate(long filmId, long seanceId) {
-        Movie movie = movieService.getById(filmId);
-        if(seanceDao.getById(seanceId).getSeanceDate().compareTo(movie.getStartDate()) >= 0){
-            return true;
-        } else return false;
+    public boolean checkDate(Seance seance) {
+        Movie movie = movieService.getById(seance.getMovieId());
+        return (seance.getSeanceDate().after(movie.getStartDate()) &&
+                seance.getSeanceDate().before(movie.getEndDate()));
     }
-
 }
