@@ -32,7 +32,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
 
     @Autowired
     private SeanceService seanceService;
-    private Seance seance;// = new Seance();
+    private Seance seance;
     @Autowired
     private MovieService movieService;
     private List<Movie> movieList;
@@ -149,7 +149,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
                 if (movie.getName().equals(movieName.getValue())) {
                     poster.addComponent(createPoster(movie, "170px"));
                     Label startDate = new Label("start: " + dateFormat.format(movie.getStartDate()));
-                    Label endDate = new Label("finish: " + dateFormat.format(movie.getEndDate()));
+                    Label endDate = new Label("final: " + dateFormat.format(movie.getEndDate()));
                     poster.addComponents(startDate, endDate);
                 }
             }
