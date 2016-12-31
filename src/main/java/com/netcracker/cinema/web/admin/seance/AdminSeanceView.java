@@ -41,7 +41,6 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     private java.sql.Date sqlDate = new java.sql.Date(date.getTime());
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-    private FormLayout formLayout;
     private VerticalLayout verticalLayout1 = new VerticalLayout();
     private VerticalLayout verticalLayout2 = new VerticalLayout();
     private VerticalLayout verticalLayout3 = new VerticalLayout();
@@ -55,10 +54,6 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         InlineDateField calendar = new InlineDateField();
         calendar.setShowISOWeekNumbers(true);
         calendar.setValue(date);
-//        DateRangeValidator validator = new DateRangeValidator("Wrong date",
-//                new Date(System.currentTimeMillis()), new Date(Long.MAX_VALUE), Resolution.DAY);
-//        if (validator.isValid(calendar.getValue())) {
-//        }
 
         Button showButton = new Button("Show seances");
         showButton.setWidth("270px");
@@ -68,8 +63,6 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             getHall(1, verticalLayout2);
             getHall(2, verticalLayout3);
         });
-
-//        subWindow = getSubWindow(seance);
 
         Button windowButton = new Button("Add new seance");
         windowButton.setWidth("270px");
@@ -209,6 +202,14 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     }
 
     private void saveSeance(Seance newSeance) {
+        Date minDate = new Date(System.currentTimeMillis() + 7_200_000);   //  current date + 2 hours
+        if (newSeance.getSeanceDate().before(minDate)) {
+            String message = "Date can't be less than " + dateFormat.format(minDate) +
+                    " " + timeFormat.format(minDate);
+            notificationForWrongDate(message);
+            return;
+        }
+
         long oldId = seance.getId();
         if (oldId == 0 || seanceService.editableSeance(oldId)) {
             newSeance.setId(oldId);
@@ -228,13 +229,13 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             }
             Notification.show("Success!");
         } else {
-            notificationForWrongSeanceDate();
+            String message = "Date of seance should be between" + LineSeparator.Windows +
+                    "start and final dates of selected movie.";
+            notificationForWrongDate(message);
         }
     }
 
-    private void notificationForWrongSeanceDate() {
-        String message = "Date of seance should be between"
-                + LineSeparator.Windows + "start and final dates of selected movie.";
+    private void notificationForWrongDate(String message) {
         Notification.show("Invalid date", message, Notification.Type.TRAY_NOTIFICATION);
     }
 
@@ -263,7 +264,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         }
 
         Panel hallPanel = new Panel();
-        hallPanel.setHeight("750px");
+        hallPanel.setHeight("775px");
         hallPanel.setContent(verticalLayout);
 
         layout.addComponents(hallLabel, dateLabel, hallPanel);
