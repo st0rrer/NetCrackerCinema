@@ -1,4 +1,4 @@
-package com.netcracker.cinema.web.adminModifyMovie;
+package com.netcracker.cinema.web.admin.movie;
 
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.service.MovieService;
@@ -25,7 +25,7 @@ import java.util.List;
 @SpringView(name = ModifyAdminMovieView.VIEW_NAME, ui = AdminUI.class)
 @Theme("valo")
 public class ModifyAdminMovieView extends VerticalLayout implements View {
-    public static final String VIEW_NAME = "admin_movie";
+    public static final String VIEW_NAME = "";
     @Autowired
     private MovieService movieService;
     private Grid grid = new Grid();
