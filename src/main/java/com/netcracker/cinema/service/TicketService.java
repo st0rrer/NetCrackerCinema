@@ -2,7 +2,7 @@ package com.netcracker.cinema.service;
 
 import com.netcracker.cinema.model.Ticket;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,5 +34,4 @@ public interface TicketService {
     int soldTickets(long objId, Date startDate, Date endDate);
 
     void deleteBlockForOneHour();
-
 }

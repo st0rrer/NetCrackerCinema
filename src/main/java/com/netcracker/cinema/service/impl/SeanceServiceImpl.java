@@ -1,5 +1,6 @@
 package com.netcracker.cinema.service.impl;
 
+import com.netcracker.cinema.dao.Paginator;
 import com.netcracker.cinema.dao.SeanceDao;
 import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Movie;
@@ -7,16 +8,20 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
-import com.netcracker.cinema.dao.Paginator;
 import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 //TODO: need to think about transactional
 public class SeanceServiceImpl implements SeanceService {
+    private final long START_TIME_OF_WORKING_DAY = 10_00;
+    private final long LAST_START_TIME_OF_SEANCE = 22_00;
+    private final long TWENTY_MINUTES_FOR_CLEANING = 1_200_000;
 
     private SeanceDao seanceDao;
     @Autowired
@@ -46,7 +51,7 @@ public class SeanceServiceImpl implements SeanceService {
 
     @Override
     public List<Seance> getByHallAndDate(long id, Date date) {
-        return seanceDao.getByHallAndDate(id, date);
+        return seanceDao.getByHallAndDate(id, new java.sql.Date(date.getTime()));
     }
 
     @Override
@@ -81,5 +86,39 @@ public class SeanceServiceImpl implements SeanceService {
         Movie movie = movieService.getById(seance.getMovieId());
         return (seance.getSeanceDate().after(movie.getStartDate()) &&
                 seance.getSeanceDate().before(movie.getEndDate()));
+    }
+
+    @Override
+    public boolean checkIfInWorkingTime(Seance seance) {
+        DateFormat timeFormat = new SimpleDateFormat("HHmm");
+        int time = Integer.parseInt(timeFormat.format(seance.getSeanceDate()));
+        return time >= START_TIME_OF_WORKING_DAY && time <= LAST_START_TIME_OF_SEANCE;
+    }
+
+    @Override
+    public boolean checkIfHallIsFree(Seance newSeance) {
+        List<Seance> seanceList = getByHallAndDate(newSeance.getHallId(), newSeance.getSeanceDate());
+        if (seanceList.size() != 0) {
+            for (Seance existingSeance : seanceList) {
+                if (newSeance.getId() != existingSeance.getId()) {
+                    Movie movieOfNewSeance = movieService.getById(newSeance.getMovieId());
+                    Movie movieOfExistingSeance = movieService.getById(existingSeance.getMovieId());
+
+                    Date startDateOfNewSeance = newSeance.getSeanceDate();
+                    Date endDateOfNewSeance = new java.util.Date(startDateOfNewSeance.getTime() +
+                            movieOfNewSeance.getDuration() * 60_000 + TWENTY_MINUTES_FOR_CLEANING);
+                    Date startDateOfExistingSeance = existingSeance.getSeanceDate();
+                    Date endDateOfExistingSeance = new java.util.Date(startDateOfExistingSeance.getTime() +
+                            movieOfExistingSeance.getDuration() * 60_000 + TWENTY_MINUTES_FOR_CLEANING);
+
+                    if (startDateOfNewSeance.after(startDateOfExistingSeance) && startDateOfNewSeance.before(endDateOfExistingSeance) ||
+                            endDateOfNewSeance.after(startDateOfExistingSeance) && endDateOfNewSeance.before(endDateOfExistingSeance) ||
+                            startDateOfNewSeance.before(startDateOfExistingSeance) && endDateOfNewSeance.after(endDateOfExistingSeance)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

@@ -4,9 +4,8 @@ import com.netcracker.cinema.dao.TicketDao;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,7 +56,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public int soldTickets(long objId, Date startDate, Date endDate) {
-        return ticketDao.soldTickets(objId, startDate, endDate);
+        return ticketDao.soldTickets(objId,
+                new java.sql.Date(startDate.getTime()), new java.sql.Date(endDate.getTime()));
     }
 
     @Override

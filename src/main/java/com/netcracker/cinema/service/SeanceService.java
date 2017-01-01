@@ -5,7 +5,7 @@ import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.dao.Paginator;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 public interface SeanceService {
@@ -19,4 +19,6 @@ public interface SeanceService {
     Paginator<Seance> getPaginator(int pageSize, SeanceFilter seanceFilter);
     boolean editableSeance(long seanceId);
     boolean checkDate(Seance seance);
+    boolean checkIfInWorkingTime(Seance seance);
+    boolean checkIfHallIsFree(Seance newSeance);
 }

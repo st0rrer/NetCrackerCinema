@@ -6,7 +6,6 @@ import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.AdminUI;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
-import com.vaadin.data.validator.DateRangeValidator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -18,6 +17,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
@@ -38,9 +38,8 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     private List<Movie> movieList;
 
     private Date date = new Date(System.currentTimeMillis());
-    private java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+    private DateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private VerticalLayout verticalLayout1 = new VerticalLayout();
     private VerticalLayout verticalLayout2 = new VerticalLayout();
     private VerticalLayout verticalLayout3 = new VerticalLayout();
@@ -59,7 +58,6 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         showButton.setWidth("270px");
         showButton.addClickListener(e -> {
             date = calendar.getValue();
-            sqlDate = new java.sql.Date(date.getTime());
             getHall(1, verticalLayout2);
             getHall(2, verticalLayout3);
         });
@@ -186,7 +184,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
                     newSeance.setSeanceDate(seanceDate.getValue());
                     newSeance.setHallId(Long.parseLong(hallId.getValue().toString()));
                     newSeance.setMovieId(movie.getId());
-                    saveSeance(newSeance);
+                    checks(newSeance);
                 }
             }
         });
@@ -201,11 +199,18 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         return layout;
     }
 
-    private void saveSeance(Seance newSeance) {
+    private void checks(Seance newSeance) {
         Date minDate = new Date(System.currentTimeMillis() + 7_200_000);   //  current date + 2 hours
         if (newSeance.getSeanceDate().before(minDate)) {
             String message = "Date can't be less than " + dateFormat.format(minDate) +
                     " " + timeFormat.format(minDate);
+            notificationForWrongDate(message);
+            return;
+        }
+
+        if (!seanceService.checkIfInWorkingTime(newSeance)) {
+            String message = "Start time of seance should be" +
+                    LineSeparator.Windows + "between 10:00 and 22:00 o'clock.";
             notificationForWrongDate(message);
             return;
         }
@@ -215,6 +220,12 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             newSeance.setId(oldId);
         } else {
             notificationForUnmodifiedSeance();
+            return;
+        }
+
+        if (!seanceService.checkIfHallIsFree(newSeance)) {
+            String message = "There is other movie in this hall in the same time.";
+            notificationForWrongDate(message);
             return;
         }
 
@@ -246,7 +257,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     }
 
     private void getHall(long hallId, VerticalLayout layout) {
-        List<Seance> seanceList = seanceService.getByHallAndDate(hallId, sqlDate);
+        List<Seance> seanceList = seanceService.getByHallAndDate(hallId, date);
         seanceList.sort(Comparator.comparing(Seance::getSeanceDate));
         layout.removeAllComponents();
         layout.setSpacing(true);
@@ -278,8 +289,10 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         VerticalLayout movieInfo = new VerticalLayout();
         movieInfo.setWidth("200px");
         Label name = new Label(movie.getName());
-        Label time = new Label(timeFormat.format(seance.getSeanceDate()));
-        movieInfo.addComponents(name, time);
+        Label beginTime = new Label("Begin: " + timeFormat.format(seance.getSeanceDate()));
+        Date endDate = new Date(seance.getSeanceDate().getTime() + movie.getDuration() * 60_000);
+        Label endTime = new Label("End: " + timeFormat.format(endDate) + " + 20min");
+        movieInfo.addComponents(name, beginTime, endTime);
 
         Button editButton = new Button("Edit");
         editButton.setEnabled(seanceService.editableSeance(seance.getId()));
