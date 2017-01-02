@@ -111,7 +111,9 @@ public class SeanceServiceImpl implements SeanceService {
                     Date endDateOfExistingSeance = new java.util.Date(startDateOfExistingSeance.getTime() +
                             movieOfExistingSeance.getDuration() * 60_000 + TWENTY_MINUTES_FOR_CLEANING);
 
-                    if (startDateOfNewSeance.after(startDateOfExistingSeance) && startDateOfNewSeance.before(endDateOfExistingSeance) ||
+                    if (startDateOfNewSeance.compareTo(startDateOfExistingSeance) == 0 ||
+                            endDateOfNewSeance.compareTo(endDateOfExistingSeance) == 0 ||
+                            startDateOfNewSeance.after(startDateOfExistingSeance) && startDateOfNewSeance.before(endDateOfExistingSeance) ||
                             endDateOfNewSeance.after(startDateOfExistingSeance) && endDateOfNewSeance.before(endDateOfExistingSeance) ||
                             startDateOfNewSeance.before(startDateOfExistingSeance) && endDateOfNewSeance.after(endDateOfExistingSeance)) {
                         return false;
