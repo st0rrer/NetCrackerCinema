@@ -12,7 +12,7 @@ import com.vaadin.ui.VerticalLayout;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Theme("valo")
+@Theme("cinema")
 @SpringUI
 public class UserUI extends UI {
     private static final Logger logger = Logger.getLogger(UserUI.class);
