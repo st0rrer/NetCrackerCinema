@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringUI(path = "/admin")
-@Theme("valo")
+@Theme("cinema")
 public class AdminUI extends UI {
     private static final Logger logger = Logger.getLogger(AdminUI.class);
 

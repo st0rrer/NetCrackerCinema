@@ -22,11 +22,18 @@ import java.util.Set;
 @SpringComponent
 @UIScope
 public class TicketSelect extends GridLayout {
-    private static final String SELECTED_PLACE_STYLE = "danger";
-    private static final String UNSELECTED_PLACE_STYLE = "primary";
+    private static final String PLACE_STYLE = "place-button";
+    private static final String SELECTED_PLACE_STYLE = "selected-place";
+    private static final String ZONE_ONE_PLACE_STYLE = "zone-1-button";
+    private static final String ZONE_TWO_PLACE_STYLE = "zone-2-button";
+    private static final String ZONE_THREE_PLACE_STYLE = "zone-3-button";
     private Seance seance;
     private List<PlaceButton> placeButtons;
     private Set<PlaceSelectedListener> listeners;
+
+    private Zone zoneOneStyled;
+    private Zone zoneTwoStyled;
+    private Zone zoneThreeStyled;
 
     @Autowired
     private PlaceService placeService;
@@ -36,6 +43,9 @@ public class TicketSelect extends GridLayout {
     private ZoneService zoneService;
 
     public void buildForThisSeance(Seance seance) {
+        zoneOneStyled = null;
+        zoneTwoStyled = null;
+        zoneThreeStyled = null;
         this.seance = seance;
         listeners = new HashSet<>();
         List<Place> places = placeService.getByHall(seance.getHallId());
@@ -88,22 +98,29 @@ public class TicketSelect extends GridLayout {
             this.place = place;
             this.selected = false;
             Zone placeZone = zoneService.getById(place.getZoneId());
-            setCaption(placeZone.getName() + " " + place.getRowNumber() + " " + place.getNumber());
-            //todo: maybe better use own css styles
-            setWidth("100px");
-            if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
-                setStyleName(SELECTED_PLACE_STYLE);
-                setEnabled(false);
-            } else {
-                setStyleName(UNSELECTED_PLACE_STYLE);
+            setStyleName(PLACE_STYLE);
+
+            if(zoneOneStyled == null || zoneOneStyled.equals(placeZone)) {
+                zoneOneStyled = placeZone;
+                addStyleName(ZONE_ONE_PLACE_STYLE);
+            } else if(zoneTwoStyled == null || zoneTwoStyled.equals(placeZone)) {
+                zoneTwoStyled = placeZone;
+                addStyleName(ZONE_TWO_PLACE_STYLE);
+            } else if(zoneThreeStyled == null || zoneThreeStyled.equals(placeZone)) {
+                zoneThreeStyled = placeZone;
+                addStyleName(ZONE_THREE_PLACE_STYLE);
             }
 
+            setCaption(place.getRowNumber() + " " + place.getNumber());
+            if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
+                setEnabled(false);
+            }
             addClickListener((ClickListener) event -> {
                 selected = !selected;
                 if (selected) {
-                    setStyleName(SELECTED_PLACE_STYLE);
+                    addStyleName(SELECTED_PLACE_STYLE);
                 } else {
-                    setStyleName(UNSELECTED_PLACE_STYLE);
+                    removeStyleName(SELECTED_PLACE_STYLE);
                 }
 
                 for(PlaceSelectedListener placeSelectedListener: listeners) {
