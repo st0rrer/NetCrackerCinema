@@ -1,0 +1,122 @@
+// If you edit this file you need to compile the theme. See README.md for details.
+
+// Global variable overrides. Must be declared before importing Valo.
+
+// Defines the plaintext font size, weight and family. Font size affects general component sizing.
+//$v-font-size: 16px;
+//$v-font-weight: 300;
+//$v-font-family: "Open Sans", sans-serif;
+
+// Defines the border used by all components.
+//$v-border: 1px solid (v-shade 0.7);
+//$v-border-radius: 4px;
+
+// Affects the color of some component elements, e.g Button, Panel title, etc
+//$v-background-color: hsl(210, 0%, 98%);
+// Affects the color of content areas, e.g  Panel and Window content, TextField input etc
+//$v-app-background-color: $v-background-color;
+
+// Affects the visual appearance of all components
+//$v-gradient: v-linear 8%;
+//$v-bevel-depth: 30%;
+//$v-shadow-opacity: 5%;
+
+// Defines colors for indicating status (focus, success, failure)
+//$v-focus-color: valo-focus-color(); // Calculates a suitable color automatically
+//$v-friendly-color: #2c9720;
+//$v-error-indicator-color: #ed473b;
+
+// For more information, see: https://vaadin.com/book/-/page/themes.valo.html
+// Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
+
+@import "../valo/valo.scss";
+
+@mixin cinema {
+  @include valo;
+
+  .selectable-seance {
+    background: linear-gradient(to top, #fafafa 2%, #efefef 98%);
+    background: #fafafa;
+    background: -moz-linear-gradient(top, #fafafa 2%, #efefef 98%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%, #fafafa), color-stop(98%, #efefef));
+    background: -webkit-linear-gradient(top, #fafafa 2%, #efefef 98%);
+    background: -o-linear-gradient(top, #fafafa 2%, #efefef 98%);
+    background: -ms-linear-gradient(top, #fafafa 2%, #efefef 98%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#efefef',GradientType=0 );
+    border-radius: 4px;
+    border: 1px solid #c5c5c5;
+    border-bottom-color: #bcbcbc;
+    box-shadow: inset 0 1px 0 white, inset 0 -1px 0 #e7e7e7, 0 2px 3px rgba(0, 0, 0, 0.05);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    margin: 2px;
+  }
+
+  :hover.selectable-seance {
+    background: #efefef 98%;
+    cursor: pointer;
+  }
+
+  .movie-title {
+    font-size: 1.4em;
+  }
+
+  :hover.selectable-seance-with-poster {
+    box-shadow: 0px 0px 2px 1px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    background-color: rgba(0,0,0,0.01);
+    cursor: pointer;
+  }
+
+  .place-button {
+    width: 100%;
+    height: 100%;
+    font-size: 0.8em;
+    border-radius: 10px;
+    border-width: 0px;
+  }
+
+  .zone-1-button {
+    background: linear-gradient(to top, #a1d1ff, #72d4ff);
+    background: #a1d1ff;
+    background: -moz-linear-gradient(top, #a1d1ff, #72d4ff);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%, #a1d1ff), color-stop(98%, #72d4ff));
+    background: -webkit-linear-gradient(top, #a1d1ff, #72d4ff);
+    background: -o-linear-gradient(top, #a1d1ff, #72d4ff);
+    background: -ms-linear-gradient(top, #a1d1ff, #72d4ff);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1d1ff', endColorstr='#72d4ff',GradientType=0);
+  }
+
+  .zone-2-button {
+    background: linear-gradient(to top, #d0a7e2, #f99dff);
+    background: #d0a7e2;
+    background: -moz-linear-gradient(top, #d0a7e2, #f99dff);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%, #d0a7e2), color-stop(98%, #f99dff));
+    background: -webkit-linear-gradient(top, #d0a7e2, #f99dff 98%);
+    background: -o-linear-gradient(top, #d0a7e2, #f99dff 98%);
+    background: -ms-linear-gradient(top, #d0a7e2, #f99dff 98%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d0a7e2', endColorstr='#f99dff',GradientType=0 );
+  }
+
+  .zone-3-button {
+    background: linear-gradient(to top, #ffb2c7, #ffa69a);
+    background: #ffb2c7;
+    background: -moz-linear-gradient(top, #ffb2c7, #ffa69a);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%, #ffb2c7), color-stop(98%, #ffa69a));
+    background: -webkit-linear-gradient(top, #ffb2c7, #ffa69a);
+    background: -o-linear-gradient(top, #ffb2c7, #ffa69a);
+    background: -ms-linear-gradient(top, #ffb2c7, #ffa69a);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffb2c7', endColorstr='#ffa69a',GradientType=0 );
+  }
+
+  .selected-place {
+    background: linear-gradient(to top, #afffa1, #81ff6f);
+    background: #afffa1;
+    background: -moz-linear-gradient(top, #afffa1, #81ff6f);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%, #afffa1), color-stop(98%, #81ff6f));
+    background: -webkit-linear-gradient(top, #afffa1, #81ff6f);
+    background: -o-linear-gradient(top, #afffa1, #81ff6f);
+    background: -ms-linear-gradient(top, #afffa1, #81ff6f);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#afffa1', endColorstr='#81ff6f',GradientType=0 );
+  }
+}

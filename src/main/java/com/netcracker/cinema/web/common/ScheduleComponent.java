@@ -16,6 +16,7 @@ public class ScheduleComponent extends VerticalLayout {
         setMargin(true);
         addPoster(seances, movie);
         addSeanceAttributes(seances, movie);
+        addStyleName("selectable-seance-with-poster");
     }
 
     private void addSeanceAttributes(Seance seance, Movie movie) {

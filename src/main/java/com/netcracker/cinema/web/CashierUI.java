@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Created by dimka on 04.12.2016.
  */
 @SpringUI(path = "/cashier")
-@Theme("valo")
+@Theme("cinema")
 public class CashierUI extends UI {
     private static final Logger logger = Logger.getLogger(AdminUI.class);
 

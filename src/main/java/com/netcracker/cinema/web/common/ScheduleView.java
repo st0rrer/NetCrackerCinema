@@ -3,15 +3,19 @@ package com.netcracker.cinema.web.common;
 import com.netcracker.cinema.dao.Paginator;
 import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Hall;
+import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.HallService;
+import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.cashier.ScheduleTableCashier;
 import com.netcracker.cinema.web.user.ScheduleTableUser;
+import com.vaadin.data.Container;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.time.DateUtils;
@@ -20,8 +24,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.Calendar;
 
 public abstract class ScheduleView extends VerticalLayout implements View {
 
@@ -32,6 +36,8 @@ public abstract class ScheduleView extends VerticalLayout implements View {
     SeanceService seanceService;
     @Autowired
     HallService hallService;
+    @Autowired
+    MovieService movieService;
 
     private SeanceFilter seanceFilter = new SeanceFilter().actual().orderByStartDateDesc();
     private Paginator<Seance> paginator;
@@ -159,9 +165,7 @@ public abstract class ScheduleView extends VerticalLayout implements View {
 
         private NativeSelect selectDate;
         private NativeSelect selectHall;
-        private TextField filterByName;
-        private Button clearFilterByName;
-        private Button findByFilterName;
+        private ComboBox filterByName;
 
         private Object dateFilter = DEFAULT_DATE;
         private Object hallFilter = DEFAULT_HALL;
@@ -184,29 +188,24 @@ public abstract class ScheduleView extends VerticalLayout implements View {
                 updateSeanceFilter();
             });
 
-            clearFilterByName.addClickListener(event -> {
-                filterByName.clear();
-                updateSeanceFilter();
-            });
-
-            findByFilterName.addClickListener(event -> {
+            filterByName.addValueChangeListener(event -> {
                 updateSeanceFilter();
             });
         }
 
         private void createLayoutForFilterName() {
-            filterByName = new TextField();
-            clearFilterByName = new Button(FontAwesome.TIMES);
-            findByFilterName = new Button("Find seance by movie's name");
-            findByFilterName.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-            CssLayout areaForFilterName = new CssLayout(filterByName, clearFilterByName);
-            areaForFilterName.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
-            HorizontalLayout layoutForFilterName = new HorizontalLayout(areaForFilterName, findByFilterName);
-            layoutForFilterName.setHeight("40px");
-            layoutForFilterName.setDefaultComponentAlignment(Alignment.TOP_RIGHT);
-            layoutForFilterName.setSpacing(true);
-            this.addComponent(layoutForFilterName);
-            this.setComponentAlignment(layoutForFilterName, Alignment.BOTTOM_CENTER);
+            filterByName = new ComboBox("Filter by movie's name");
+            filterByName.setSizeFull();
+            filterByName.setWidth("350px");
+            filterByName.setHeight("40px");
+            filterByName.setFilteringMode(FilteringMode.CONTAINS);
+            filterByName.setPageLength(5);
+            List<Movie> movies = movieService.findAll();
+            for (Movie movie : movies) {
+                filterByName.addItem(movie.getName());
+            }
+            this.addComponent(filterByName);
+            this.setComponentAlignment(filterByName, Alignment.BOTTOM_CENTER);
         }
 
         private void filterDay() {
@@ -243,33 +242,33 @@ public abstract class ScheduleView extends VerticalLayout implements View {
         }
 
         private void fillScrollOfDate(NativeSelect selectDate) {
-            SimpleDateFormat currentDateFormat = new SimpleDateFormat("dd MM yyyy");
-            Date currentDay = new Date();
-            currentDateFormat.format(currentDay);
-            selectDate.addItem(currentDay);
-            selectDate.setItemCaption(currentDay, "Today");
-            selectDate.addItem(DateUtils.addDays(currentDay, 1));
-            selectDate.setItemCaption(DateUtils.addDays(currentDay, 1), "Tomorrow");
-            selectDate.addItem(DateUtils.addDays(currentDay, 7));
-            selectDate.setItemCaption(DateUtils.addDays(currentDay, 7), "Next week");
+            Date currentDay = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+            Date[] currentDayInterval = new Date[] {new Date(), DateUtils.addDays(currentDay, 1)};
+            selectDate.addItem(currentDayInterval);
+            selectDate.setItemCaption(currentDayInterval, "Today");
+            Date[] tomorrowInterval = new Date[] {DateUtils.addDays(currentDay, 1), DateUtils.addDays(currentDay, 2)};
+            selectDate.addItem(tomorrowInterval);
+            selectDate.setItemCaption(tomorrowInterval, "Tomorrow");
+            Date[] nextWeekInterval = new Date[] {new Date(), DateUtils.addDays(currentDay, 8)};
+            selectDate.addItem(nextWeekInterval);
+            selectDate.setItemCaption(nextWeekInterval, "Next week");
             selectDate.addItem(DEFAULT_DATE);
             selectDate.setValue(DEFAULT_DATE);
         }
 
         private void updateSeanceFilter() {
-            seanceFilter = new SeanceFilter().orderByStartDateDesc();
-            if(dateFilter.getClass() == String.class) {
-                seanceFilter.actual();
-            } else {
-                seanceFilter.forDateRange(new Date(), (Date) dateFilter);
+            seanceFilter = new SeanceFilter().orderByStartDateDesc().actual();
+            if(dateFilter.getClass() != String.class) {
+                Date[] dateInterval = (Date[]) dateFilter;
+                seanceFilter.forDateRange(dateInterval[0], dateInterval[1]);
             }
 
             if(hallFilter.getClass() != String.class) {
                 seanceFilter.forHallId(((Hall) hallFilter).getId());
             }
 
-            if(filterByName.getValue() != null & !filterByName.getValue().equals(" ")) {
-                seanceFilter.forMovieName(filterByName.getValue());
+            if(filterByName.getValue() != null) {
+                seanceFilter.forMovieName((String) filterByName.getValue());
             }
             updatePaginator(seanceFilter);
         }
