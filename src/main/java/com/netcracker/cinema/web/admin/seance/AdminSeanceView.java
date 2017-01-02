@@ -1,8 +1,10 @@
 package com.netcracker.cinema.web.admin.seance;
 
 import com.netcracker.cinema.model.Movie;
+import com.netcracker.cinema.model.Price;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.MovieService;
+import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.web.AdminUI;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -36,13 +39,15 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     @Autowired
     private MovieService movieService;
     private List<Movie> movieList;
+    @Autowired
+    private PriceService priceService;
 
     private Date date = new Date(System.currentTimeMillis());
-    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+    private DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
     private DateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private VerticalLayout verticalLayout1 = new VerticalLayout();
-    private VerticalLayout verticalLayout2 = new VerticalLayout();
-    private VerticalLayout verticalLayout3 = new VerticalLayout();
+    private VerticalLayout HallLayout1 = new VerticalLayout();
+    private VerticalLayout HallLayout2 = new VerticalLayout();
     private Window subWindow;
 
     public AdminSeanceView() {
@@ -58,8 +63,8 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         showButton.setWidth("270px");
         showButton.addClickListener(e -> {
             date = calendar.getValue();
-            getHall(1, verticalLayout2);
-            getHall(2, verticalLayout3);
+            getHall(1, HallLayout1);
+            getHall(2, HallLayout2);
         });
 
         Button windowButton = new Button("Add new seance");
@@ -77,17 +82,17 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         verticalLayout1.setMargin(true);
         verticalLayout1.addComponents(calendar, showButton, windowButton);
         verticalLayout1.setWidth("380px");
-        verticalLayout2.setWidth("600px");
-        verticalLayout3.setWidth("600px");
+        HallLayout1.setWidth("600px");
+        HallLayout2.setWidth("600px");
 
-        getHall(1, verticalLayout2);
-        getHall(2, verticalLayout3);
+        getHall(1, HallLayout1);
+        getHall(2, HallLayout2);
 
         VerticalLayout verticalLayout4 = new VerticalLayout();
-        addComponents(verticalLayout1, verticalLayout2, verticalLayout3, verticalLayout4);
+        addComponents(verticalLayout1, HallLayout1, HallLayout2, verticalLayout4);
         setExpandRatio(verticalLayout1, 4);
-        setExpandRatio(verticalLayout2, 6);
-        setExpandRatio(verticalLayout3, 6);
+        setExpandRatio(HallLayout1, 6);
+        setExpandRatio(HallLayout2, 6);
         setExpandRatio(verticalLayout4, 1);
         setSizeFull();
     }
@@ -104,7 +109,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
 
         subWindow.setContent(getComponents());
         subWindow.center();
-        subWindow.setHeight("350px");
+        subWindow.setHeight("420px");
         subWindow.setWidth("500px");
         subWindow.setResizable(false);
         return subWindow;
@@ -113,12 +118,8 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     private Layout getComponents() {
         AbsoluteLayout layout = new AbsoluteLayout();
 
-        VerticalLayout poster = new VerticalLayout();
-        poster.setWidth("160px");
-
-        VerticalLayout subContent = new VerticalLayout();
-        subContent.setWidth("250px");
-        subContent.setSpacing(true);
+        VerticalLayout posterLayout = new VerticalLayout();
+        posterLayout.setWidth("150px");
 
         DateField seanceDate = new DateField("Date:");
         seanceDate.setResolution(Resolution.MINUTE);
@@ -139,19 +140,34 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         movieName.setNullSelectionAllowed(false);
         movieName.setWidth("250px");
         for (Movie movie : movieList) {
-            movieName.addItem(movie.getName());
+            movieName.addItem(movie.getId());
+            movieName.setItemCaption(movie.getId(), movie.getName());
         }
         movieName.addValueChangeListener(e -> {
-            poster.removeAllComponents();
+            posterLayout.removeAllComponents();
             for (Movie movie : movieList) {
-                if (movie.getName().equals(movieName.getValue())) {
-                    poster.addComponent(createPoster(movie, "170px"));
+                if (movie.getId().equals(movieName.getValue())) {
                     Label startDate = new Label("start: " + dateFormat.format(movie.getStartDate()));
                     Label endDate = new Label("final: " + dateFormat.format(movie.getEndDate()));
-                    poster.addComponents(startDate, endDate);
+                    posterLayout.addComponents(createPoster(movie, "170px"), startDate, endDate);
                 }
             }
         });
+
+        TextField priceFieldA = new TextField("Zone 'AA'");
+        TextField priceFieldB = new TextField("Zone 'BB'");
+        TextField priceFieldC = new TextField("Zone 'CC'");
+
+        List<TextField> textFieldList = new ArrayList<>();
+        textFieldList.add(priceFieldA);
+        textFieldList.add(priceFieldB);
+        textFieldList.add(priceFieldC);
+        for (TextField priceField : textFieldList) {
+            priceField.setImmediate(true);
+            priceField.setInputPrompt("price");
+            priceField.setMaxLength(3);
+            priceField.setWidth("90px");
+        }
 
         Button eraseButton = new Button("Erase all");
         eraseButton.setWidth("150px");
@@ -159,60 +175,105 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             hallId.setValue(null);
             movieName.setValue(null);
             seanceDate.setValue(null);
-            poster.removeAllComponents();
+            posterLayout.removeAllComponents();
         });
 
-        if (seance != null && seance.getId() != 0) {
-            seanceDate.setValue(seance.getSeanceDate());
-            hallId.setValue((int) seance.getHallId());              //  be careful with with id > 2 billion
-            for (Movie movie : movieList) {
-                if (movie.getId() == seance.getMovieId()) {
-                    movieName.setValue(movie.getName());
-                }
-            }
-        } else {
-            seanceDate.setValue(date);
-        }
+        setValues(seanceDate, hallId, movieName, textFieldList);
 
         Button saveButton = new Button("Save seance");
         saveButton.setWidth("250px");
         saveButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         saveButton.addClickListener(e -> {
-            for (Movie movie : movieList) {
-                if (movie.getName().equals(movieName.getValue())) {
+            if (hallId.getValue() != null && movieName.getValue() != null && seanceDate.getValue() != null &&
+                    !priceFieldA.getValue().isEmpty() && !priceFieldB.getValue().isEmpty() && !priceFieldC.getValue().isEmpty()) {
+                try {
+                    for (TextField priceField : textFieldList) {
+                        Integer.parseInt(priceField.getValue());
+                    }
                     Seance newSeance = new Seance();
                     newSeance.setSeanceDate(seanceDate.getValue());
                     newSeance.setHallId(Long.parseLong(hallId.getValue().toString()));
-                    newSeance.setMovieId(movie.getId());
-                    checks(newSeance);
+                    newSeance.setMovieId(Long.parseLong(movieName.getValue().toString()));
+                    if (checks(newSeance)) {
+                        saveSeanceAndPrice(newSeance, textFieldList);
+                        Notification.show("Success!");
+                    }
+                } catch (NumberFormatException ex) {
+                    Notification.show("Invalid price", "Only numbers!", Notification.Type.TRAY_NOTIFICATION);
                 }
+            } else {
+                Notification.show("Fill in all fields!");
             }
         });
 
-        subContent.addComponents(hallId, movieName, seanceDate);
+        VerticalLayout contentLayout = new VerticalLayout();
+        contentLayout.setSpacing(true);
+        contentLayout.addComponents(hallId, movieName, seanceDate);
 
-        layout.addComponent(subContent, "left: 20px; top: 10px;");
-        layout.addComponent(poster, "right: 20px; top: 10px;");
-        layout.addComponent(eraseButton, "left: 20px; bottom: 20px;");
-        layout.addComponent(saveButton, "right: 20px; bottom: 20px;");
+        HorizontalLayout priceLayout = new HorizontalLayout();
+        priceLayout.setSpacing(true);
+        priceLayout.addComponents(priceFieldA, priceFieldB, priceFieldC);
+
+        layout.addComponent(contentLayout, "left: 20px; top: 10px;");
+        layout.addComponent(posterLayout, "right: 20px; top: 10px;");
+        layout.addComponent(priceLayout, "left: 20px; bottom: 90px;");
+        layout.addComponent(eraseButton, "left: 30px; bottom: 20px;");
+        layout.addComponent(saveButton, "right: 30px; bottom: 20px;");
 
         return layout;
     }
 
-    private void checks(Seance newSeance) {
+    private void setValues(DateField seanceDate, NativeSelect hallId, ComboBox movieName, List<TextField> textFieldList) {
+        if (seance != null && seance.getId() != 0) {
+            seanceDate.setValue(seance.getSeanceDate());
+            hallId.setValue((int) seance.getHallId());              //  be careful with with id > 2 billion
+            movieName.setValue(seance.getMovieId());
+
+            long zoneId = 3;                                        //  zone id [3;5]
+            for (TextField priceField : textFieldList) {
+                int price = priceService.getPriceBySeanceZone(seance.getId(), zoneId++);
+                priceField.setValue(String.valueOf(price));
+            }
+        } else {
+            seanceDate.setValue(date);
+        }
+    }
+
+    private void saveSeanceAndPrice(Seance newSeance, List<TextField> textFieldList) {
+        Date previousDate = seance.getSeanceDate();
+        seanceService.save(newSeance);
+
+        long zoneId = 3;
+        for (TextField priceField : textFieldList) {
+            Price price = new Price();
+            price.setPrice(Integer.parseInt(priceField.getValue()));
+            price.setSeanceId(newSeance.getId());
+            price.setZoneId(zoneId++);
+            priceService.save(price);
+        }
+
+        if (dateFormat.format(date).equals(dateFormat.format(newSeance.getSeanceDate())) ||
+                (previousDate != null &&
+                        dateFormat.format(date).equals(dateFormat.format(previousDate)))) {
+            getHall(1, HallLayout1);
+            getHall(2, HallLayout2);
+        }
+    }
+
+    private boolean checks(Seance newSeance) {
         Date minDate = new Date(System.currentTimeMillis() + 7_200_000);   //  current date + 2 hours
         if (newSeance.getSeanceDate().before(minDate)) {
             String message = "Date can't be less than " + dateFormat.format(minDate) +
                     " " + timeFormat.format(minDate);
             notificationForWrongDate(message);
-            return;
+            return false;
         }
 
         if (!seanceService.checkIfInWorkingTime(newSeance)) {
             String message = "Start time of seance should be" +
                     LineSeparator.Windows + "between 10:00 and 22:00 o'clock.";
             notificationForWrongDate(message);
-            return;
+            return false;
         }
 
         long oldId = seance.getId();
@@ -220,30 +281,23 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             newSeance.setId(oldId);
         } else {
             notificationForUnmodifiedSeance();
-            return;
+            return false;
         }
 
         if (!seanceService.checkIfHallIsFree(newSeance)) {
             String message = "There is other movie in this hall in the same time.";
             notificationForWrongDate(message);
-            return;
+            return false;
         }
 
-        Date oldDate = seance.getSeanceDate();
-        if (seanceService.checkDate(newSeance)) {
-            seanceService.save(newSeance);
-            if (dateFormat.format(date).equals(dateFormat.format(newSeance.getSeanceDate())) ||
-                    (oldDate != null &&
-                            dateFormat.format(date).equals(dateFormat.format(oldDate)))) {
-                getHall(1, verticalLayout2);
-                getHall(2, verticalLayout3);
-            }
-            Notification.show("Success!");
-        } else {
+        if (!seanceService.checkDate(newSeance)) {
             String message = "Date of seance should be between" + LineSeparator.Windows +
                     "start and final dates of selected movie.";
             notificationForWrongDate(message);
+            return false;
         }
+
+        return true;
     }
 
     private void notificationForWrongDate(String message) {
@@ -275,7 +329,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         }
 
         Panel hallPanel = new Panel();
-        hallPanel.setHeight("775px");
+        hallPanel.setHeight("750px");
         hallPanel.setContent(verticalLayout);
 
         layout.addComponents(hallLabel, dateLabel, hallPanel);
@@ -292,7 +346,16 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         Label beginTime = new Label("Begin: " + timeFormat.format(seance.getSeanceDate()));
         Date endDate = new Date(seance.getSeanceDate().getTime() + movie.getDuration() * 60_000);
         Label endTime = new Label("End: " + timeFormat.format(endDate) + " + 20min");
-        movieInfo.addComponents(name, beginTime, endTime);
+
+        int price;
+        String priceList = "";
+        for (int zoneId = 3; zoneId < 6; zoneId++) {
+            price = priceService.getPriceBySeanceZone(seance.getId(), zoneId);
+            priceList = priceList + " " + price + ",";
+        }
+        Label prices = new Label("Prices: " + priceList.substring(0, priceList.length() - 2));
+
+        movieInfo.addComponents(name, beginTime, endTime, prices);
 
         Button editButton = new Button("Edit");
         editButton.setEnabled(seanceService.editableSeance(seance.getId()));
@@ -335,7 +398,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
                 seanceService.delete(seance);
                 removalWindow.close();
                 getHall(seance.getHallId(),
-                        seance.getHallId() == 1 ? verticalLayout2 : verticalLayout3);
+                        seance.getHallId() == 1 ? HallLayout1 : HallLayout2);
                 Notification.show("Seance deleted");
             } else {
                 notificationForUnmodifiedSeance();
