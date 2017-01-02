@@ -19,4 +19,5 @@ public interface PriceService {
 
     int getPriceBySeanceColRow(int seanceId, int col, int row);
 
+    int getPriceBySeanceZone(long seanceId, long zoneId);
 }

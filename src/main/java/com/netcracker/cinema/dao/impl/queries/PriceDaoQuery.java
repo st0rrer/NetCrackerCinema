@@ -11,7 +11,7 @@ public interface PriceDaoQuery {
                     "  ATTR_PRICE.VALUE PRICE,\n" +
                     "  REF_SEANCE.OBJECT_ID SEANCE_ID,\n" +
                     "  REF_ZONE.OBJECT_ID ZONE_ID\n" +
-            "FROM OBJTYPE OBJ_TYPE \n" +
+                    "FROM OBJTYPE OBJ_TYPE \n" +
                     "  JOIN OBJECTS OBJ_PRICE\n" +
                     "    ON OBJ_TYPE.OBJECT_TYPE_ID = OBJ_PRICE.OBJECT_TYPE_ID\n" +
                     "  JOIN ATTRIBUTES ATTR_PRICE\n" +
@@ -26,12 +26,12 @@ public interface PriceDaoQuery {
                     "    ON OBJ_PRICE.OBJECT_ID = REF_ZONE.REFERENCE\n" +
                     "  JOIN ATTRTYPE ATYPE_ZONE\n" +
                     "    ON REF_ZONE.ATTR_ID = ATYPE_ZONE.ATTR_ID\n" +
-            "WHERE\n" +
+                    "WHERE\n" +
                     "  OBJ_TYPE.CODE = 'PRICE'\n" +
                     "  AND ATYPE_PRICE.CODE = 'PRICE'\n" +
                     "  AND ATYPE_SEANCE.CODE = 'SEANCE_REF'\n" +
                     "  AND ATYPE_ZONE.CODE = 'ZONE_REF'\n" +
-            "ORDER BY ID";
+                    "ORDER BY ID";
 
     String FIND_PRICE_BY_ID =
             "SELECT \n" +
@@ -39,7 +39,7 @@ public interface PriceDaoQuery {
                     "  ATTR_PRICE.VALUE PRICE,\n" +
                     "  REF_SEANCE.OBJECT_ID SEANCE_ID,\n" +
                     "  REF_ZONE.OBJECT_ID ZONE_ID\n" +
-            "FROM OBJTYPE OBJ_TYPE \n" +
+                    "FROM OBJTYPE OBJ_TYPE \n" +
                     "  JOIN OBJECTS OBJ_PRICE\n" +
                     "    ON OBJ_TYPE.OBJECT_TYPE_ID = OBJ_PRICE.OBJECT_TYPE_ID\n" +
                     "  JOIN ATTRIBUTES ATTR_PRICE\n" +
@@ -54,13 +54,13 @@ public interface PriceDaoQuery {
                     "    ON OBJ_PRICE.OBJECT_ID = REF_ZONE.REFERENCE\n" +
                     "  JOIN ATTRTYPE ATYPE_ZONE\n" +
                     "    ON REF_ZONE.ATTR_ID = ATYPE_ZONE.ATTR_ID\n" +
-            "WHERE\n" +
+                    "WHERE\n" +
                     "  OBJ_TYPE.CODE = 'PRICE'\n" +
                     "  AND ATYPE_PRICE.CODE = 'PRICE'\n" +
                     "  AND ATYPE_SEANCE.CODE = 'SEANCE_REF'\n" +
                     "  AND ATYPE_ZONE.CODE = 'ZONE_REF'\n" +
                     "  AND OBJ_PRICE.OBJECT_ID = ?\n" +
-            "ORDER BY ID";
+                    "ORDER BY ID";
 
     String DELETE_PRICE =
             "DELETE " +
@@ -96,7 +96,7 @@ public interface PriceDaoQuery {
                     "          and attr.OBJECT_ID = object.obj_id\n" +
                     "  WHEN NOT MATCHED THEN\n" +
                     "      INSERT(attr.ATTR_ID, attr.OBJECT_ID, attr.VALUE, attr.DATE_VALUE)\n" +
-                    "      VALUES(22, NVL(object.obj_id, GET_OBJ_ID.currval), NULL, object.price)";
+                    "      VALUES(22, NVL(object.obj_id, GET_OBJ_ID.currval), object.price, NULL)";
 
     String MERGE_PRICE_ATTRIBUTE_ZONE =
             "MERGE INTO OBJREFERENCE objref\n" +
@@ -172,4 +172,12 @@ public interface PriceDaoQuery {
                     "  AND ATTR_PLACE_ROW.VALUE = ?\n" +
                     "  AND REF_SEANCE.OBJECT_ID = ?";
 
+    String SELECT_PRICE_BY_SEANCE_ZONE =
+            "SELECT VALUE FROM ATTRIBUTES atr\n" +
+                    "  JOIN OBJECTS obj ON obj.OBJECT_ID = atr.OBJECT_ID\n" +
+                    "  JOIN OBJREFERENCE seance_ref ON seance_ref.REFERENCE = obj.OBJECT_ID\n" +
+                    "  JOIN OBJREFERENCE zone_ref ON zone_ref.REFERENCE = obj.OBJECT_ID\n" +
+                    "    WHERE atr.ATTR_ID = 22          -- for ATTR_ID with CODE = 'PRICE'\n" +
+                    "      AND seance_ref.OBJECT_ID = ?\n" +
+                    "      AND zone_ref.OBJECT_ID = ?";
 }

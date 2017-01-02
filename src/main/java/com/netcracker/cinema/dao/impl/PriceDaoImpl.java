@@ -50,7 +50,7 @@ public class PriceDaoImpl implements PriceDao {
         jdbcTemplate.update(MERGE_PRICE_ATTRIBUTE_ZONE, new Object[]{price.getZoneId(), price.getId()});
         jdbcTemplate.update(MERGE_PRICE_ATTRIBUTE_SEANCE, new Object[]{price.getSeanceId(), price.getId()});
 
-        if(price.getId() == 0) {
+        if (price.getId() == 0) {
             price.setId(jdbcTemplate.queryForObject(SELECT_ID_FOR_INSERTED_PRICE, Long.class));
         }
 
@@ -59,14 +59,25 @@ public class PriceDaoImpl implements PriceDao {
 
     @Override
     public void delete(Price price) {
-        int affected = jdbcTemplate.update(DELETE_PRICE, new Object[] {price.getId()});
+        int affected = jdbcTemplate.update(DELETE_PRICE, new Object[]{price.getId()});
 
         LOGGER.info("Delete price: affected " + affected + " rows");
     }
 
     @Override
     public int getPriceBySeanceColRow(int seanceId, int col, int row) {
-        return jdbcTemplate.queryForObject(SELECT_PRICE_SEANCE_COL_ROW, new Object[]{ String.valueOf(col), String.valueOf(row), seanceId}, Integer.class);
+        return jdbcTemplate.queryForObject(SELECT_PRICE_SEANCE_COL_ROW, new Object[]{String.valueOf(col), String.valueOf(row), seanceId}, Integer.class);
+    }
+
+    @Override
+    public int getPriceBySeanceZone(long seanceId, long zoneId) {
+        if (seanceId < 1 || zoneId < 1) {
+            LOGGER.info("Id of seance and zone should be > 0");
+            return 0;
+        }
+        int count = jdbcTemplate.queryForObject(SELECT_PRICE_BY_SEANCE_ZONE, int.class, seanceId, zoneId);
+        LOGGER.info("For zone = " + zoneId + " at seance = " + seanceId + " price is: " + count);
+        return count;
     }
 
     class PriceMapper implements RowMapper<Price> {

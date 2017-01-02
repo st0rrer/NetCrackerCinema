@@ -48,4 +48,9 @@ public class PriceServiceImpl implements PriceService {
     public int getPriceBySeanceColRow(int seanceId, int col, int row) {
         return priceDao.getPriceBySeanceColRow(seanceId, col, row);
     }
+
+    @Override
+    public int getPriceBySeanceZone(long seanceId, long zoneId) {
+        return priceDao.getPriceBySeanceZone(seanceId, zoneId);
+    }
 }
