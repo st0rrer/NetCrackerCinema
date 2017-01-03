@@ -12,9 +12,9 @@
 //$v-border-radius: 4px;
 
 // Affects the color of some component elements, e.g Button, Panel title, etc
-//$v-background-color: hsl(210, 0%, 98%);
+$v-background-color: rgb(245, 245, 245);
 // Affects the color of content areas, e.g  Panel and Window content, TextField input etc
-//$v-app-background-color: $v-background-color;
+$v-app-background-color: $v-background-color;
 
 // Affects the visual appearance of all components
 //$v-gradient: v-linear 8%;
@@ -22,7 +22,7 @@
 //$v-shadow-opacity: 5%;
 
 // Defines colors for indicating status (focus, success, failure)
-//$v-focus-color: valo-focus-color(); // Calculates a suitable color automatically
+$v-focus-color: #197de1; // Calculates a suitable color automatically
 //$v-friendly-color: #2c9720;
 //$v-error-indicator-color: #ed473b;
 
@@ -122,9 +122,8 @@
 
   .tickets-select {
     .v-gridlayout-slot {
-      width: 50px;
-      height: 20px;
-      !important;
+      width: 50px !important;
+      height: 20px !important;
     }
   }
 
@@ -150,5 +149,10 @@
 
   .v-select-select:focus {
     box-shadow: 0 0 0 0 rgb(197, 197, 197) !important;
+  }
+
+  .v-panel {
+    background-image: url('img/bg.png');
+    background-repeat: repeat;
   }
 }

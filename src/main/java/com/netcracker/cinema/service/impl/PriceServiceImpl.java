@@ -50,7 +50,7 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public int getPriceBySeanceZone(long seanceId, long zoneId) {
+    public Price getPriceBySeanceZone(long seanceId, long zoneId) {
         return priceDao.getPriceBySeanceZone(seanceId, zoneId);
     }
 }
