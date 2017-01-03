@@ -27,6 +27,8 @@ public interface TicketService {
      */
     long save(Ticket ticket);
 
+    long getCode();
+
     /**
      * @param objId - OBJECT_ID from table OBJECTS for Zone, Hall or Movie
      * @return quantity of sold tickets or '-1' if 'objName' was not found

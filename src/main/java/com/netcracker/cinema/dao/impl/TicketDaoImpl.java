@@ -80,12 +80,6 @@ public class TicketDaoImpl implements TicketDao {
         return ticket;
     }
 
-
-    @Override
-    public void getCode(long ticketId) {
-        jdbcTemplate.query(FIND_CODE_TICKET, new TicketMapper());
-    }
-
     @Override
     public void delete(long ticketId) {
         if (ticketId < 1) {
@@ -114,8 +108,12 @@ public class TicketDaoImpl implements TicketDao {
             LOGGER.info("Saving ticket: " + ticket);
             ticketId = jdbcTemplate.queryForObject(SAVE_TICKET, long.class, arrayOfFields);
         }
+//        if (ticket.getCode() == 0) {
+//            ticket.setCode(jdbcTemplate.queryForObject(FIND_CODE_TICKET, Long.class));
+//        }
         return ticketId;
     }
+
 
     @Override
     public int soldTickets(long objId, Date startDate, Date endDate) {
@@ -128,6 +126,13 @@ public class TicketDaoImpl implements TicketDao {
             LOGGER.info("For id = " + objId + " sold " + count + " tickets");
             return count;
         }
+    }
+
+    @Override
+    public long getCode() {
+        long code;
+        code = jdbcTemplate.queryForObject(FIND_TICKET_BY_ID, long.class);
+        return code;
     }
 
     private class TicketMapper implements RowMapper<Ticket> {

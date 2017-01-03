@@ -1,9 +1,6 @@
 package com.netcracker.cinema.web.user;
 
-import com.netcracker.cinema.model.Hall;
-import com.netcracker.cinema.model.Place;
-import com.netcracker.cinema.model.Seance;
-import com.netcracker.cinema.model.Ticket;
+import com.netcracker.cinema.model.*;
 import com.netcracker.cinema.service.*;
 import com.netcracker.cinema.web.UserUI;
 import com.netcracker.cinema.web.common.TicketSelect;
@@ -43,6 +40,12 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private ZoneService zoneService;
+
+    @Autowired
+    private PlaceService placeService;
 
     @PostConstruct
     public void init() {
@@ -111,8 +114,12 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
         layout.addComponent(time);
         Label hall = new Label("Hall: " + hallService.getById(seance.getHallId()).getName());
         layout.addComponent(hall);
-        Label pricesum = new Label("Price: ");
-        layout.addComponent(pricesum);
+//        Label priceSum = null;
+//        for (Place place : ticketSelect.getSelectedPlaces()) {
+//            pricesum = new Label("Price: " + priceService.getPriceBySeanceZone(seance.getId(), place.getZoneId()));
+//            Price price = new Price();
+//        }
+//        layout.addComponent(pricesum);
         return layout;
     }
 
@@ -135,8 +142,8 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
                         ticket.setEmail(textField.getValue());
                     });
                     ticket.setId(ticket.getId());
-                    ticket.setPrice(144);
-                    ticket.setCode(ticket.getCode());
+                    ticket.setPrice(movieService.getById(seance.getMovieId()).getBasePrice() + priceService.getPriceBySeanceZone(seance.getId(), place.getZoneId()));
+                    ticket.setCode(ticketService.getCode());
                     ticket.setPlaceId(place.getId());
                     ticket.setSeanceId(seance.getId());
                     buttonEnter.addClickListener(clickEventt -> {
@@ -148,5 +155,13 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
             layout.addComponent(buttonEnter);
         });
         return layout;
+    }
+
+    private long getZoneId() {
+        Place placeSelected = null;
+        for (Place place : ticketSelect.getSelectedPlaces()) {
+            place = placeSelected;
+        }
+        return placeSelected.getZoneId();
     }
 }

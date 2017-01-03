@@ -55,6 +55,11 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public long getCode() {
+        return ticketDao.getCode();
+    }
+
+    @Override
     public int soldTickets(long objId, Date startDate, Date endDate) {
         return ticketDao.soldTickets(objId,
                 new java.sql.Date(startDate.getTime()), new java.sql.Date(endDate.getTime()));

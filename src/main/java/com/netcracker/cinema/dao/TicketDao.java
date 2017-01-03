@@ -22,7 +22,7 @@ public interface TicketDao {
 
     void delete(long ticketId);
 
-    void getCode(long ticketCode);
+    long getCode();
 
     void deleteBlockForOneHour();
 
