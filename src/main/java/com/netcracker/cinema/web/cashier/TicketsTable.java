@@ -54,6 +54,19 @@ public class TicketsTable extends Grid {
         this.setSelectionMode(SelectionMode.MULTI);
         ticketsSelection  = (Grid.MultiSelectionModel) this.getSelectionModel();
 
+        this.setRowStyleGenerator(new RowStyleGenerator() {
+            @Override
+            public String getStyle(RowReference row) {
+                Item item = row.getItem();
+                boolean isPaid = (boolean) item.getItemProperty("paid").getValue();
+
+                if(isPaid) {
+                    return "row_style";
+                }
+                return null;
+            }
+        });
+
         buttonsForTicketsTable = new HorizontalLayout();
         sellTickets = new Button("Sell tickets");
         printTickets = new Button("Print tickets");
@@ -72,7 +85,7 @@ public class TicketsTable extends Grid {
 
     private void clickSellTickets() {
         if(ticketsSelection.getSelectedRows().size() != 0) {
-            getUI().getCurrent().addWindow(new TicketsTable.SellWindow(new ArrayList(ticketsSelection.getSelectedRows()), "Confirmation"));
+            getUI().getCurrent().addWindow(new TicketsTable.SellWindow(new ArrayList(ticketsSelection.getSelectedRows())));
         }
     }
 
@@ -122,9 +135,11 @@ public class TicketsTable extends Grid {
                 sellTickets.setVisible(true);
                 printTickets.setVisible(true);
             }
+
             BeanItemContainer<Ticket> ticketsContainer = new BeanItemContainer<>(Ticket.class, tickets);
 
             GeneratedPropertyContainer ticketsGeneratedContainer = new GeneratedPropertyContainer(ticketsContainer);
+
             ticketsGeneratedContainer.addGeneratedProperty("Seance", new PropertyValueGenerator<String>() {
                 @Override
                 public String getValue(Item item, Object itemId, Object propertyId) {
@@ -156,16 +171,15 @@ public class TicketsTable extends Grid {
                 }
             });
 
-            for(Object ticket : this.getContainerDataSource().getItemIds()) {
-                if(((Ticket) ticket).isPaid() == true) {
+            this.setContainerDataSource(ticketsGeneratedContainer);
+
+            for(Ticket ticket : ticketsContainer.getItemIds()) {
+                if(ticket.isPaid()) {
                     printTickets.setEnabled(true);
-                    break;
                 } else {
                     printTickets.setEnabled(false);
                 }
             }
-
-            this.setContainerDataSource(ticketsGeneratedContainer);
             this.setColumnOrder("code", "Seance", "Place", "price", "email", "paid", "id");
             this.getColumn("id").setHidden(true);
             this.getColumn("seanceId").setHidden(true);
@@ -174,8 +188,8 @@ public class TicketsTable extends Grid {
     }
 
     private class SellWindow extends Window {
-        SellWindow(List ticketsForSell, String caption) {
-            super(caption);
+        SellWindow(List ticketsForSell) {
+            super("Confirmation");
             VerticalLayout confirmation = new VerticalLayout();
             confirmation.setMargin(true);
             confirmation.setSpacing(true);
@@ -195,7 +209,7 @@ public class TicketsTable extends Grid {
                     }
                 }
                 for(Ticket ticket : ticketsByCode) {
-                    if(ticket.isPaid() == true) {
+                    if(ticket.isPaid()) {
                         ticketService.save(ticket);
                     } else {
                         ticketService.deleteById(ticket.getId());

@@ -155,4 +155,9 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     background-image: url('img/bg.png');
     background-repeat: repeat;
   }
+
+  .v-grid-row.row_style > .v-grid-cell{
+    background-color: #16b4ff;
+    font-weight: 400;
+  }
 }
