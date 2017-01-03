@@ -119,4 +119,36 @@
     background: -ms-linear-gradient(top, #afffa1, #81ff6f);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#afffa1', endColorstr='#81ff6f',GradientType=0 );
   }
+
+  .tickets-select {
+    .v-gridlayout-slot {
+      width: 50px;
+      height: 20px;
+      !important;
+    }
+  }
+
+  .tickets-select {
+    .v-gridlayout-slot {
+      .v-button {
+        padding: 0;
+      }
+    }
+  }
+
+  .tickets-select {
+    .v-gridlayout-slot {
+      .v-button:focus:after {
+        display: none;
+      }
+    }
+  }
+
+  .v-menubar:focus:after {
+    display: none;
+  }
+
+  .v-select-select:focus {
+    box-shadow: 0 0 0 0 rgb(197, 197, 197) !important;
+  }
 }

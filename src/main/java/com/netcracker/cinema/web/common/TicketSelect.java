@@ -43,6 +43,7 @@ public class TicketSelect extends GridLayout {
     private ZoneService zoneService;
 
     public void buildForThisSeance(Seance seance) {
+        addStyleName("tickets-select");
         zoneOneStyled = null;
         zoneTwoStyled = null;
         zoneThreeStyled = null;
