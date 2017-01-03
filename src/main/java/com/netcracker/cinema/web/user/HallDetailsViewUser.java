@@ -141,8 +141,10 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
                         textField.setNullSettingAllowed(true);
                         ticket.setEmail(textField.getValue());
                     });
+                    int basePrice = movieService.getById(seance.getMovieId()).getBasePrice();
+                    int placePrice = priceService.getPriceBySeanceColRow((int) seance.getId(), place.getNumber(), place.getRowNumber());
                     ticket.setId(ticket.getId());
-                    ticket.setPrice(movieService.getById(seance.getMovieId()).getBasePrice() + priceService.getPriceBySeanceZone(seance.getId(), place.getZoneId()));
+                    ticket.setPrice(basePrice + placePrice);
                     ticket.setCode(ticketService.getCode());
                     ticket.setPlaceId(place.getId());
                     ticket.setSeanceId(seance.getId());
