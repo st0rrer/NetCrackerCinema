@@ -131,7 +131,7 @@ public class TicketDaoImpl implements TicketDao {
     @Override
     public long getCode() {
         long code;
-        code = jdbcTemplate.queryForObject(FIND_TICKET_BY_ID, long.class);
+        code = jdbcTemplate.queryForObject(FIND_CODE_TICKET, Long.class);
         return code;
     }
 
