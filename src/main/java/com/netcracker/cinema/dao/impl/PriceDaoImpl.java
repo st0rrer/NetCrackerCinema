@@ -70,14 +70,15 @@ public class PriceDaoImpl implements PriceDao {
     }
 
     @Override
-    public int getPriceBySeanceZone(long seanceId, long zoneId) {
+    public Price getPriceBySeanceZone(long seanceId, long zoneId) {
         if (seanceId < 1 || zoneId < 1) {
             LOGGER.info("Id of seance and zone should be > 0");
-            return 0;
+            return new Price();
         }
-        int count = jdbcTemplate.queryForObject(SELECT_PRICE_BY_SEANCE_ZONE, int.class, seanceId, zoneId);
-        LOGGER.info("For zone = " + zoneId + " at seance = " + seanceId + " price is: " + count);
-        return count;
+        Price price = jdbcTemplate.queryForObject(
+                SELECT_PRICE_BY_SEANCE_ZONE, new PriceMapper(), seanceId, zoneId);
+        LOGGER.info("For zone = " + zoneId + " at seance = " + seanceId + " price is: " + price.getPrice());
+        return price;
     }
 
     class PriceMapper implements RowMapper<Price> {

@@ -19,5 +19,5 @@ public interface PriceDao {
 
     int getPriceBySeanceColRow(int seanceId, int col, int row);
 
-    int getPriceBySeanceZone(long seanceId, long zoneId);
+    Price getPriceBySeanceZone(long seanceId, long zoneId);
 }
