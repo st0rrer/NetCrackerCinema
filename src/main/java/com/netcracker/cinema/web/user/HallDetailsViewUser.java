@@ -1,6 +1,9 @@
 package com.netcracker.cinema.web.user;
 
-import com.netcracker.cinema.model.*;
+import com.netcracker.cinema.model.Hall;
+import com.netcracker.cinema.model.Place;
+import com.netcracker.cinema.model.Seance;
+import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
 import com.netcracker.cinema.web.UserUI;
 import com.netcracker.cinema.web.common.TicketSelect;
@@ -15,13 +18,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Timer;
 
 @SpringView(name = HallDetailsViewUser.VIEW_NAME, ui = UserUI.class)
 public class HallDetailsViewUser extends HorizontalLayout implements View {
 
     public static final String VIEW_NAME = "details";
 
-    private static final Logger logger = Logger.getLogger(HallDetailsViewUser.class);
+    private static final Logger LOGGER = Logger.getLogger(HallDetailsViewUser.class);
 
     @Autowired
     private SeanceService seanceService;
@@ -59,7 +64,7 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
         try {
             seanceId = Long.parseLong(event.getParameters());
         } catch (NumberFormatException e) {
-            logger.info("Expected id, but was " + event.getParameters(), e);
+            LOGGER.info("Expected id, but was " + event.getParameters(), e);
             getUI().getNavigator().navigateTo(ScheduleViewUser.VIEW_NAME);
             return;
         }
@@ -68,21 +73,21 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
         try {
             seance = seanceService.getById(seanceId);
         } catch (EmptyResultDataAccessException e) {
-            logger.info("Can't find seance with this id " + seanceId, e);
+            LOGGER.info("Can't find seance with this id " + seanceId, e);
             addComponent(new Label("Can't find seance with this id " + seanceId));
             return;
         }
         try {
             hallId = seance.getHallId();
         } catch (NumberFormatException e) {
-            logger.info("Expected id, but was " + event.getParameters(), e);
+            LOGGER.info("Expected id, but was " + event.getParameters(), e);
             getUI().getNavigator().navigateTo(ScheduleViewUser.VIEW_NAME);
             return;
         }
         try {
             hall = hallService.getById(hallId);
         } catch (EmptyResultDataAccessException e) {
-            logger.info("Can't find hall with this id " + hallId, e);
+            LOGGER.info("Can't find hall with this id " + hallId, e);
             addComponent(new Label("Can't find seance with this id " + hallId));
             return;
         }
@@ -114,16 +119,12 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
         layout.addComponent(time);
         Label hall = new Label("Hall: " + hallService.getById(seance.getHallId()).getName());
         layout.addComponent(hall);
-//        Label priceSum = null;
-//        for (Place place : ticketSelect.getSelectedPlaces()) {
-//            pricesum = new Label("Price: " + priceService.getPriceBySeanceZone(seance.getId(), place.getZoneId()));
-//            Price price = new Price();
-//        }
-//        layout.addComponent(pricesum);
         return layout;
     }
 
     private Component addButtonBook(Seance seance) {
+        ArrayList<Integer> sumPrice = new ArrayList<Integer>();
+        Timer timer = new Timer();
         VerticalLayout layout = new VerticalLayout();
         layout.addComponent(ticketSelect);
         Button book = new Button("Book");
@@ -132,8 +133,11 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
             TextField textField = new TextField("Enter your email:");
             Button buttonEnter = new Button("OK");
             for (Place place : ticketSelect.getSelectedPlaces()) {
+                int basePrice = movieService.getById(seance.getMovieId()).getBasePrice();
+                int placePrice = priceService.getPriceBySeanceColRow((int) seance.getId(), place.getNumber(), place.getRowNumber());
                 if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
-                    return;
+                    LOGGER.info("This place is already booked");
+                    Notification.show("This place is already booked", Notification.Type.ERROR_MESSAGE);
                 } else {
                     Ticket ticket = new Ticket();
                     textField.addTextChangeListener(textChangeEvent -> {
@@ -141,29 +145,26 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
                         textField.setNullSettingAllowed(true);
                         ticket.setEmail(textField.getValue());
                     });
-                    int basePrice = movieService.getById(seance.getMovieId()).getBasePrice();
-                    int placePrice = priceService.getPriceBySeanceColRow((int) seance.getId(), place.getNumber(), place.getRowNumber());
                     ticket.setId(ticket.getId());
                     ticket.setPrice(basePrice + placePrice);
                     ticket.setCode(ticketService.getCode());
                     ticket.setPlaceId(place.getId());
                     ticket.setSeanceId(seance.getId());
                     buttonEnter.addClickListener(clickEventt -> {
+                        Notification.show("Thank you", Notification.Type.ERROR_MESSAGE);
                         ticketService.save(ticket);
+                        getUI().getNavigator().navigateTo(ScheduleViewUser.VIEW_NAME);
                     });
                 }
+                sumPrice.add(basePrice + placePrice);
             }
             layout.addComponent(textField);
             layout.addComponent(buttonEnter);
+            for (int price : sumPrice) {
+                Label priceSum = new Label("Price: " + String.valueOf(price));
+                layout.addComponent(priceSum);
+            }
         });
         return layout;
-    }
-
-    private long getZoneId() {
-        Place placeSelected = null;
-        for (Place place : ticketSelect.getSelectedPlaces()) {
-            place = placeSelected;
-        }
-        return placeSelected.getZoneId();
     }
 }
