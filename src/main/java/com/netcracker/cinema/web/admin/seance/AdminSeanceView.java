@@ -58,10 +58,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         InlineDateField calendar = new InlineDateField();
         calendar.setShowISOWeekNumbers(true);
         calendar.setValue(date);
-
-        Button showButton = new Button("Show seances");
-        showButton.setWidth("270px");
-        showButton.addClickListener(e -> {
+        calendar.addValueChangeListener(e -> {
             date = calendar.getValue();
             getHall(1, verticalLayout2);
             getHall(2, verticalLayout3);
@@ -80,7 +77,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
 
         verticalLayout1.setSpacing(true);
         verticalLayout1.setMargin(true);
-        verticalLayout1.addComponents(calendar, showButton, windowButton);
+        verticalLayout1.addComponents(calendar, windowButton);
         verticalLayout1.setWidth("380px");
         verticalLayout2.setWidth("600px");
         verticalLayout3.setWidth("600px");
@@ -154,9 +151,10 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             }
         });
 
-        TextField priceFieldA = new TextField("Zone 'AA'");
-        TextField priceFieldB = new TextField("Zone 'BB'");
-        TextField priceFieldC = new TextField("Zone 'CC'");
+        TextField priceFieldA = new TextField();
+        TextField priceFieldB = new TextField();
+        TextField priceFieldC = new TextField();
+        hallId.addValueChangeListener(e -> setCaptionsToTextField(hallId, priceFieldA, priceFieldB, priceFieldC));
 
         List<TextField> textFieldList = new ArrayList<>();
         textFieldList.add(priceFieldA);
@@ -176,9 +174,13 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             movieName.setValue(null);
             seanceDate.setValue(null);
             posterLayout.removeAllComponents();
+            for (TextField priceField : textFieldList) {
+                priceField.clear();
+            }
         });
 
         setValues(seanceDate, hallId, movieName, textFieldList);
+        setCaptionsToTextField(hallId, priceFieldA, priceFieldB, priceFieldC);
 
         Button saveButton = new Button("Save seance");
         saveButton.setWidth("250px");
@@ -221,6 +223,22 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         layout.addComponent(saveButton, "right: 30px; bottom: 20px;");
 
         return layout;
+    }
+
+    private void setCaptionsToTextField(NativeSelect hallId, TextField priceFieldA, TextField priceFieldB, TextField priceFieldC) {
+        if (hallId.getValue() != null && hallId.getValue().equals(1)) {
+            priceFieldA.setCaption("Zone 'AA'");
+            priceFieldB.setCaption("Zone 'BB'");
+            priceFieldC.setCaption("Zone 'CC'");
+        } else if (hallId.getValue() != null && hallId.getValue().equals(2)) {
+            priceFieldA.setCaption("Zone 'DD'");
+            priceFieldB.setCaption("Zone 'EE'");
+            priceFieldC.setCaption("Zone 'FF'");
+        } else {
+            priceFieldA.setCaption("Zone 1");
+            priceFieldB.setCaption("Zone 2");
+            priceFieldC.setCaption("Zone 3");
+        }
     }
 
     private void setValues(DateField seanceDate, NativeSelect hallId, ComboBox movieName, List<TextField> textFieldList) {
@@ -360,7 +378,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             Price price = priceService.getPriceBySeanceZone(seance.getId(), zoneId);
             priceList = priceList + " " + price.getPrice() + ",";
         }
-        Label prices = new Label("Prices: " + priceList.substring(0, priceList.length() - 2));
+        Label prices = new Label("Prices: " + priceList.substring(0, priceList.length() - 1));
 
         movieInfo.addComponents(name, beginTime, endTime, prices);
 
