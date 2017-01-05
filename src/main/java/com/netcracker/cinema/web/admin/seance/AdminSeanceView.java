@@ -6,6 +6,7 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.SeanceService;
+import com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl;
 import com.netcracker.cinema.web.AdminUI;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 import com.vaadin.navigator.View;
@@ -21,10 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static org.quartz.CronScheduleBuilder.cronSchedule;
+import static org.quartz.JobBuilder.newJob;
 
 /**
  * Created by Titarenko on 22.12.2016.
@@ -41,6 +42,8 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     private List<Movie> movieList;
     @Autowired
     private PriceService priceService;
+    @Autowired
+    private ScheduleServiceImpl schedule;
 
     private Date date = new Date(System.currentTimeMillis());
     private DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
@@ -49,9 +52,6 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     private VerticalLayout verticalLayout2 = new VerticalLayout();
     private VerticalLayout verticalLayout3 = new VerticalLayout();
     private Window subWindow;
-
-    public AdminSeanceView() {
-    }
 
     @PostConstruct
     protected void init() {
@@ -260,6 +260,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     private void saveSeanceAndPrice(Seance newSeance, List<TextField> textFieldList) {
         Date previousDate = seance.getSeanceDate();
         seanceService.save(newSeance);
+        schedule.createTask(newSeance.getSeanceDate(), newSeance.getId());
 
         long oldZoneId = (seance.getHallId() == 1 ? 3 : 6);
         long newZoneId = (newSeance.getHallId() == 1 ? 3 : 6);
@@ -421,6 +422,9 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         yesButton.addClickListener(e -> {
             if (seanceService.editableSeance(seance.getId())) {
                 seanceService.delete(seance);
+
+                schedule.deleteTask(seance.getId());
+
                 removalWindow.close();
                 getHall(seance.getHallId(),
                         seance.getHallId() == 1 ? verticalLayout2 : verticalLayout3);
