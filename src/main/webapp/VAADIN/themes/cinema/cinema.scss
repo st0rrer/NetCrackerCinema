@@ -160,4 +160,13 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     background-color: #16b4ff;
     font-weight: 400;
   }
+
+  .v-filterselect-input {
+    background-color: #ededed !important;
+  }
+
+  .v-filterselect-input:focus {
+    border-color: rgb(193, 193, 193) !important;
+    box-shadow: 0 0 0 0 rgb(197, 197, 197) !important;
+  }
 }
