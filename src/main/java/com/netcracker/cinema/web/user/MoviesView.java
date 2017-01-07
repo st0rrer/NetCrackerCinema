@@ -11,20 +11,17 @@ import com.netcracker.cinema.web.UserUI;
 import com.vaadin.data.Property;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.ExternalResource;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @SpringView(name = MoviesView.VIEW_NAME, ui = UserUI.class)
 public class MoviesView extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "";
-	private static final String SORT_BY_LABEL_TITLE = "Sort by";
 	private static final String SORT_BY_IMDB_OPTION = "IMDB";
 	private static final String SORT_BY_PRICE_OPTION = "Price";
 
@@ -39,9 +36,14 @@ public class MoviesView extends VerticalLayout implements View {
 	@PostConstruct
 	void init() {
         movieComponents = new ArrayList<>();
-        addComponent(createSortButtons());
-
         List<Movie> movies = movieService.findWhereRollingPeriodWasStarted();
+
+        HorizontalLayout filterToolsLayout = new HorizontalLayout();
+        filterToolsLayout.setSpacing(true);
+        filterToolsLayout.addComponent(createSortButtons());
+        filterToolsLayout.addComponent(createTextFieldForFindByName(movies));
+        addComponent(filterToolsLayout);
+
         for (Movie movie: movies) {
             MovieComponent movieComponent = new MovieComponent(movie);
             movieComponents.add(movieComponent);
@@ -61,9 +63,30 @@ public class MoviesView extends VerticalLayout implements View {
 	public void enter(ViewChangeEvent event) {
 	}
 
+	private Component createTextFieldForFindByName(List<Movie> movies) {
+	    ComboBox findBox = new ComboBox("Filter by movie's title");
+	    findBox.setFilteringMode(FilteringMode.CONTAINS);
+	    findBox.setWidth("400px");
+        for (Movie movie : movies) {
+            findBox.addItem(movie.getName());
+        }
+        findBox.addValueChangeListener((Property.ValueChangeListener) event -> {
+            String enteredMovieTitle = (String) event.getProperty().getValue();
+            redrawAllMovies();
+            if(enteredMovieTitle != null) {
+                for (MovieComponent movieComponent : movieComponents) {
+                    if (!movieComponent.getMovie().getName().equals(enteredMovieTitle)) {
+                        removeComponent(movieComponent);
+                    }
+                }
+            }
+        });
+        return findBox;
+    }
+
 
 	private Component createSortButtons() {
-		NativeSelect selector = new NativeSelect(SORT_BY_LABEL_TITLE);
+		NativeSelect selector = new NativeSelect("Sort by");
 		selector.addItem(SORT_BY_IMDB_OPTION);
 		selector.addItem(SORT_BY_PRICE_OPTION);
 
@@ -93,7 +116,7 @@ public class MoviesView extends VerticalLayout implements View {
                 });
             }
 
-            redrawMovies();
+            redrawAllMovies();
         });
 
 		selector.setNullSelectionAllowed(false);
@@ -102,7 +125,7 @@ public class MoviesView extends VerticalLayout implements View {
 		return selector;
 	}
 
-	private void redrawMovies() {
+	private void redrawAllMovies() {
 	    for(MovieComponent movieComponent: movieComponents) {
 	        removeComponent(movieComponent);
         }
