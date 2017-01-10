@@ -144,39 +144,44 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
         TextField textField = new TextField("Enter your email:");
         Button buttonEnter = new Button("OK");
         layout.addComponent(book);
-        Notification.show("Please select a place", Notification.Type.WARNING_MESSAGE);
         book.addClickListener(clickEvent -> {
-            Validation validation = new Validation();
-            ticketSelect.setEnabled(false);
-            buttonEnter.setEnabled(false);
-            book.setEnabled(false);
-            for (Place place : ticketSelect.getSelectedPlaces()) {
-                Ticket ticket = new Ticket();
-                textField.addTextChangeListener(textChangeEvent -> {
-                    textField.setValue(textChangeEvent.getText());
-                    textField.setNullSettingAllowed(true);
-                    if (validation.isValidEmailAddress(textField.getValue())) {
-                        ticket.setEmail(textField.getValue());
-                        buttonEnter.setEnabled(true);
-                    }
-                    if (!validation.isValidEmailAddress(textField.getValue())) {
-                        Notification.show("Incorrect email address", Notification.Type.WARNING_MESSAGE);
+            if (ticketSelect.getSelectedPlaces().isEmpty())
+                book.setEnabled(true);
+            if (!ticketSelect.getSelectedPlaces().isEmpty()) {
+                book.setEnabled(false);
+                Validation validation = new Validation();
+                ticketSelect.setEnabled(false);
+                buttonEnter.setEnabled(false);
+                book.setEnabled(false);
+                for (Place place : ticketSelect.getSelectedPlaces()) {
+                    Ticket ticket = new Ticket();
+                    textField.addTextChangeListener(textChangeEvent -> {
+                        textField.setValue(textChangeEvent.getText());
+                        textField.setNullSettingAllowed(true);
+                        if (validation.isValidEmailAddress(textField.getValue())) {
+                            ticket.setEmail(textField.getValue());
+                            buttonEnter.setEnabled(true);
+                        }
+                        if (!validation.isValidEmailAddress(textField.getValue())) {
+                            Notification.show("Incorrect email address", Notification.Type.WARNING_MESSAGE);
+                            buttonEnter.setEnabled(false);
+                        }
+                    });
+                    ticket.setPrice(priceTicket(seance, place));
+                    ticket.setCode(ticketService.getCode());
+                    ticket.setPlaceId(place.getId());
+                    ticket.setSeanceId(seance.getId());
+                    buttonEnter.addClickListener(clickEventt -> {
+                        ticketService.save(ticket);
+                        messageBox();
                         buttonEnter.setEnabled(false);
-                    }
-                });
-                ticket.setPrice(priceTicket(seance, place));
-                ticket.setCode(ticketService.getCode());
-                ticket.setPlaceId(place.getId());
-                ticket.setSeanceId(seance.getId());
-                buttonEnter.addClickListener(clickEventt -> {
-                    ticketService.save(ticket);
-                    messageBox();
-                });
-                sumPrice.add(priceTicket(seance, place));
+                    });
+                    sumPrice.add(priceTicket(seance, place));
+                }
+                layout.addComponent(textField);
+                layout.addComponent(buttonEnter);
+                ticketPrice(sumPrice, layout);
             }
-            layout.addComponent(textField);
-            layout.addComponent(buttonEnter);
-            ticketPrice(sumPrice, layout);
         });
         return layout;
     }
@@ -194,9 +199,11 @@ public class HallDetailsViewUser extends HorizontalLayout implements View {
     }
 
     private void ticketPrice(ArrayList<Integer> sumPrice, Layout layout) {
-        for (int price : sumPrice) {
-            Label priceSum = new Label("Ticket price: " + String.valueOf(price) + "$");
-            layout.addComponent(priceSum);
+        int sumPriceTicket = 0;
+        for (int i = 0; i < sumPrice.size(); i++) {
+            sumPriceTicket = sumPriceTicket + sumPrice.get(i);
         }
+        Label priceSum = new Label("Total price: " + String.valueOf(sumPriceTicket) + "$");
+        layout.addComponent(priceSum);
     }
 }
