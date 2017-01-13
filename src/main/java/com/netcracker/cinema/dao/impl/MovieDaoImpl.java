@@ -4,6 +4,7 @@ import com.netcracker.cinema.dao.MovieDao;
 import com.netcracker.cinema.model.Movie;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -34,38 +35,58 @@ public class MovieDaoImpl implements MovieDao {
     @Override
     public List<Movie> findAll() {
         List<Movie> movies = jdbcTemplate.query(FIND_ALL_SQL, new MovieMapper());
+        LOGGER.info("Find all movies: found " + movies.size() + " movie objects");
         return movies;
     }
 
     @Override
     public List<Movie> findWhereRollingPeriodWasStarted() {
         List<Movie> movies = jdbcTemplate.query(FIND_WHERE_ROLLING_PERIOD_WAS_STARTED, new MovieMapper());
+        LOGGER.info("Find movies by rolling period was startred: found " + movies.size() + " movie object");
         return movies;
     }
 
     @Override
     public Movie getById(long id) {
-        Movie movie = jdbcTemplate.queryForObject(FIND_MOVIE_BY_ID, new Object[]{id}, new MovieMapper());
+        Movie movie = null;
+        try {
+            movie = jdbcTemplate.queryForObject(FIND_MOVIE_BY_ID, new Object[]{id}, new MovieMapper());
+            LOGGER.info("Get seance by id: found not null movie");
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.info("Can't find seance with id " + id + " return null");
+        }
         return movie;
     }
 
     @Override
     public void save(Movie movie) {
-        jdbcTemplate.update(MERGE_MOVIE_OBJECT, movie.getId(), movie.getName());
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_DESCRIPTION, movie.getDescription(), movie.getId());
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_DURATION, movie.getDuration(), movie.getId());
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_IMDB, movie.getImdb(), movie.getId());
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_PERIODICITY, movie.getPeriodicity(), movie.getId());
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_BASE_PRICE, movie.getBasePrice(), movie.getId());
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_START, new Date(movie.getStartDate().getTime()), movie.getId());
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_END, new Date(movie.getEndDate().getTime()), movie.getId());
-        jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_POSTER, movie.getPoster(), movie.getId());
-        LOGGER.info("");
+        if(movie == null) {
+            throw new IllegalArgumentException("Can't save null as seance");
+        }
+
+        int affected = 0;
+
+        affected += jdbcTemplate.update(MERGE_MOVIE_OBJECT, movie.getId(), movie.getName());
+        affected += jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_DESCRIPTION, movie.getDescription(), movie.getId());
+        affected += jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_DURATION, movie.getDuration(), movie.getId());
+        affected += jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_IMDB, movie.getImdb(), movie.getId());
+        affected += jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_PERIODICITY, movie.getPeriodicity(), movie.getId());
+        affected += jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_BASE_PRICE, movie.getBasePrice(), movie.getId());
+        affected += jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_START, new Date(movie.getStartDate().getTime()), movie.getId());
+        affected += jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_ROLLING_END, new Date(movie.getEndDate().getTime()), movie.getId());
+        affected += jdbcTemplate.update(MERGE_MOVIE_ATTRIBUTES_POSTER, movie.getPoster(), movie.getId());
+
+        LOGGER.info("Save movie: affected " + affected + " rows");
     }
 
     @Override
     public void delete(Movie movie) {
-        jdbcTemplate.update(DELETE_MOVIE, movie.getId());
+        if(movie == null) {
+            throw new IllegalArgumentException("Can't delete null movie");
+        }
+        int affected = jdbcTemplate.update(DELETE_MOVIE, movie.getId());
+
+        LOGGER.info("Delete movie: affected " + affected + " rows");
     }
 
     class MovieMapper implements RowMapper<Movie> {
