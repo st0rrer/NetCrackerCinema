@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by dimka on 10.12.2016.
@@ -42,6 +43,7 @@ public class TicketsTable extends Grid {
 
     private Button sellTickets;
     private Button printTickets;
+    Label totalPrice;
     private HorizontalLayout buttonsForTicketsTable;
 
     private Grid.MultiSelectionModel ticketsSelection;
@@ -50,10 +52,8 @@ public class TicketsTable extends Grid {
     private List<Ticket> tickets;
 
     public TicketsTable() {
-        super();
         this.setSelectionMode(SelectionMode.MULTI);
         ticketsSelection  = (Grid.MultiSelectionModel) this.getSelectionModel();
-
         this.setRowStyleGenerator(new RowStyleGenerator() {
             @Override
             public String getStyle(RowReference row) {
@@ -70,6 +70,7 @@ public class TicketsTable extends Grid {
         buttonsForTicketsTable = new HorizontalLayout();
         sellTickets = new Button("Sell tickets");
         printTickets = new Button("Print tickets");
+        totalPrice = new Label("Total price: ");
 
         printTickets.addClickListener(event -> {
             clickPrintTickets();
@@ -79,8 +80,93 @@ public class TicketsTable extends Grid {
             clickSellTickets();
         });
 
-        buttonsForTicketsTable.addComponents(sellTickets, printTickets);
+        this.addSelectionListener(event -> {
+            int summPrice = 0;
+            if (!ticketsSelection.getSelectedRows().isEmpty()) {
+                for(Object ticket : ticketsSelection.getSelectedRows()) {
+                    summPrice += ((Ticket) ticket).getPrice();
+                }
+                totalPrice.setValue("Total price: " + summPrice);
+            } else {
+                totalPrice.setValue("Total price: ");
+            }
+        });
+        buttonsForTicketsTable.addComponents(sellTickets, printTickets, totalPrice);
+        buttonsForTicketsTable.setComponentAlignment(totalPrice, Alignment.MIDDLE_CENTER);
         buttonsForTicketsTable.setSpacing(true);
+    }
+
+    public void updateList() {
+        if(codeTicket != null) {
+            tickets = ticketService.getTicketsByCode(codeTicket);
+            isEmptyTickets(tickets);
+
+            BeanItemContainer<Ticket> ticketsContainer = new BeanItemContainer<>(Ticket.class, tickets);
+
+            GeneratedPropertyContainer ticketsGeneratedContainer = new GeneratedPropertyContainer(ticketsContainer);
+            ticketsGeneratedContainer.addGeneratedProperty("Seance", new PropertyValueGenerator<String>() {
+                @Override
+                public String getValue(Item item, Object itemId, Object propertyId) {
+                    long seanceId = (Long) item.getItemProperty("seanceId").getValue();
+                    Seance seance = seanceService.getById(seanceId);
+                    Movie movie = movieService.getById(seance.getMovieId());
+                    Hall hall = hallService.getById(seance.getHallId());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd MMM");
+                    return movie.getName() + " " + dateFormat.format(seance.getSeanceDate()) + " Hall: " + hall.getName();
+                }
+
+                @Override
+                public Class<String> getType() {
+                    return String.class;
+                }
+            });
+            ticketsGeneratedContainer.addGeneratedProperty("Place", new PropertyValueGenerator<String>() {
+                @Override
+                public String getValue(Item item, Object itemId, Object propertyId) {
+                    long placeId = (Long) item.getItemProperty("placeId").getValue();
+                    Place place = placeService.getById(placeId);
+                    Zone zone = zoneService.getById(place.getZoneId());
+                    return "Number: " + place.getNumber() + " Row: " + place.getRowNumber() + " Zone: " + zone.getName();
+                }
+
+                @Override
+                public Class<String> getType() {
+                    return String.class;
+                }
+            });
+
+            this.setContainerDataSource(ticketsGeneratedContainer);
+            this.setColumnOrder("code", "Seance", "Place", "price", "email", "paid", "id");
+            this.getColumn("id").setHidden(true);
+            this.getColumn("seanceId").setHidden(true);
+            this.getColumn("placeId").setHidden(true);
+        }
+    }
+
+    private void isEmptyTickets(List<Ticket> tickets) {
+        if(tickets.isEmpty()) {
+            Notification.show("Tickets don't exist by this code!", Notification.Type.WARNING_MESSAGE);
+            this.setVisible(false);
+            buttonsForTicketsTable.setVisible(false);
+        } else {
+            this.setVisible(true);
+            buttonsForTicketsTable.setVisible(true);
+
+            printTickets.setEnabled(true);
+            int summPrice = 0;
+            for (Ticket ticket : tickets) {
+                if (!ticket.isPaid()) {
+                    printTickets.setEnabled(false);
+                } else {
+                    summPrice += ticket.getPrice();
+                }
+            }
+            if (summPrice != 0) {
+                totalPrice.setValue("Total price: " + summPrice);
+            } else {
+                totalPrice.setValue("Total price: ");
+            }
+        }
     }
 
     private void clickSellTickets() {
@@ -121,72 +207,6 @@ public class TicketsTable extends Grid {
         JavaScript.getCurrent().execute(js);
     }
 
-    public void updateList() {
-        if(codeTicket != null) {
-
-            tickets = ticketService.getTicketsByCode(codeTicket);
-            if(tickets.isEmpty()) {
-                Notification.show("Tickets don't exist by this code!", Notification.Type.WARNING_MESSAGE);
-                this.setVisible(false);
-                sellTickets.setVisible(false);
-                printTickets.setVisible(false);
-            } else {
-                this.setVisible(true);
-                sellTickets.setVisible(true);
-                printTickets.setVisible(true);
-            }
-
-            BeanItemContainer<Ticket> ticketsContainer = new BeanItemContainer<>(Ticket.class, tickets);
-
-            GeneratedPropertyContainer ticketsGeneratedContainer = new GeneratedPropertyContainer(ticketsContainer);
-
-            ticketsGeneratedContainer.addGeneratedProperty("Seance", new PropertyValueGenerator<String>() {
-                @Override
-                public String getValue(Item item, Object itemId, Object propertyId) {
-                    long seanceId = (Long) item.getItemProperty("seanceId").getValue();
-                    Seance seance = seanceService.getById(seanceId);
-                    Movie movie = movieService.getById(seance.getMovieId());
-                    Hall hall = hallService.getById(seance.getHallId());
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd MMM");
-                    return movie.getName() + " " + dateFormat.format(seance.getSeanceDate()) + " Hall: " + hall.getName();
-                }
-
-                @Override
-                public Class<String> getType() {
-                    return String.class;
-                }
-            });
-            ticketsGeneratedContainer.addGeneratedProperty("Place", new PropertyValueGenerator<String>() {
-                @Override
-                public String getValue(Item item, Object itemId, Object propertyId) {
-                    long placeId = (Long) item.getItemProperty("placeId").getValue();
-                    Place place = placeService.getById(placeId);
-                    Zone zone = zoneService.getById(place.getZoneId());
-                    return "Number: " + place.getNumber() + " Row: " + place.getRowNumber() + " Zone: " + zone.getName();
-                }
-
-                @Override
-                public Class<String> getType() {
-                    return String.class;
-                }
-            });
-
-            this.setContainerDataSource(ticketsGeneratedContainer);
-
-            for(Ticket ticket : ticketsContainer.getItemIds()) {
-                if(ticket.isPaid()) {
-                    printTickets.setEnabled(true);
-                } else {
-                    printTickets.setEnabled(false);
-                }
-            }
-            this.setColumnOrder("code", "Seance", "Place", "price", "email", "paid", "id");
-            this.getColumn("id").setHidden(true);
-            this.getColumn("seanceId").setHidden(true);
-            this.getColumn("placeId").setHidden(true);
-        }
-    }
-
     private class SellWindow extends Window {
         SellWindow(List ticketsForSell) {
             super("Confirmation");
@@ -201,10 +221,10 @@ public class TicketsTable extends Grid {
             this.setContent(confirmation);
             checkConfirmation.addClickListener(event -> {
                 List<Ticket> ticketsByCode = ticketService.getTicketsByCode(codeTicket);
-                for(int i = 0; i < ticketsByCode.size(); i++) {
-                    for(int j = 0; j < ticketsForSell.size(); j++) {
-                        if(ticketsByCode.get(i).getId() == ((Ticket) ticketsForSell.get(j)).getId()) {
-                            ticketsByCode.get(i).setPaid(true);
+                for (Ticket ticketByCode : ticketsByCode) {
+                    for (Object ticketForSell : ticketsForSell) {
+                        if (ticketByCode.getId() == ((Ticket) ticketForSell).getId()) {
+                            ticketByCode.setPaid(true);
                         }
                     }
                 }

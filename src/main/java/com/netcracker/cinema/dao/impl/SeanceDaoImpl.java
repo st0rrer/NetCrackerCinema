@@ -48,13 +48,8 @@ public class SeanceDaoImpl implements SeanceDao {
 
     @Override
     public Seance getById(long id) {
-        Seance seance = null;
-        try {
-            seance = jdbcTemplate.queryForObject(FIND_SEANCE_BY_ID, new Object[]{id}, new SeanceRowMapper());
-            logger.info("Get seance by id: found not null seance");
-        } catch (EmptyResultDataAccessException e) { // ok, just 0 sessions
-            logger.info("Can't find seance with id " + id + " return null");
-        }
+        Seance seance = jdbcTemplate.queryForObject(FIND_SEANCE_BY_ID, new Object[]{id}, new SeanceRowMapper());
+        logger.info("Get seance by id: found not null seance");
         return seance;
     }
 

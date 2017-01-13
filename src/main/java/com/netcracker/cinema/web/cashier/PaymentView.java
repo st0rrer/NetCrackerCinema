@@ -8,6 +8,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.log4j.Logger;
@@ -19,8 +20,8 @@ import java.util.Iterator;
 /**
  * Created by dimka on 01.12.2016.
  */
-@UIScope
 @SpringView(name = PaymentView.VIEW_NAME, ui = CashierUI.class)
+@ViewScope
 public class PaymentView extends VerticalLayout implements View {
 
     private static final Logger LOGGER = Logger.getLogger(PaymentView.class);

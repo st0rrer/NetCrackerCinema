@@ -3,17 +3,15 @@ package com.netcracker.cinema.web.common;
 import com.netcracker.cinema.model.Place;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Zone;
-import com.netcracker.cinema.service.PlaceService;
-import com.netcracker.cinema.service.TicketService;
-import com.netcracker.cinema.service.ZoneService;
+import com.netcracker.cinema.service.*;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.annotation.ViewScope;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +19,7 @@ import java.util.Set;
 
 @SpringComponent
 @UIScope
-public class TicketSelect extends GridLayout {
+public class TicketSelect extends VerticalLayout {
     private static final String PLACE_STYLE = "place-button";
     private static final String SELECTED_PLACE_STYLE = "selected-place";
     private static final String ZONE_ONE_PLACE_STYLE = "zone-1-button";
@@ -34,6 +32,9 @@ public class TicketSelect extends GridLayout {
     private Zone zoneOneStyled;
     private Zone zoneTwoStyled;
     private Zone zoneThreeStyled;
+    private int totalPrice;
+    private GridLayout areaForTicketSelect;
+    private Label areaForTotalPrice;
 
     @Autowired
     private PlaceService placeService;
@@ -41,9 +42,20 @@ public class TicketSelect extends GridLayout {
     private TicketService ticketService;
     @Autowired
     private ZoneService zoneService;
+    @Autowired
+    private PriceService priceService;
+    @Autowired
+    private MovieService movieService;
+
+    @PostConstruct
+    public void init() {
+        this.setSpacing(true);
+        this.setMargin(true);
+        this.addStyleName("tickets-select");
+    }
 
     public void buildForThisSeance(Seance seance) {
-        addStyleName("tickets-select");
+        totalPrice = 0;
         zoneOneStyled = null;
         zoneTwoStyled = null;
         zoneThreeStyled = null;
@@ -52,12 +64,20 @@ public class TicketSelect extends GridLayout {
         List<Place> places = placeService.getByHall(seance.getHallId());
         placeButtons = new ArrayList<>(places.size());
         removeAllComponents();
+        instanceTotalPrice();
         adjustGridSize(places);
         for (Place place : places) {
             PlaceButton placeButton = new PlaceButton(place);
             placeButtons.add(placeButton);
-            addComponent(placeButton, place.getNumber() - 1, place.getRowNumber() - 1);
+            areaForTicketSelect.addComponent(placeButton, place.getNumber() - 1, place.getRowNumber() - 1);
         }
+    }
+
+    private void instanceTotalPrice() {
+        areaForTotalPrice = new Label();
+        areaForTotalPrice.setValue("Total price: " + totalPrice);
+        this.addComponent(areaForTotalPrice);
+        this.setComponentAlignment(areaForTotalPrice, Alignment.BOTTOM_CENTER);
     }
 
     public List<Place> getSelectedPlaces() {
@@ -67,6 +87,10 @@ public class TicketSelect extends GridLayout {
                 selectedPlaces.add(placeButton.getPlace());
         }
         return selectedPlaces;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
     }
 
     public void addPlaceSelectedListener(PlaceSelectedListener listener) {
@@ -87,15 +111,17 @@ public class TicketSelect extends GridLayout {
                 rows = place.getRowNumber();
             }
         }
-        setColumns(columns);
-        setRows(rows);
+        areaForTicketSelect = new GridLayout();
+        this.addComponent(areaForTicketSelect);
+        areaForTicketSelect.setColumns(columns);
+        areaForTicketSelect.setRows(rows);
     }
 
     private class PlaceButton extends Button {
         private Place place;
         private boolean selected;
 
-        public PlaceButton(Place place) {
+        PlaceButton(Place place) {
             this.place = place;
             this.selected = false;
             Zone placeZone = zoneService.getById(place.getZoneId());
@@ -118,9 +144,14 @@ public class TicketSelect extends GridLayout {
             }
             addClickListener((ClickListener) event -> {
                 selected = !selected;
+                areaForTotalPrice.setValue("Total price: " + totalPrice);
                 if (selected) {
+                    totalPrice += priceTicket(seance, place);
+                    areaForTotalPrice.setValue("Total price: " + totalPrice);
                     addStyleName(SELECTED_PLACE_STYLE);
                 } else {
+                    totalPrice -= priceTicket(seance, place);
+                    areaForTotalPrice.setValue("Total price: " + totalPrice);
                     removeStyleName(SELECTED_PLACE_STYLE);
                 }
 
@@ -137,6 +168,12 @@ public class TicketSelect extends GridLayout {
         public boolean isSelected() {
             return selected;
         }
+    }
+
+    private int priceTicket(Seance seance, Place place) {
+        int basePrice = movieService.getById(seance.getMovieId()).getBasePrice();
+        int placePrice = priceService.getPriceBySeanceColRow((int) seance.getId(), place.getNumber(), place.getRowNumber());
+        return basePrice + placePrice;
     }
 
     public interface PlaceSelectedListener {
