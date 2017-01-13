@@ -6,8 +6,8 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
@@ -34,7 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         int year = cal.get(java.util.Calendar.YEAR);
         int month = cal.get(java.util.Calendar.MONTH);
         int day = cal.get(java.util.Calendar.DAY_OF_MONTH);
-        int hour = cal.get(java.util.Calendar.HOUR);
+        int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
         int minute = cal.get(java.util.Calendar.MINUTE);
         int seconds = cal.get(java.util.Calendar.SECOND);
 
@@ -42,14 +42,14 @@ public class ScheduleServiceImpl implements ScheduleService {
             deleteTask(seanceId);
         }
 
-        //String cronTime = "*/10 * * * * ?";
+        //String cronTime = "50 8 16 13 1 ? 2017";
         String cronTime = seconds + " " + minute + " " + hour + " " + day + " " + (month+1) + " ? " + year;
 
         JobDetail job = newJob(Task.class)
                 .withIdentity("job" + seanceId, "group")
                 .build();
         job.getJobDataMap().put("ticketService", ticketService);
-        job.getJobDataMap().put("id", ticketService);
+        job.getJobDataMap().put("id", seanceId);
 
         CronTrigger trigger = newTrigger()
                 .withIdentity("trigger" + seanceId, "group")

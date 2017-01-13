@@ -91,8 +91,8 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public void deleteBlockForOneHour() {
-        jdbcTemplate.update(DELETE_BLOCK_FOR_ONE_HOUR);
+    public void deleteBlockForOneHour(long seanceId) {
+        jdbcTemplate.update(DELETE_BLOCK_FOR_ONE_HOUR, seanceId);
     }
 
     @Override

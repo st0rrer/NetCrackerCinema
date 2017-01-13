@@ -66,7 +66,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void deleteBlockForOneHour() {
-        ticketDao.deleteBlockForOneHour();
+    public void deleteBlockForOneHour(long seanceId) {
+        ticketDao.deleteBlockForOneHour(seanceId);
     }
 }
