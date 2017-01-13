@@ -81,6 +81,7 @@ public class HallDetailsViewCashier extends VerticalLayout implements View {
         this.removeAllComponents();
         areaForBookTicket = new GridLayout(2, 2);
         areaForBookTicket.setSpacing(true);
+        areaForBookTicket.addStyleName("book-ticket-area");
         this.addComponent(areaForBookTicket);
 
         ticketSelect.buildForThisSeance(seance);
