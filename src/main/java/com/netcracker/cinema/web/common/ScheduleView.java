@@ -35,7 +35,7 @@ public abstract class ScheduleView extends VerticalLayout implements View {
     @Autowired
     MovieService movieService;
 
-    private SeanceFilter seanceFilter = new SeanceFilter().actual().orderByStartDateDesc();
+    private SeanceFilter seanceFilter = new SeanceFilter().actual().orderByStartDateAsc();
     private Paginator<Seance> paginator;
     private List<Seance> seances;
 
