@@ -8,10 +8,6 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.HallService;
 import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
-import com.netcracker.cinema.web.cashier.ScheduleTableCashier;
-import com.netcracker.cinema.web.user.ScheduleTableUser;
-import com.vaadin.data.Container;
-import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
@@ -19,11 +15,10 @@ import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.annotation.PostConstruct;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 
@@ -31,6 +26,7 @@ public abstract class ScheduleView extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "seance";
     private static final Integer SIZE_PAGE = 8;
+    private static final Logger LOGGER = Logger.getLogger(ScheduleView.class);
 
     @Autowired
     SeanceService seanceService;
@@ -150,7 +146,7 @@ public abstract class ScheduleView extends VerticalLayout implements View {
             setComponentAlignment(buttonsForPaging, Alignment.BOTTOM_CENTER);
         }
 
-        public void setMaxPage(long maxPage) {
+        void setMaxPage(long maxPage) {
             this.maxPage = maxPage;
             if(currentPage == 1) {
                 previous.setEnabled(false);
@@ -170,7 +166,7 @@ public abstract class ScheduleView extends VerticalLayout implements View {
         private Object dateFilter = DEFAULT_DATE;
         private Object hallFilter = DEFAULT_HALL;
 
-        public ScheduleFilterComponent() {
+        ScheduleFilterComponent() {
             this.setMargin(true);
             this.setSpacing(true);
             filterDay();
@@ -260,15 +256,20 @@ public abstract class ScheduleView extends VerticalLayout implements View {
             seanceFilter = new SeanceFilter().orderByStartDateDesc().actual();
             if(dateFilter.getClass() != String.class) {
                 Date[] dateInterval = (Date[]) dateFilter;
+                LOGGER.debug("Values of dateFilter: from" + dateInterval[0] + " to " + dateInterval[1]);
                 seanceFilter.forDateRange(dateInterval[0], dateInterval[1]);
             }
 
             if(hallFilter.getClass() != String.class) {
-                seanceFilter.forHallId(((Hall) hallFilter).getId());
+                Hall hall = (Hall) hallFilter;
+                LOGGER.debug("Value of hallFilter: " + hall);
+                seanceFilter.forHallId(hall.getId());
             }
 
             if(filterByName.getValue() != null) {
-                seanceFilter.forMovieName((String) filterByName.getValue());
+                String movieName = (String) filterByName.getValue();
+                LOGGER.debug("Value of hallFilter: " + movieName);
+                seanceFilter.forMovieName(movieName);
             }
             updatePaginator(seanceFilter);
         }
