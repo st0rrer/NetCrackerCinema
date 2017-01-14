@@ -162,6 +162,7 @@ public abstract class ScheduleView extends VerticalLayout implements View {
         private NativeSelect selectDate;
         private NativeSelect selectHall;
         private ComboBox filterByName;
+        private Button filterReset;
 
         private Object dateFilter = DEFAULT_DATE;
         private Object hallFilter = DEFAULT_HALL;
@@ -171,7 +172,8 @@ public abstract class ScheduleView extends VerticalLayout implements View {
             this.setSpacing(true);
             filterDay();
             filterHall();
-            createLayoutForFilterName();
+            instanceLayoutForFilterName();
+            instanceButtonForResetFiter();
             this.setDefaultComponentAlignment(Alignment.MIDDLE_RIGHT);
 
             selectDate.addValueChangeListener(event -> {
@@ -187,21 +189,13 @@ public abstract class ScheduleView extends VerticalLayout implements View {
             filterByName.addValueChangeListener(event -> {
                 updateSeanceFilter();
             });
-        }
 
-        private void createLayoutForFilterName() {
-            filterByName = new ComboBox("Filter by movie's name");
-            filterByName.setSizeFull();
-            filterByName.setWidth("350px");
-            filterByName.setHeight("40px");
-            filterByName.setFilteringMode(FilteringMode.CONTAINS);
-            filterByName.setPageLength(5);
-            List<Movie> movies = movieService.findAll();
-            for (Movie movie : movies) {
-                filterByName.addItem(movie.getName());
-            }
-            this.addComponent(filterByName);
-            this.setComponentAlignment(filterByName, Alignment.BOTTOM_CENTER);
+            filterReset.addClickListener(event -> {
+                selectDate.setValue(DEFAULT_DATE);
+                selectHall.setValue(DEFAULT_HALL);
+                filterByName.clear();
+                updateSeanceFilter();
+            });
         }
 
         private void filterDay() {
@@ -225,6 +219,27 @@ public abstract class ScheduleView extends VerticalLayout implements View {
             nativeSelect.setWidth("200px");
             nativeSelect.setHeight("40px");
             nativeSelect.setImmediate(true);
+        }
+
+        private void instanceLayoutForFilterName() {
+            filterByName = new ComboBox("Filter by movie's name");
+            filterByName.setSizeFull();
+            filterByName.setWidth("350px");
+            filterByName.setHeight("40px");
+            filterByName.setFilteringMode(FilteringMode.CONTAINS);
+            filterByName.setPageLength(5);
+            List<Movie> movies = movieService.findAll();
+            for (Movie movie : movies) {
+                filterByName.addItem(movie.getName());
+            }
+            this.addComponent(filterByName);
+            this.setComponentAlignment(filterByName, Alignment.BOTTOM_CENTER);
+        }
+
+        private void instanceButtonForResetFiter() {
+            filterReset = new Button("Reset Filter");
+            this.addComponent(filterReset);
+            this.setComponentAlignment(filterReset, Alignment.BOTTOM_CENTER);
         }
 
         private void fillScrollOfHalls(NativeSelect selectHall) {
@@ -253,7 +268,7 @@ public abstract class ScheduleView extends VerticalLayout implements View {
         }
 
         private void updateSeanceFilter() {
-            seanceFilter = new SeanceFilter().orderByStartDateDesc().actual();
+            seanceFilter = new SeanceFilter().actual().orderByStartDateAsc();
             if(dateFilter.getClass() != String.class) {
                 Date[] dateInterval = (Date[]) dateFilter;
                 LOGGER.debug("Values of dateFilter: from" + dateInterval[0] + " to " + dateInterval[1]);
@@ -274,4 +289,5 @@ public abstract class ScheduleView extends VerticalLayout implements View {
             updatePaginator(seanceFilter);
         }
     }
+
 }
