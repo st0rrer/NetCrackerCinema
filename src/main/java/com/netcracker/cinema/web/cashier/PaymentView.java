@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -45,6 +47,13 @@ public class PaymentView extends VerticalLayout implements View {
         initAreaForCode();
     }
 
+    @PreDestroy
+    public void preDestroy() {
+        LOGGER.info("Destroy bean: " + this.getClass().getSimpleName());
+        Collection<Window> windows = UI.getCurrent().getWindows();
+        LOGGER.debug("Get all windows: " + !windows.isEmpty());
+        windows.forEach(Window::close);
+    }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {

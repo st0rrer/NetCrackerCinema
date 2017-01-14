@@ -22,12 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SpringView(name = HallDetailsViewCashier.VIEW_NAME, ui = CashierUI.class)
-@ViewScope
+@UIScope
 public class HallDetailsViewCashier extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "details";
@@ -55,8 +57,17 @@ public class HallDetailsViewCashier extends VerticalLayout implements View {
 
     @PostConstruct
     public void init() {
+        LOGGER.info("Create bean: " + this.getClass().getSimpleName());
         this.setMargin(true);
         this.setSpacing(true);
+    }
+
+    @PreDestroy
+        public void preDestroy() {
+        LOGGER.info("Destroy bean: " + this.getClass().getSimpleName());
+        Collection<Window> windows = UI.getCurrent().getWindows();
+        LOGGER.debug("Get all windows: " + !windows.isEmpty());
+        windows.forEach(Window::close);
     }
 
     @Override
