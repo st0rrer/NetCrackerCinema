@@ -24,7 +24,7 @@ public interface TicketDao {
 
     long getCode();
 
-    void deleteBlockForOneHour();
+    void deleteBlockForOneHour(long seanceId);
 
     long save(Ticket ticket);
 

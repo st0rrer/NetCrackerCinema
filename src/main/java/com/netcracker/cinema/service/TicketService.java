@@ -35,5 +35,5 @@ public interface TicketService {
      */
     int soldTickets(long objId, Date startDate, Date endDate);
 
-    void deleteBlockForOneHour();
+    void deleteBlockForOneHour(long seanceId);
 }

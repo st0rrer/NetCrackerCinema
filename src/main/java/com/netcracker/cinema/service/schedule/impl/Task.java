@@ -16,7 +16,8 @@ public class Task implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         TicketService ticketService =(TicketService) jobExecutionContext.getMergedJobDataMap().get("ticketService");
-        ticketService.deleteBlockForOneHour();
+        long seanceId = (long)jobExecutionContext.getMergedJobDataMap().get("id");
+        ticketService.deleteBlockForOneHour(seanceId);
     }
 }
 
