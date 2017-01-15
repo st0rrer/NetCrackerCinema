@@ -1,11 +1,7 @@
 package com.netcracker.cinema.web.cashier;
 
-import com.netcracker.cinema.model.Hall;
-import com.netcracker.cinema.model.Place;
-import com.netcracker.cinema.model.Seance;
-import com.netcracker.cinema.model.Ticket;
+import com.netcracker.cinema.model.*;
 import com.netcracker.cinema.service.*;
-import com.netcracker.cinema.validation.Validation;
 import com.netcracker.cinema.web.CashierUI;
 import com.netcracker.cinema.web.common.TicketSelect;
 import com.vaadin.navigator.View;
@@ -13,10 +9,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
-import de.steinwedel.messagebox.MessageBox;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,12 +17,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @SpringView(name = HallDetailsViewCashier.VIEW_NAME, ui = CashierUI.class)
-@UIScope
 public class HallDetailsViewCashier extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "details";
@@ -50,8 +40,8 @@ public class HallDetailsViewCashier extends VerticalLayout implements View {
 
     private GridLayout areaForBookTicket;
     private VerticalLayout areaForTicketSelect;
-    private Button book;
     private Button sale;
+    private Window windowForSale;
 
     private Seance seance;
 
@@ -89,7 +79,6 @@ public class HallDetailsViewCashier extends VerticalLayout implements View {
             return;
         }
 
-        this.removeAllComponents();
         areaForBookTicket = new GridLayout(2, 2);
         areaForBookTicket.setSpacing(true);
         areaForBookTicket.addStyleName("book-ticket-area");
@@ -97,141 +86,68 @@ public class HallDetailsViewCashier extends VerticalLayout implements View {
 
         ticketSelect.buildForThisSeance(seance);
         addSeanceInfo(seance);
-        instanceButtons(seance);
+        instanceButtons();
     }
 
-    private void instanceButtons(Seance seance) {
+    private void instanceButtons() {
         areaForTicketSelect = new VerticalLayout();
         areaForTicketSelect.setSpacing(true);
         areaForTicketSelect.addComponent(ticketSelect);
         HorizontalLayout areaForButtons = new HorizontalLayout();
         areaForButtons.setSpacing(true);
-        book = new Button("Book");
         sale = new Button("Sale");
-        areaForButtons.addComponent(book);
         areaForButtons.addComponent(sale);
         areaForTicketSelect.addComponent(areaForButtons);
         areaForTicketSelect.setComponentAlignment(areaForButtons, Alignment.BOTTOM_CENTER);
-        book.addClickListener(clickEvent -> {
-            if (!ticketSelect.getSelectedPlaces().isEmpty()) {
-                this.getUI().addWindow(instanceWindowForBook());
-                ticketSelect.setEnabled(false);
-                book.setEnabled(false);
-                sale.setEnabled(false);
-            }
-        });
+
         sale.addClickListener(clickEvent -> {
             if (!ticketSelect.getSelectedPlaces().isEmpty()) {
                 this.getUI().addWindow(instanceWindowsForSale());
                 ticketSelect.setEnabled(false);
-                book.setEnabled(false);
                 sale.setEnabled(false);
             }
         });
         areaForBookTicket.addComponent(areaForTicketSelect, 1, 0);
     }
 
-    private Window instanceWindowForBook() {
-
-        Window windowForBook = new Window();
-        windowForBook.center();
-        windowForBook.setContent(confirmBooking());
-        windowForBook.addCloseListener(closing -> {
-            ticketSelect.setEnabled(true);
-            book.setEnabled(true);
-            sale.setEnabled(true);
-        });
-        return windowForBook;
-    }
-
     private Window instanceWindowsForSale() {
-        Window windowForSale = new Window();
+        windowForSale = new Window();
+        windowForSale.setWidth("250px");
+        windowForSale.setHeight("100px");
         windowForSale.center();
-        windowForSale.setContent(confirmSaling());
+        windowForSale.setContent(confirmSale());
         windowForSale.addCloseListener(closing -> {
             ticketSelect.setEnabled(true);
-            book.setEnabled(true);
             sale.setEnabled(true);
         });
         return windowForSale;
     }
 
-    private Layout confirmBooking() {
-        VerticalLayout confirmBooking = new VerticalLayout();
-        confirmBooking.setSpacing(true);
-        confirmBooking.setMargin(true);
-        confirmBooking.setDefaultComponentAlignment(Alignment.BOTTOM_CENTER);
-        TextField textField = new TextField("Enter your email:");
-        Button buttonEnter = new Button("Confirm");
-        ticketSelect.setEnabled(false);
-        buttonEnter.setEnabled(false);
-        List<Ticket> bookTickets = new ArrayList();
-        for (Place place : ticketSelect.getSelectedPlaces()) {
-            Ticket ticket = new Ticket();
-            textField.addTextChangeListener(textChangeEvent -> {
-                textField.setValue(textChangeEvent.getText());
-                textField.setNullSettingAllowed(true);
-                if (!Validation.isValidEmailAddress(textField.getValue())) {
-                    Notification.show("Incorrect email address", Notification.Type.WARNING_MESSAGE);
-                    buttonEnter.setEnabled(false);
-                } else {
-                    ticket.setEmail(textField.getValue());
-                    buttonEnter.setEnabled(true);
-                }
-            });
-            ticket.setPrice(priceTicket(seance, place));
-            ticket.setPlaceId(place.getId());
-            ticket.setSeanceId(seance.getId());
-            bookTickets.add(ticket);
-        }
-        buttonEnter.addClickListener(clickEnter -> {
-            long codeForTickets = ticketService.getCode();
-            for (Ticket ticket : bookTickets) {
-                ticket.setCode(codeForTickets);
-                ticketService.save(ticket);
-            }
-            messageBox();
-        });
-        confirmBooking.addComponent(textField);
-        confirmBooking.addComponent(buttonEnter);
-        Label priceSum = new Label("Total price: " + String.valueOf(ticketSelect.getTotalPrice()) + "$");
-        confirmBooking.addComponent(priceSum);
-        return confirmBooking;
-    }
-
-    private Layout confirmSaling() {
-        VerticalLayout confirmSaling = new VerticalLayout();
-        confirmSaling.setSpacing(true);
-        confirmSaling.setMargin(true);
-        confirmSaling.setDefaultComponentAlignment(Alignment.BOTTOM_CENTER);
-        TextField emailField = new TextField("You can enter the email:");
+    private Layout confirmSale() {
+        VerticalLayout confirmSale = new VerticalLayout();
+        confirmSale.setSpacing(true);
+        confirmSale.setMargin(true);
+        confirmSale.setDefaultComponentAlignment(Alignment.BOTTOM_CENTER);
         Button buttonEnter = new Button("Confirm");
         buttonEnter.setEnabled(true);
-        List<Ticket> bookTickets = new ArrayList();
-        for (Place place : ticketSelect.getSelectedPlaces()) {
-            Ticket ticket = new Ticket();
-            ticket.setPrice(priceTicket(seance, place));
-            ticket.setPlaceId(place.getId());
-            ticket.setSeanceId(seance.getId());
-            bookTickets.add(ticket);
-        }
         buttonEnter.addClickListener(clickEnter -> {
-            String email = emailField.getValue();
             long codeForTickets = ticketService.getCode();
-            for (Ticket ticket : bookTickets) {
-                if (Validation.isValidEmailAddress(email)) {
-                    ticket.setEmail(email);
-                }
+            for (Place place : ticketSelect.getSelectedPlaces()) {
+                Ticket ticket = new Ticket();
+                ticket.setPrice(priceTicket(seance, place));
+                ticket.setPlaceId(place.getId());
+                ticket.setSeanceId(seance.getId());
                 ticket.setCode(codeForTickets);
+                ticket.setPaid(true);
                 ticketService.save(ticket);
             }
-            messageBox(codeForTickets);
+            getUI().getNavigator().navigateTo(PaymentView.VIEW_NAME + "/" + codeForTickets);
         });
-        confirmSaling.addComponent(emailField);
-        confirmSaling.addComponent(buttonEnter);
+        confirmSale.addComponent(buttonEnter);
         Label priceSum = new Label("Total price: " + String.valueOf(ticketSelect.getTotalPrice()) + "$");
-        confirmSaling.addComponent(priceSum);
-        return confirmSaling;
+        confirmSale.addComponent(priceSum);
+        confirmSale.setComponentAlignment(priceSum, Alignment.BOTTOM_CENTER);
+        return confirmSale;
     }
 
     private int priceTicket(Seance seance, Place place) {
@@ -246,29 +162,6 @@ public class HallDetailsViewCashier extends VerticalLayout implements View {
         return basePrice + placePrice;
     }
 
-    private void messageBox() {
-        MessageBox
-                .createInfo()
-                .withCaption("Well done!")
-                .withMessage("Promo code sent to your email. Thank you :)\n" +
-                        "(Don't forget to buy the ticket an hour before the seance)\n")
-                .withOkButton(() -> {
-                    Page.getCurrent().reload();
-                })
-                .open();
-    }
-
-    private void messageBox(long codeForTickets) {
-        MessageBox
-                .createInfo()
-                .withCaption("Well done!")
-                .withMessage("Your code is : " + codeForTickets + ")\n" +
-                        "(Don't forget to buy the ticket an hour before the seance)\n")
-                .withOkButton(() -> {
-                    Page.getCurrent().reload();
-                })
-                .open();
-    }
 
     private void addSeanceInfo(Seance seance) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM");
