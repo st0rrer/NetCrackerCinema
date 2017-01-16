@@ -5,7 +5,6 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
 import com.netcracker.cinema.validation.Validation;
-import com.netcracker.cinema.web.CashierUI;
 import com.netcracker.cinema.web.UserUI;
 import com.netcracker.cinema.web.common.TicketSelect;
 import com.vaadin.data.Validator;
@@ -15,7 +14,6 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
-import de.steinwedel.messagebox.MessageBox;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,9 +21,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @SpringView(name = HallDetailsViewUser.VIEW_NAME, ui = UserUI.class)
 public class HallDetailsViewUser extends VerticalLayout implements View {
@@ -87,15 +83,14 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
         this.removeAllComponents();
         areaForBookTicket = new GridLayout(2, 2);
         areaForBookTicket.setSpacing(true);
-        areaForBookTicket.addStyleName("book-ticket-area");
         this.addComponent(areaForBookTicket);
 
         ticketSelect.buildForThisSeance(seance);
         addSeanceInfo(seance);
-        instanceButtons(seance);
+        instanceButtons();
     }
 
-    private void instanceButtons(Seance seance) {
+    private void instanceButtons() {
         VerticalLayout areaForTicketSelect = new VerticalLayout();
         areaForTicketSelect.setSpacing(true);
         areaForTicketSelect.addComponent(ticketSelect);
@@ -143,30 +138,37 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
         emailField.addTextChangeListener(textChangeEvent -> {
             emailField.setValue(textChangeEvent.getText());
             emailField.setNullSettingAllowed(true);
-            if (!emailField.isValid()) {
-                Notification.show("Incorrect email address");
-                buttonEnter.setEnabled(false);
-            } else {
+            if (!emailField.getValue().isEmpty()) {
                 buttonEnter.setEnabled(true);
             }
         });
         buttonEnter.addClickListener(clickEnter -> {
-            long codeForTickets = ticketService.getCode();
-            for (Place place : ticketSelect.getSelectedPlaces()) {
-                Ticket ticket = new Ticket();
-                ticket.setEmail(emailField.getValue());
-                ticket.setPrice(priceTicket(seance, place));
-                ticket.setPlaceId(place.getId());
-                ticket.setSeanceId(seance.getId());
-                ticket.setCode(codeForTickets);
-                ticketService.save(ticket);
+            if (!emailField.isValid()) {
+                Notification.show("Incorrect email address", Notification.Type.WARNING_MESSAGE);
+                buttonEnter.setEnabled(true);
+            } else {
+                buttonEnter.setEnabled(false);
+                long codeForTickets = ticketService.getCode();
+                for (Place place : ticketSelect.getSelectedPlaces()) {
+                    Ticket ticket = new Ticket();
+                    ticket.setEmail(emailField.getValue());
+                    ticket.setPrice(priceTicket(seance, place));
+                    ticket.setPlaceId(place.getId());
+                    ticket.setSeanceId(seance.getId());
+                    ticket.setCode(codeForTickets);
+                    ticketService.save(ticket);
+                }
+                getUI().removeWindow(windowForBook);
+                ticketSelect.buildForThisSeance(seance);
+                Notification successfulNotification = new Notification("Promo code sent to your email. Thank you!" +
+                        "\n" + "Don't forget to buy the ticket an hour before the seance");
+                successfulNotification.setDelayMsec(7 * 1_000);
+                successfulNotification.show(Page.getCurrent());
             }
-            getUI().removeWindow(windowForBook);
-            ticketSelect.buildForThisSeance(seance);
         });
         confirmBooking.addComponent(emailField);
         confirmBooking.addComponent(buttonEnter);
-        Label priceSum = new Label("Total price: " + String.valueOf(ticketSelect.getTotalPrice()) + "$");
+        Label priceSum = new Label("Total price: " + String.valueOf(ticketSelect.getTotalPrice()));
         confirmBooking.addComponent(priceSum);
         return confirmBooking;
     }
@@ -202,11 +204,11 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
         areaForSeanceInfo.addComponent(time);
         Label hall = new Label("Hall: " + hallService.getById(seance.getHallId()).getName());
         areaForSeanceInfo.addComponent(hall);
-        Label priceZoneBlue = new Label("Price the blue zone: " + priceZone(seance, 1, 1) + "$");
+        Label priceZoneBlue = new Label("Price the blue zone: " + priceZone(seance, 1, 1));
         areaForSeanceInfo.addComponent(priceZoneBlue);
-        Label priceZonePink = new Label("Price the pink zone: " + priceZone(seance, 5, 1) + "$");
+        Label priceZonePink = new Label("Price the pink zone: " + priceZone(seance, 5, 1));
         areaForSeanceInfo.addComponent(priceZonePink);
-        Label priceZoneRed = new Label("Price the red zone: " + priceZone(seance, 9, 1) + "$");
+        Label priceZoneRed = new Label("Price the red zone: " + priceZone(seance, 9, 1));
         areaForSeanceInfo.addComponent(priceZoneRed);
     }
 

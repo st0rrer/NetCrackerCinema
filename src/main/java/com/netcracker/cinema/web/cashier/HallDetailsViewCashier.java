@@ -1,13 +1,14 @@
 package com.netcracker.cinema.web.cashier;
 
-import com.netcracker.cinema.model.*;
+import com.netcracker.cinema.model.Place;
+import com.netcracker.cinema.model.Seance;
+import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
 import com.netcracker.cinema.web.CashierUI;
 import com.netcracker.cinema.web.common.TicketSelect;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import org.apache.log4j.Logger;
@@ -81,7 +82,6 @@ public class HallDetailsViewCashier extends VerticalLayout implements View {
 
         areaForBookTicket = new GridLayout(2, 2);
         areaForBookTicket.setSpacing(true);
-        areaForBookTicket.addStyleName("book-ticket-area");
         this.addComponent(areaForBookTicket);
 
         ticketSelect.buildForThisSeance(seance);
@@ -182,11 +182,11 @@ public class HallDetailsViewCashier extends VerticalLayout implements View {
         areaForSeanceInfo.addComponent(time);
         Label hall = new Label("Hall: " + hallService.getById(seance.getHallId()).getName());
         areaForSeanceInfo.addComponent(hall);
-        Label priceZoneBlue = new Label("Price the blue zone: " + priceZone(seance, 1, 1) + "$");
+        Label priceZoneBlue = new Label("Price the blue zone: " + priceZone(seance, 1, 1));
         areaForSeanceInfo.addComponent(priceZoneBlue);
-        Label priceZonePink = new Label("Price the pink zone: " + priceZone(seance, 5, 1) + "$");
+        Label priceZonePink = new Label("Price the pink zone: " + priceZone(seance, 5, 1));
         areaForSeanceInfo.addComponent(priceZonePink);
-        Label priceZoneRed = new Label("Price the red zone: " + priceZone(seance, 9, 1) + "$");
+        Label priceZoneRed = new Label("Price the red zone: " + priceZone(seance, 9, 1));
         areaForSeanceInfo.addComponent(priceZoneRed);
     }
 }
