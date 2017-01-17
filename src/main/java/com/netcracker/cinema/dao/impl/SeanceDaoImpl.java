@@ -106,6 +106,11 @@ public class SeanceDaoImpl implements SeanceDao {
         return new SeancePaginator(pageSize, filter);
     }
 
+    @Override
+    public long getCountActiveMoviesById(long movieId) {
+        return jdbcTemplate.queryForObject(COUNT_ACTIVE_MOVIES_BY_ID, Long.class, movieId);
+    }
+
     private class SeanceRowMapper implements RowMapper<Seance> {
         @Override
         public Seance mapRow(ResultSet resultSet, int i) throws SQLException {

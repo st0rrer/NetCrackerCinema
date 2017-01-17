@@ -123,4 +123,9 @@ public class SeanceServiceImpl implements SeanceService {
         }
         return true;
     }
+
+    @Override
+    public long getCountActiveMoviesById(long movieId) {
+        return seanceDao.getCountActiveMoviesById(movieId);
+    }
 }

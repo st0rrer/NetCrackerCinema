@@ -130,4 +130,23 @@ public interface SeanceDaoQuery {
 
     String SELECT_ID_FOR_INSERTED_SEANCE =
             " SELECT GET_OBJ_ID.CURRVAL FROM DUAL ";
+
+    String COUNT_ACTIVE_MOVIES_BY_ID =
+            "select count(obj.object_id) count_of_seances\n" +
+                    "from objtype otp\n" +
+                    "  join objects obj\n" +
+                    "    on obj.object_type_id = otp.object_type_id     \n" +
+                    "  join attributes attr_date \n" +
+                    "    on attr_date.object_id = obj.object_id\n" +
+                    "  join attrtype atype_date\n" +
+                    "    on atype_date.attr_id = attr_date.attr_id  \n" +
+                    "  join objreference ref_movie\n" +
+                    "    on ref_movie.reference = obj.object_id\n" +
+                    "  join attrtype atype_movie\n" +
+                    "    on atype_movie.attr_id = ref_movie.attr_id\n" +
+                    "where otp.code = 'SEANCE'\n" +
+                    "  and atype_movie.code = 'MOVIE_REF'\n" +
+                    "  and atype_date.code = 'DATE'\n" +
+                    "  and ref_movie.object_id = ?\n" +
+                    "  and to_date(attr_date.date_value, 'DD-MM-YYYY HH24:MI:SS') >= to_date(sysdate, 'DD-MM-YYYY HH24:MI:SS')";
 }

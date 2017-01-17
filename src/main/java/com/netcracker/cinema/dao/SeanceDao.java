@@ -16,4 +16,5 @@ public interface SeanceDao {
     void delete(Seance seance);
     Paginator<Seance> getPaginator(int pageSize);
     Paginator<Seance> getPaginator(int pageSize, SeanceFilter filter);
+    long getCountActiveMoviesById(long movieId);
 }

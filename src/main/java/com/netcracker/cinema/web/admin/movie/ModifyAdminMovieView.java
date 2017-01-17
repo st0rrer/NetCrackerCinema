@@ -2,6 +2,7 @@ package com.netcracker.cinema.web.admin.movie;
 
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.service.MovieService;
+import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.utils.ConfirmationDialog;
 import com.netcracker.cinema.web.AdminUI;
 import com.netcracker.cinema.web.admin.AdminMenu;
@@ -16,10 +17,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 
 @SpringView(name = ModifyAdminMovieView.VIEW_NAME, ui = AdminUI.class)
@@ -28,6 +26,8 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
     public static final String VIEW_NAME = "";
     @Autowired
     private MovieService movieService;
+    @Autowired
+    private SeanceService seanceService;
     private Grid grid = new Grid();
     private TextField filterText = new TextField();
     @Autowired
@@ -106,6 +106,10 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
         deleteMovieBtn.addClickListener(e -> {
             if(!grid.getSelectionModel().getSelectedRows().isEmpty()) {
                 Movie movie = (Movie) grid.getSelectionModel().getSelectedRows().iterator().next();
+                if(seanceService.getCountActiveMoviesById(movie.getId()) > 0) {
+                    UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("You can not delete a movie with active seances"));
+                    return;
+                }
                 movieService.delete(movie);
                 this.updateList();
                 grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, search(filterText.getValue())));

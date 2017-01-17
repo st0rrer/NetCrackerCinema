@@ -21,4 +21,5 @@ public interface SeanceService {
     boolean checkDate(Seance seance);
     boolean checkIfInWorkingTime(Seance seance);
     boolean checkIfHallIsFree(Seance newSeance);
+    long getCountActiveMoviesById(long movieId);
 }

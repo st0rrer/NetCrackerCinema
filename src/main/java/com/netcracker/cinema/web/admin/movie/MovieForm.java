@@ -2,6 +2,7 @@ package com.netcracker.cinema.web.admin.movie;
 
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.service.MovieService;
+import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.utils.ConfirmationDialog;
 import com.netcracker.cinema.validation.MovieUIValidation;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -18,6 +19,9 @@ public class MovieForm extends MovieFormDesign {
 
     @Autowired
     private MovieService movieService;
+
+    @Autowired
+    private SeanceService seanceService;
 
     private Movie movie;
 
@@ -61,6 +65,10 @@ public class MovieForm extends MovieFormDesign {
             return;
         }
 
+        if(movie.getId() != null && seanceService.getCountActiveMoviesById(movie.getId()) > 0) {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("You can not change a movie with active seances"));
+            return;
+        }
         movieService.save(movie);
         modifyAdminMovieView.updateList();
         UI.getCurrent().removeWindow(window);
