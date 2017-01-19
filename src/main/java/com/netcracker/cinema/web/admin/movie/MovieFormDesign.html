@@ -1,25 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
  <head>
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;cinema&quot;}">
+  <meta name="vaadin-version" content="7.7.0">
  </head> 
  <body> 
-  <vaadin-form-layout width="535px" margin-left="true" margin-top="false" margin-bottom="false"><vaadin-text-field caption="Movie" width-full="true" _id="name"></vaadin-text-field>
-    <vaadin-text-field caption="Image URL" width-full="true" _id="poster"></vaadin-text-field>
-    <vaadin-text-field caption="Duration" width-full="true" _id="duration"></vaadin-text-field>
-    <vaadin-text-field caption="Imdb" width-full="true" _id="imdb"></vaadin-text-field>
-   <vaadin-text-field caption="Base price" width-full="true" _id="price"></vaadin-text-field>
-   <vaadin-text-field caption="Periodicity" width-full="true" _id="periodicity"></vaadin-text-field>
-   <vaadin-popup-date-field caption="Start date" _id="start_date"></vaadin-popup-date-field>
-   <vaadin-popup-date-field caption="End date" _id="end_date"></vaadin-popup-date-field>
-   <vaadin-text-area caption="Description" width-full="true" _id="description"></vaadin-text-area>
-   <vaadin-horizontal-layout primary-style-name="v-horizontallayout" spacing="true">
-    <vaadin-button style-name="primary" plain-text="" _id="save">
+  <vaadin-form-layout width="535px" margin-left margin-top="false" margin-bottom="false"> 
+   <vaadin-text-field caption="Movie" width-full _id="name"></vaadin-text-field> 
+   <vaadin-text-field caption="Image URL" width-full _id="poster"></vaadin-text-field> 
+   <vaadin-text-field caption="Duration" width-full _id="duration"></vaadin-text-field> 
+   <vaadin-text-field caption="Imdb" width-full _id="imdb"></vaadin-text-field> 
+   <vaadin-text-field caption="Base price" width-full _id="price"></vaadin-text-field> 
+   <vaadin-text-field caption="Periodicity" width-full _id="periodicity"></vaadin-text-field> 
+   <vaadin-popup-date-field caption="Start date" _id="start_date"></vaadin-popup-date-field> 
+   <vaadin-popup-date-field caption="End date" _id="end_date"></vaadin-popup-date-field> 
+   <vaadin-text-area caption="Description" width-full _id="description"></vaadin-text-area> 
+   <vaadin-horizontal-layout spacing> 
+    <vaadin-button style-name="primary" plain-text _id="save">
       Save 
     </vaadin-button> 
-    <vaadin-button style-name="danger" plain-text="" _id="cancel">
-      Close
-    </vaadin-button>
+    <vaadin-button style-name="danger" plain-text _id="cancel">
+      Close 
+    </vaadin-button> 
    </vaadin-horizontal-layout> 
   </vaadin-form-layout>  
  </body>
