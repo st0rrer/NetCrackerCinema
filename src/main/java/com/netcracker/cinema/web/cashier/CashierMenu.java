@@ -20,7 +20,7 @@ public class CashierMenu extends MenuBar {
             }
 
             if(selectedItem.getText().equals("Logout")){
-                SecurityContextHolder.clearContext();
+                    SecurityContextHolder.clearContext();
                 getUI().getSession().close();
                 Page.getCurrent().open("login", null);
             }

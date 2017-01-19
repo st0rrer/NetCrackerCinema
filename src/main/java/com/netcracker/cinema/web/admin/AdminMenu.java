@@ -17,7 +17,7 @@ public class AdminMenu extends MenuBar {
                 getUI().getNavigator().navigateTo(AdminSeanceView.VIEW_NAME);
             }
             if(selectedItem.getText().equals("Logout")){
-                SecurityContextHolder.clearContext();
+                     SecurityContextHolder.clearContext();
                 getUI().getSession().close();
                 Page.getCurrent().open("login", null);
             }

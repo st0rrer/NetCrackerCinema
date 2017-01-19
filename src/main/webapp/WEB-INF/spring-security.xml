@@ -8,8 +8,8 @@
 
     <http auto-config="true">
         <csrf disabled="true"/>
-        <intercept-url pattern="/cashier" access="hasRole('ROLE_CASHIER')" />
-        <intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/cashier"  access="hasRole('ROLE_CASHIER')" />
+        <intercept-url pattern="/admin"  access="hasRole('ROLE_ADMIN')" />
 
         <logout logout-success-url="/login"/>
     </http>
