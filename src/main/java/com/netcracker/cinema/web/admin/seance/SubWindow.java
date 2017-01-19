@@ -3,21 +3,16 @@ package com.netcracker.cinema.web.admin.seance;
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Price;
 import com.netcracker.cinema.model.Seance;
-import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +27,10 @@ public class SubWindow extends Window {
 
     private AbsoluteLayout layout = new AbsoluteLayout();
     private VerticalLayout posterLayout = new VerticalLayout();
+    private NativeSelect hallId = new NativeSelect("Hall:");
+    private ComboBox movieName = new ComboBox("Movie:");
+    private DateField seanceDate = new DateField("Date:");
+    private DateField seancePeriodEndDate = new DateField("Period end date:");
     private OptionGroup periodGroup = new OptionGroup("Select an option");
     private List<TextField> textFieldList = new ArrayList<>(10);
 
@@ -39,6 +38,7 @@ public class SubWindow extends Window {
     private static final long TWO_HOURS = 7_200_000;
     private DateFormat dateFormat;
     private DateFormat timeFormat;
+    private boolean success;
 
     SubWindow(AdminSeanceView adminSeanceView, Seance seance) {
         this.adminSeanceView = adminSeanceView;
@@ -53,7 +53,7 @@ public class SubWindow extends Window {
 
         setCaption(seance.getId() == 0 ? "Add new seance" : "Change seance");
         center();
-        setHeight("420px");
+        setHeight("440px");
         setWidth("490px");
         setResizable(false);
         setComponents();
@@ -65,14 +65,6 @@ public class SubWindow extends Window {
 
         setValuesToOptionGroup();
 
-        DateField seanceDate = new DateField("Date:");
-        seanceDate.setResolution(Resolution.MINUTE);
-        seanceDate.setWidth("250px");
-
-        DateField seancePeriodEndDate = new DateField("Period end date:");
-        seanceDate.setWidth("250px");
-
-        NativeSelect hallId = new NativeSelect("Hall:");
         for (int i = 1; i < 3; i++) {
             hallId.addItem(i);
             hallId.setItemCaption(i, "Hall " + i);
@@ -81,7 +73,6 @@ public class SubWindow extends Window {
         hallId.setImmediate(true);
         hallId.addValueChangeListener(e -> setCaptionsToTextFields(hallId.getValue()));
 
-        ComboBox movieName = new ComboBox("Movie:");
         movieName.setFilteringMode(FilteringMode.CONTAINS);
         movieName.setImmediate(true);
         movieName.setInputPrompt("start type...");
@@ -94,29 +85,28 @@ public class SubWindow extends Window {
         movieName.addValueChangeListener(e -> {
             posterLayout.removeAllComponents();
             for (Movie movie : movieList) {
-                if (movie.getId() == (long) movieName.getValue()) {
+                if (movieName.getValue() != null &&
+                        movie.getId() == (long) movieName.getValue()) {
                     Label startDate = new Label("start: " + dateFormat.format(movie.getStartDate()));
                     Label endDate = new Label("final: " + dateFormat.format(movie.getEndDate()));
-                    posterLayout.addComponents(adminSeanceView.createPoster(movie, "170px"), startDate, endDate);
+                    posterLayout.addComponents(adminSeanceView.createPoster(movie, 170), startDate, endDate);
                 }
             }
         });
 
+        seanceDate.setResolution(Resolution.MINUTE);
+        seanceDate.setWidth("250px");
+
+        CheckBox checkBox = new CheckBox("Add one more seance after this");
+        checkBox.setVisible(false);
+
         setFieldsToTextFieldList();
         setCaptionsToTextFields(hallId.getValue());
-        setValues(seanceDate, hallId, movieName);
+        setValues();
 
         Button eraseButton = new Button("Erase all");
         eraseButton.setWidth("150px");
-        eraseButton.addClickListener(e -> {
-            hallId.setValue(null);
-            movieName.setValue(null);
-            seanceDate.setValue(null);
-            posterLayout.removeAllComponents();
-            for (TextField priceField : textFieldList) {
-                priceField.clear();
-            }
-        });
+        eraseButton.addClickListener(e -> eraseAll());
 
         Button saveButton = new Button("Save seance");
         saveButton.setWidth("250px");
@@ -141,9 +131,17 @@ public class SubWindow extends Window {
                         newSeance.setHallId(Long.parseLong(hallId.getValue().toString()));
                         newSeance.setMovieId(Long.parseLong(movieName.getValue().toString()));
                         if (checks(newSeance)) {
-                            saveSeanceAndPrice(newSeance, textFieldList);
-                            Notification.show("Success!");
+                            saveSeanceAndPrice(newSeance);
+                            success = true;
                         }
+                    }
+                    if (success) {
+                        if (seance.getId() == 0 && checkBox.getValue()) {
+                            eraseAll();
+                        } else {
+                            close();
+                        }
+                        Notification.show("Success!");
                     }
                 } catch (NumberFormatException ex) {
                     Notification.show("Invalid price", "Only numbers!", Notification.Type.TRAY_NOTIFICATION);
@@ -157,8 +155,9 @@ public class SubWindow extends Window {
         contentLayout.setSpacing(true);
         contentLayout.addComponents(hallId, movieName);
         if (seance != null && seance.getId() == 0) {
-            setHeight("520px");
+            setHeight("540px");
             contentLayout.addComponent(periodGroup);
+            checkBox.setVisible(true);
         }
 
         HorizontalLayout datesLayout = new HorizontalLayout();
@@ -180,16 +179,28 @@ public class SubWindow extends Window {
 
         layout.addComponent(contentLayout, "left: 20px; top: 10px;");
         layout.addComponent(posterLayout, "right: 20px; top: 10px;");
-        layout.addComponent(datesLayout, "left: 20px; bottom: 170px;");
-        layout.addComponent(priceLayout, "left: 20px; bottom: 90px;");
+        layout.addComponent(datesLayout, "left: 20px; bottom: 190px;");
+        layout.addComponent(priceLayout, "left: 20px; bottom: 110px;");
+        layout.addComponent(checkBox, "left: 30px; bottom: 70px;");
         layout.addComponent(eraseButton, "left: 30px; bottom: 20px;");
         layout.addComponent(saveButton, "right: 30px; bottom: 20px;");
+    }
+
+    private void eraseAll() {
+        hallId.setValue(null);
+        movieName.setValue(null);
+        seanceDate.setValue(null);
+        seancePeriodEndDate.setValue(null);
+        posterLayout.removeAllComponents();
+        for (TextField priceField : textFieldList) {
+            priceField.clear();
+        }
     }
 
     private int getPeriodDays(DateField seanceDate, DateField seancePeriodEndDate) {
         int periodDays = 0;
         if (Integer.parseInt(periodGroup.getValue().toString()) == 2
-                && seancePeriodEndDate.getValue() != null) {     //  for one day
+                && seancePeriodEndDate.getValue() != null) {        //  for one day
             Date startDate = seanceDate.getValue();
             Date endDate = seancePeriodEndDate.getValue();
             double periodInMillis = endDate.getTime() - startDate.getTime();
@@ -204,7 +215,7 @@ public class SubWindow extends Window {
     }
 
     private void setFieldsToTextFieldList() {
-        for (int i = 1; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             TextField priceField = new TextField();
             priceField.setImmediate(true);
             priceField.setInputPrompt("price");
@@ -240,7 +251,7 @@ public class SubWindow extends Window {
         }
     }
 
-    private void setValues(DateField seanceDate, NativeSelect hallId, ComboBox movieName) {
+    private void setValues() {
         if (seance != null && seance.getId() != 0) {
             seanceDate.setValue(seance.getSeanceDate());
             hallId.setValue(seance.getHallId() == 1 ? 1 : 2);
@@ -256,7 +267,7 @@ public class SubWindow extends Window {
         }
     }
 
-    private void saveSeanceAndPrice(Seance newSeance, List<TextField> textFieldList) {
+    private void saveSeanceAndPrice(Seance newSeance) {
         Date previousDate = seance.getSeanceDate();
         seanceService.save(newSeance);
         schedule.createTask(newSeance.getSeanceDate(), newSeance.getId());

@@ -22,6 +22,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -82,8 +83,6 @@ public class AdminSeanceView extends GridLayout implements View {
         verticalLayout1.setMargin(true);
         verticalLayout1.addComponents(calendar, windowButton);
         verticalLayout1.setWidth("360px");
-        hallLayout1.setWidth("570px");
-        hallLayout2.setWidth("570px");
         getHall(1);
         getHall(2);
 
@@ -121,7 +120,12 @@ public class AdminSeanceView extends GridLayout implements View {
         }
 
         Panel hallPanel = new Panel();
-        hallPanel.setHeight(screenHeight > 1000 ? "750px" : "550px");
+        hallPanel.setHeight(screenHeight > 1000 ? "750px" : "450px");
+        if (screenWidth > 1900) {
+            layout.setWidth("600px");
+        } else {
+            layout.setWidth("570px");
+        }
         hallPanel.setContent(verticalLayout);
         layout.addComponents(hallLabel, dateLabel, hallPanel);
     }
@@ -164,7 +168,7 @@ public class AdminSeanceView extends GridLayout implements View {
         removeButton.addClickListener(e -> UI.getCurrent().addWindow(confirmWindow(seance)));
 
         horizontalLayout.addComponents(
-                createPoster(movie, "80px"), movieInfo, editButton, removeButton);
+                createPoster(movie, 80), movieInfo, editButton, removeButton);
         return horizontalLayout;
     }
 
@@ -214,12 +218,20 @@ public class AdminSeanceView extends GridLayout implements View {
         return removalWindow;
     }
 
-    Component createPoster(Movie movie, String height) {
+    Component createPoster(Movie movie, int height) {
         ExternalResource res = new ExternalResource(movie.getPoster());
         Image poster = new Image(null, res);
-        poster.setHeight(height);
-        poster.setWidth("54px");
+        poster.setHeight(height + "px");
+        poster.setWidth(0.675 * height + "px");
         return poster;
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+//        LOGGER.info("Destroy bean: " + this.getClass().getSimpleName());
+        Collection<Window> windows = UI.getCurrent().getWindows();
+//        LOGGER.debug("Get all windows: " + !windows.isEmpty());
+        windows.forEach(Window::close);
     }
 
     @Override
