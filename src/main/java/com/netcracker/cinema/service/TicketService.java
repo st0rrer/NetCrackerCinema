@@ -22,17 +22,10 @@ public interface TicketService {
 
     void deleteById(long ticketId);
 
-    /**
-     * @return id of new or updated ticket
-     */
-    long save(Ticket ticket);
+    void save(Ticket ticket);
 
     long getCode();
 
-    /**
-     * @param objId - OBJECT_ID from table OBJECTS for Zone, Hall or Movie
-     * @return quantity of sold tickets or '-1' if 'objName' was not found
-     */
     int soldTickets(long objId, Date startDate, Date endDate);
 
     void deleteBlockForOneHour(long seanceId);

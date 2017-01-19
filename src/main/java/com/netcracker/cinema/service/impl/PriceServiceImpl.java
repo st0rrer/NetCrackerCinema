@@ -45,7 +45,7 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public int getPriceBySeanceColRow(int seanceId, int col, int row) {
+    public int getPriceBySeanceColRow(long seanceId, int col, int row) {
         return priceDao.getPriceBySeanceColRow(seanceId, col, row);
     }
 

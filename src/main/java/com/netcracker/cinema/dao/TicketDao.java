@@ -2,7 +2,7 @@ package com.netcracker.cinema.dao;
 
 import com.netcracker.cinema.model.Ticket;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +26,7 @@ public interface TicketDao {
 
     void deleteBlockForOneHour(long seanceId);
 
-    long save(Ticket ticket);
+    void save(Ticket ticket);
 
     int soldTickets(long objId, Date startDate, Date endDate);
 }

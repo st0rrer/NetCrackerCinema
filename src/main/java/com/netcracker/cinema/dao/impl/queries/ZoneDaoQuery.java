@@ -38,5 +38,8 @@ public interface ZoneDaoQuery {
             "WHEN NOT MATCHED THEN\n" +
             "  INSERT(object.OBJECT_ID, object.PARENT_ID, object.OBJECT_TYPE_ID, object.NAME, object.DESCRIPTION)\n" +
             "  VALUES (GET_OBJ_ID.nextval, NULL, 3, obj.name, NULL)";
+
+    String SELECT_ID_FOR_INSERTED_ZONE =
+            " SELECT GET_OBJ_ID.CURRVAL FROM DUAL ";
 }
 

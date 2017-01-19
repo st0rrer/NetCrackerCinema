@@ -1,9 +1,12 @@
 package com.netcracker.cinema.service.impl;
 
 import com.netcracker.cinema.dao.TicketDao;
+import com.netcracker.cinema.exception.CinemaEmptyResultException;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -31,7 +34,12 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public boolean isAlreadyBookedTicket(long seanceId, long placeId) {
-        return ticketDao.getBySeanceAndPlace(seanceId, placeId) != null;
+        try {
+            Ticket ticket = ticketDao.getBySeanceAndPlace(seanceId, placeId);
+            return true;
+        } catch (CinemaEmptyResultException e) {
+            return false;
+        }
     }
 
     @Override
@@ -49,9 +57,10 @@ public class TicketServiceImpl implements TicketService {
         ticketDao.delete(ticketId);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public long save(Ticket ticket) {
-        return ticketDao.save(ticket);
+    public void save(Ticket ticket) {
+        ticketDao.save(ticket);
     }
 
     @Override
@@ -61,8 +70,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public int soldTickets(long objId, Date startDate, Date endDate) {
-        return ticketDao.soldTickets(objId,
-                new java.sql.Date(startDate.getTime()), new java.sql.Date(endDate.getTime()));
+        return ticketDao.soldTickets(objId, startDate, endDate);
     }
 
     @Override

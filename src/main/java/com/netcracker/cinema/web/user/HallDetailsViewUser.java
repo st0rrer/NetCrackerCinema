@@ -1,5 +1,6 @@
 package com.netcracker.cinema.web.user;
 
+import com.netcracker.cinema.exception.CinemaEmptyResultException;
 import com.netcracker.cinema.model.Place;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Ticket;
@@ -16,7 +17,6 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -69,13 +69,13 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
         try {
             seanceId = Long.parseLong(event.getParameters());
         } catch (NumberFormatException e) {
-            LOGGER.error("Expected id, but was " + event.getParameters(), e);
+            LOGGER.info("Expected id, but was " + event.getParameters(), e);
             getUI().getNavigator().navigateTo(ScheduleViewUser.VIEW_NAME);
         }
         try {
             seance = seanceService.getById(seanceId);
-        } catch (EmptyResultDataAccessException e) {
-            LOGGER.error("Can't find seance with this id " + seanceId, e);
+        } catch (CinemaEmptyResultException e) {
+            LOGGER.info("Can't find seance with this id " + seanceId, e);
             getUI().getNavigator().navigateTo(ScheduleViewUser.VIEW_NAME);
             Notification.show("Can't find seance with this id " + seanceId, Notification.Type.ERROR_MESSAGE);
         }
@@ -175,13 +175,13 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
 
     private int priceTicket(Seance seance, Place place) {
         int basePrice = movieService.getById(seance.getMovieId()).getBasePrice();
-        int placePrice = priceService.getPriceBySeanceColRow((int) seance.getId(), place.getNumber(), place.getRowNumber());
+        int placePrice = priceService.getPriceBySeanceColRow(seance.getId(), place.getNumber(), place.getRowNumber());
         return basePrice + placePrice;
     }
 
     private int priceZone(Seance seance, int row, int placeNumber) {
         int basePrice = movieService.getById(seance.getMovieId()).getBasePrice();
-        int placePrice = priceService.getPriceBySeanceColRow((int) seance.getId(), placeNumber, row);
+        int placePrice = priceService.getPriceBySeanceColRow(seance.getId(), placeNumber, row);
         return basePrice + placePrice;
     }
 

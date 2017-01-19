@@ -1,9 +1,13 @@
 package com.netcracker.cinema.dao.impl;
 
 import com.netcracker.cinema.dao.HallDao;
+import com.netcracker.cinema.exception.CinemaDaoException;
+import com.netcracker.cinema.exception.CinemaEmptyResultException;
 import com.netcracker.cinema.model.Hall;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -15,7 +19,6 @@ import java.util.List;
 import static com.netcracker.cinema.dao.impl.queries.HallDaoQuery.*;
 
 public class HallDaoImpl implements HallDao {
-
     private static final Logger LOGGER = Logger.getLogger(HallDaoImpl.class);
     private JdbcTemplate jdbcTemplate;
 
@@ -26,26 +29,61 @@ public class HallDaoImpl implements HallDao {
 
     @Override
     public List<Hall> findAll() {
-        List<Hall> halls = jdbcTemplate.query(FIND_ALL_SQL, new HallMapper());
-        LOGGER.info("Find all seances: found " + halls.size() + " seance objects");
-        return halls;
+        try {
+            List<Hall> halls = jdbcTemplate.query(FIND_ALL_SQL, new HallMapper());
+            LOGGER.info("Found " + halls.size() + " hall objects");
+            return halls;
+        } catch (DataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
     }
 
     @Override
     public Hall getById(long id) {
-        Hall hall = jdbcTemplate.queryForObject(FIND_HALL_BY_ID, new Object[]{id}, new HallMapper());
-        return hall;
+        try {
+            Hall hall = jdbcTemplate.queryForObject(FIND_HALL_BY_ID, new Object[]{id}, new HallMapper());
+            LOGGER.info("Found not null hall with id " + id);
+            return hall;
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.info("There are no hall with id " + id);
+            throw new CinemaEmptyResultException("There are no hall with id " + id, e);
+        } catch (DataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void save(Hall hall) {
-        jdbcTemplate.update(MERGE_HALL_OBJECT, hall.getId(), hall.getName());
-        LOGGER.info("");
+        if (hall == null) {
+            LOGGER.error("Attempt to save null hall");
+            throw new IllegalArgumentException("Can't save null hall");
+        }
+        try {
+            int affected = jdbcTemplate.update(MERGE_HALL_OBJECT, hall.getId(), hall.getName());
+            if (hall.getId() == 0) {
+                hall.setId(jdbcTemplate.queryForObject(SELECT_ID_FOR_INSERTED_HALL, Long.class));
+            }
+            LOGGER.info("Hall was saved, affected " + affected + " rows, now hall has id " + hall.getId());
+        } catch (DataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void delete(Hall hall) {
-        jdbcTemplate.update(DELETE_HALL, hall.getId());
+        if (hall == null) {
+            LOGGER.error("Attempt to delete null hall");
+            throw new IllegalArgumentException("Can't delete null hall");
+        }
+        try {
+            int affected = jdbcTemplate.update(DELETE_HALL, hall.getId());
+            LOGGER.info("Hall with id " + hall.getId() + " was deleted, affected " + affected + " rows");
+        } catch (DataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+        }
     }
 
     private class HallMapper implements RowMapper<Hall> {

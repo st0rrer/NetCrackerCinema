@@ -172,15 +172,6 @@ public interface PriceDaoQuery {
                     "  AND ATTR_PLACE_ROW.VALUE = ?\n" +
                     "  AND REF_SEANCE.OBJECT_ID = ?";
 
-//    String SELECT_PRICE_BY_SEANCE_ZONE =
-//            "SELECT VALUE FROM ATTRIBUTES atr\n" +
-//                    "  JOIN OBJECTS obj ON obj.OBJECT_ID = atr.OBJECT_ID\n" +
-//                    "  JOIN OBJREFERENCE seance_ref ON seance_ref.REFERENCE = obj.OBJECT_ID\n" +
-//                    "  JOIN OBJREFERENCE zone_ref ON zone_ref.REFERENCE = obj.OBJECT_ID\n" +
-//                    "    WHERE atr.ATTR_ID = 22          -- for ATTR_ID with CODE = 'PRICE'\n" +
-//                    "      AND seance_ref.OBJECT_ID = ?\n" +
-//                    "      AND zone_ref.OBJECT_ID = ?";
-
     String SELECT_PRICE_BY_SEANCE_ZONE =
             "SELECT obj.OBJECT_ID AS id\n" +
                     "     , atr.VALUE AS price\n" +

@@ -8,6 +8,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -27,8 +28,6 @@ public class TicketSelect extends VerticalLayout {
     private static final String ZONE_THREE_PLACE_STYLE = "zone-3-button";
     private Seance seance;
     private List<PlaceButton> placeButtons;
-    private Set<PlaceSelectedListener> listeners;
-
     private Zone zoneOneStyled;
     private Zone zoneTwoStyled;
     private Zone zoneThreeStyled;
@@ -60,7 +59,6 @@ public class TicketSelect extends VerticalLayout {
         zoneTwoStyled = null;
         zoneThreeStyled = null;
         this.seance = seance;
-        listeners = new HashSet<>();
         List<Place> places = placeService.getByHall(seance.getHallId());
         placeButtons = new ArrayList<>(places.size());
         removeAllComponents();
@@ -91,14 +89,6 @@ public class TicketSelect extends VerticalLayout {
 
     public int getTotalPrice() {
         return totalPrice;
-    }
-
-    public void addPlaceSelectedListener(PlaceSelectedListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removePlaceSelectedListener(PlaceSelectedListener listener) {
-        listeners.remove(listener);
     }
 
     private void adjustGridSize(List<Place> places) {
@@ -137,7 +127,6 @@ public class TicketSelect extends VerticalLayout {
                 zoneThreeStyled = placeZone;
                 addStyleName(ZONE_THREE_PLACE_STYLE);
             }
-
             setCaption(place.getRowNumber() + " " + place.getNumber());
             if (ticketService.isAlreadyBookedTicket(seance.getId(), place.getId())) {
                 setEnabled(false);
@@ -154,10 +143,6 @@ public class TicketSelect extends VerticalLayout {
                     areaForTotalPrice.setValue("Total price: " + totalPrice);
                     removeStyleName(SELECTED_PLACE_STYLE);
                 }
-
-                for(PlaceSelectedListener placeSelectedListener: listeners) {
-                    placeSelectedListener.placeClicked(place, selected);
-                }
             });
         }
 
@@ -172,11 +157,7 @@ public class TicketSelect extends VerticalLayout {
 
     private int priceTicket(Seance seance, Place place) {
         int basePrice = movieService.getById(seance.getMovieId()).getBasePrice();
-        int placePrice = priceService.getPriceBySeanceColRow((int) seance.getId(), place.getNumber(), place.getRowNumber());
+        int placePrice = priceService.getPriceBySeanceColRow(seance.getId(), place.getNumber(), place.getRowNumber());
         return basePrice + placePrice;
-    }
-
-    public interface PlaceSelectedListener {
-        void placeClicked(Place place, boolean selected);
     }
 }

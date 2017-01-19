@@ -65,7 +65,7 @@ public class MovieForm extends MovieFormDesign {
             return;
         }
 
-        if(movie.getId() != null && seanceService.getCountActiveMoviesById(movie.getId()) > 0) {
+        if(movie.getId() != 0 && seanceService.getCountActiveMoviesById(movie.getId()) > 0) {
             UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("You can not change a movie with active seances"));
             return;
         }

@@ -10,6 +10,7 @@ import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
@@ -17,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-//TODO: need to think about transactional
 public class SeanceServiceImpl implements SeanceService {
     private final long START_TIME_OF_WORKING_DAY = 10_00;
     private final long LAST_START_TIME_OF_SEANCE = 22_00;
@@ -59,7 +59,7 @@ public class SeanceServiceImpl implements SeanceService {
         seanceDao.delete(seance);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void save(Seance seance) {
         seanceDao.save(seance);

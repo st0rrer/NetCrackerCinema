@@ -1,9 +1,14 @@
 package com.netcracker.cinema.dao.impl;
 
 import com.netcracker.cinema.dao.ZoneDao;
+import com.netcracker.cinema.exception.CinemaDaoException;
+import com.netcracker.cinema.exception.CinemaEmptyResultException;
 import com.netcracker.cinema.model.Zone;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -25,25 +30,62 @@ public class ZoneDaoImpl implements ZoneDao {
 
     @Override
     public List<Zone> findAll() {
-        List<Zone> zones = jdbcTemplate.query(FIND_ALL_SQL, new ZoneDaoImpl.ZoneMapper());
-        return zones;
+        try {
+            List<Zone> zones = jdbcTemplate.query(FIND_ALL_SQL, new ZoneDaoImpl.ZoneMapper());
+            LOGGER.info("Found " + zones.size() + " zone objects");
+            return zones;
+        } catch (DataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
     }
 
     @Override
     public Zone getById(long id) {
-        Zone zone = jdbcTemplate.queryForObject(FIND_ZONE_BY_ID, new Object[]{id}, new ZoneMapper());
-        return zone;
+        try {
+            Zone zone = jdbcTemplate.queryForObject(FIND_ZONE_BY_ID, new Object[]{id}, new ZoneMapper());
+            LOGGER.info("Found not null zone for id " + id);
+            return zone;
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.info("There are no zone objects for id " + id);
+            throw new CinemaEmptyResultException("There are no zone objects for id " + id, e);
+        } catch (DataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void save(Zone hall) {
-        jdbcTemplate.update(MERGE_ZONE_OBJECT, new Object[]{hall.getId(), hall.getName()});
-        LOGGER.info("");
+    public void save(Zone zone) {
+        if (zone == null) {
+            LOGGER.error("Attempt to save null zone");
+            throw new CinemaDaoException("Can't save null zone");
+        }
+        try {
+            long affected = jdbcTemplate.update(MERGE_ZONE_OBJECT, zone.getId(), zone.getName());
+            if (zone.getId() == 0) {
+                zone.setId(jdbcTemplate.queryForObject(SELECT_ID_FOR_INSERTED_ZONE, Long.class));
+            }
+            LOGGER.info("Zone was saved, affected " + affected + " rows, now zone has id " + zone.getId());
+        } catch (DataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void delete(Zone hall) {
-        jdbcTemplate.update(DELETE_ZONE, new Object[]{hall.getId()});
+    public void delete(Zone zone) {
+        if (zone == null) {
+            LOGGER.error("Attemtp to delete null zone");
+            throw new CinemaDaoException("Can't delete null zone");
+        }
+        try {
+            int affected = jdbcTemplate.update(DELETE_ZONE, zone.getId());
+            LOGGER.info("Zone with id " + zone.getId() + " was deleted, affected " + affected + " rows");
+        } catch (DataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
     }
 
     class ZoneMapper implements RowMapper<Zone> {

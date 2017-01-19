@@ -48,7 +48,7 @@ public class MovieServiceImpl implements MovieService {
         return movieDao.getById(id);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void save(Movie movie) {
         movieDao.save(movie);

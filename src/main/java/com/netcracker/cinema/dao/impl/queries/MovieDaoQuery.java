@@ -250,4 +250,7 @@ public interface MovieDaoQuery {
                 "RSTART_ATT.DATE_VALUE - 7 < SYSDATE AND " +
                 "REND_ATT.DATE_VALUE > SYSDATE";
 
+    String SELECT_ID_FOR_INSERTED_MOVIE =
+            " SELECT GET_OBJ_ID.CURRVAL FROM DUAL ";
+
 }

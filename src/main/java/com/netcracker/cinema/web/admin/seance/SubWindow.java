@@ -94,7 +94,7 @@ public class SubWindow extends Window {
         movieName.addValueChangeListener(e -> {
             posterLayout.removeAllComponents();
             for (Movie movie : movieList) {
-                if (movie.getId().equals(movieName.getValue())) {
+                if (movie.getId() == (long) movieName.getValue()) {
                     Label startDate = new Label("start: " + dateFormat.format(movie.getStartDate()));
                     Label endDate = new Label("final: " + dateFormat.format(movie.getEndDate()));
                     posterLayout.addComponents(adminSeanceView.createPoster(movie, "170px"), startDate, endDate);

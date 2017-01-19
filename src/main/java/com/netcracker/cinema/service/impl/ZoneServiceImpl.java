@@ -33,7 +33,7 @@ public class ZoneServiceImpl implements ZoneService {
         return zoneDao.getById(id);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void save(Zone zone) {
         zoneDao.save(zone);
