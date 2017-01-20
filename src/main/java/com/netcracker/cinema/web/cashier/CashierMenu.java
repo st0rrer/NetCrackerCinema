@@ -28,6 +28,7 @@ public class CashierMenu extends MenuBar {
 
         addItem("Schedule", command);
         addItem("Payment confirmation", command);
-        addItem("Logout", command);
+        MenuItem logout = addItem("Logout", command);
+        logout.setStyleName("logout-button");
     }
 }

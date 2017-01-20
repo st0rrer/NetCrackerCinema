@@ -22,9 +22,9 @@ public class AdminMenu extends MenuBar {
                 Page.getCurrent().open("login", null);
             }
         };
-
         addItem("Movies", command);
         addItem("Seances", command);
-        addItem("Logout", command);
+        MenuItem logout = addItem("Logout", command);
+        logout.setStyleName("logout-button");
     }
 }
