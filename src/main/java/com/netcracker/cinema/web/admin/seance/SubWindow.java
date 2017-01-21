@@ -13,11 +13,13 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-public class SubWindow extends Window {
+class SubWindow extends Window {
     private AdminSeanceView adminSeanceView;
     private Seance seance;
     private SeanceService seanceService;
@@ -31,12 +33,15 @@ public class SubWindow extends Window {
     private ComboBox movieName = new ComboBox("Movie:");
     private DateField seanceDate = new DateField("Date:");
     private DateField seancePeriodEndDate = new DateField("Period end date:");
-    private OptionGroup periodGroup = new OptionGroup("Select an option");
+    private OptionGroup periodGroup = new OptionGroup("Select an option:");
     private List<TextField> textFieldList = new ArrayList<>(10);
+    private HorizontalLayout datesLayout = new HorizontalLayout();
 
     private static final long ONE_DAY = 86_400_000;
+    private static final long ONE_MINUTE = 60_000;
     private static final long TWO_HOURS = 7_200_000;
-    private DateFormat dateFormat;
+    private static final long TEN_HOURS = 36_000_000;
+        private DateFormat dateFormat;
     private DateFormat timeFormat;
     private boolean success;
 
@@ -155,21 +160,13 @@ public class SubWindow extends Window {
         contentLayout.setSpacing(true);
         contentLayout.addComponents(hallId, movieName);
         if (seance != null && seance.getId() == 0) {
-            setHeight("540px");
+            setHeight("570px");
             contentLayout.addComponent(periodGroup);
             checkBox.setVisible(true);
         }
 
-        HorizontalLayout datesLayout = new HorizontalLayout();
         datesLayout.setSpacing(true);
         datesLayout.addComponent(seanceDate);
-        periodGroup.addValueChangeListener(e -> {
-            if (Integer.parseInt(e.getProperty().getValue().toString()) == 1) {     //  for one day
-                datesLayout.removeComponent(seancePeriodEndDate);
-            } else {                                                                //  for period
-                datesLayout.addComponent(seancePeriodEndDate);
-            }
-        });
 
         HorizontalLayout priceLayout = new HorizontalLayout();
         priceLayout.setSpacing(true);
@@ -230,9 +227,52 @@ public class SubWindow extends Window {
         periodGroup.setItemCaption(1, "Seance for one day");
         periodGroup.addItem(2);
         periodGroup.setItemCaption(2, "Seances for period");
+        periodGroup.addItem(3);
+        periodGroup.setItemCaption(3, "Add seance on the current date after all");
         periodGroup.select(1);
         periodGroup.setNullSelectionAllowed(false);
         periodGroup.setImmediate(true);
+
+        periodGroup.addValueChangeListener(e -> {
+            String value = e.getProperty().getValue().toString();
+            switch (value) {
+                case "1":                                                   //  for one day
+                    seanceDate.setEnabled(true);
+                    datesLayout.removeComponent(seancePeriodEndDate);
+                    break;
+                case "2":                                                   //  for period
+                    seanceDate.setEnabled(true);
+                    datesLayout.addComponent(seancePeriodEndDate);
+                    break;
+                case "3":                                                   //  add to current
+                    datesLayout.removeComponent(seancePeriodEndDate);
+                    seanceDate.setValue(getTimeOfLastSeance());
+                    seanceDate.setEnabled(false);
+                    break;
+            }
+        });
+    }
+
+    private Date getTimeOfLastSeance() {
+        if (hallId.getValue() != null) {
+            long hall = Long.parseLong(hallId.getValue().toString());
+            List<Seance> seanceList = seanceService.getByHallAndDate(hall, adminSeanceView.date);
+            if (!seanceList.isEmpty()) {
+                seanceList.sort(Comparator.comparing(Seance::getSeanceDate));
+                Seance lastSeance = seanceList.get(seanceList.size() - 1);
+                Movie movie = adminSeanceView.movieService.getById(lastSeance.getMovieId());
+                long startTimeOfLastSeance = lastSeance.getSeanceDate().getTime();
+                Date nextDate = new Date(startTimeOfLastSeance + (movie.getDuration() + 20) * ONE_MINUTE);
+                return nextDate;
+            }
+        }
+        return getStartTime();
+    }
+
+    private Date getStartTime() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date currentDay = java.sql.Date.valueOf(dateFormat.format(adminSeanceView.date));
+        return new Date(currentDay.getTime() + TEN_HOURS);
     }
 
     private void setCaptionsToTextFields(Object hallId) {
@@ -263,7 +303,7 @@ public class SubWindow extends Window {
                 priceField.setValue(String.valueOf(price.getPrice()));
             }
         } else {
-            seanceDate.setValue(adminSeanceView.date);
+            seanceDate.setValue(getStartTime());
         }
     }
 
