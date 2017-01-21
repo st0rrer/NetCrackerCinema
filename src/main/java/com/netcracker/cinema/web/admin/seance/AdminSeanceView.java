@@ -34,7 +34,7 @@ import static org.quartz.JobBuilder.newJob;
  * Created by Titarenko on 22.12.2016.
  */
 @SpringView(name = AdminSeanceView.VIEW_NAME, ui = AdminUI.class)
-public class AdminSeanceView extends GridLayout implements View {
+public class AdminSeanceView extends HorizontalLayout implements View {
     public static final String VIEW_NAME = "seances";
 
     @Autowired
@@ -55,7 +55,6 @@ public class AdminSeanceView extends GridLayout implements View {
     private Window subWindow;
 
     private WebBrowser webBrowser = Page.getCurrent().getWebBrowser();
-    private int screenWidth = webBrowser.getScreenWidth();
     private int screenHeight = webBrowser.getScreenHeight();
 
     @PostConstruct
@@ -82,15 +81,18 @@ public class AdminSeanceView extends GridLayout implements View {
         verticalLayout1.setSpacing(true);
         verticalLayout1.setMargin(true);
         verticalLayout1.addComponents(calendar, windowButton);
-        verticalLayout1.setWidth("360px");
         getHall(1);
         getHall(2);
-
-        setColumns(3);
-        addComponent(verticalLayout1, 0, 0);
-        addComponent(hallLayout1, 1, 0);
-        addComponent(hallLayout2, 2, 0);
+        addComponent(verticalLayout1);
+        HorizontalLayout wrapper = new HorizontalLayout();
+        wrapper.addStyleName("hall-wrapper");
+        wrapper.addComponent(hallLayout1);
+        wrapper.addComponent(hallLayout2);
+        addComponent(wrapper);
         setSizeFull();
+        verticalLayout1.addStyleName("calendar-button");
+        hallLayout1.addStyleName("hall-admin");
+        hallLayout2.addStyleName("hall-admin");
     }
 
     private void notificationForUnmodifiedSeance() {
@@ -106,7 +108,6 @@ public class AdminSeanceView extends GridLayout implements View {
         seanceList.sort(Comparator.comparing(Seance::getSeanceDate));
         layout.removeAllComponents();
         layout.setSpacing(true);
-        layout.setMargin(true);
 
         Label hallLabel = new Label("Hall " + hallId);
         hallLabel.setStyleName(ValoTheme.LABEL_H2);
@@ -115,17 +116,12 @@ public class AdminSeanceView extends GridLayout implements View {
         VerticalLayout verticalLayout = new VerticalLayout();
         for (Seance seance : seanceList) {
             HorizontalLayout horizontalLayout = getSeanceRow(seance);
-            horizontalLayout.setMargin(true);
             verticalLayout.addComponent(horizontalLayout);
         }
 
         Panel hallPanel = new Panel();
+        hallPanel.addStyleName("seance-panel");
         hallPanel.setHeight(screenHeight > 1000 ? "750px" : "450px");
-        if (screenWidth > 1900) {
-            layout.setWidth("600px");
-        } else {
-            layout.setWidth("570px");
-        }
         hallPanel.setContent(verticalLayout);
         layout.addComponents(hallLabel, dateLabel, hallPanel);
     }
@@ -136,7 +132,6 @@ public class AdminSeanceView extends GridLayout implements View {
         Movie movie = movieService.getById(seance.getMovieId());
 
         VerticalLayout movieInfo = new VerticalLayout();
-        movieInfo.setWidth("170px");
         Label name = new Label(movie.getName());
         Label beginTime = new Label("begin: " + timeFormat.format(seance.getSeanceDate()));
         Date endDate = new Date(seance.getSeanceDate().getTime() + movie.getDuration() * 60_000);
@@ -167,8 +162,13 @@ public class AdminSeanceView extends GridLayout implements View {
         removeButton.setEnabled(seanceService.editableSeance(seance.getId()));
         removeButton.addClickListener(e -> UI.getCurrent().addWindow(confirmWindow(seance)));
 
+        VerticalLayout buttonWrapper = new VerticalLayout();
+        buttonWrapper.addComponent(editButton);
+        buttonWrapper.addComponent(removeButton);
+        buttonWrapper.addStyleName("button-wrapper");
+
         horizontalLayout.addComponents(
-                createPoster(movie, 80), movieInfo, editButton, removeButton);
+                createPoster(movie, 80), movieInfo, buttonWrapper);
         return horizontalLayout;
     }
 
