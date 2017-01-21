@@ -33,7 +33,7 @@ class SubWindow extends Window {
     private ComboBox movieName = new ComboBox("Movie:");
     private DateField seanceDate = new DateField("Date:");
     private DateField seancePeriodEndDate = new DateField("Period end date:");
-    private OptionGroup periodGroup = new OptionGroup("Select an option:");
+    private OptionGroup optionGroup = new OptionGroup("Select an option:");
     private List<TextField> textFieldList = new ArrayList<>(10);
     private HorizontalLayout datesLayout = new HorizontalLayout();
 
@@ -41,7 +41,7 @@ class SubWindow extends Window {
     private static final long ONE_MINUTE = 60_000;
     private static final long TWO_HOURS = 7_200_000;
     private static final long TEN_HOURS = 36_000_000;
-        private DateFormat dateFormat;
+    private DateFormat dateFormat;
     private DateFormat timeFormat;
     private boolean success;
 
@@ -76,7 +76,12 @@ class SubWindow extends Window {
         }
         hallId.setNullSelectionAllowed(false);
         hallId.setImmediate(true);
-        hallId.addValueChangeListener(e -> setCaptionsToTextFields(hallId.getValue()));
+        hallId.addValueChangeListener(e -> {
+            if (optionGroup.getValue().equals(3)) {             //  option for adding to current
+                seanceDate.setValue(getTimeOfLastSeance());
+            }
+            setCaptionsToTextFields(hallId.getValue());
+        });
 
         movieName.setFilteringMode(FilteringMode.CONTAINS);
         movieName.setImmediate(true);
@@ -161,7 +166,7 @@ class SubWindow extends Window {
         contentLayout.addComponents(hallId, movieName);
         if (seance != null && seance.getId() == 0) {
             setHeight("570px");
-            contentLayout.addComponent(periodGroup);
+            contentLayout.addComponent(optionGroup);
             checkBox.setVisible(true);
         }
 
@@ -186,6 +191,7 @@ class SubWindow extends Window {
     private void eraseAll() {
         hallId.setValue(null);
         movieName.setValue(null);
+        optionGroup.setValue(1);
         seanceDate.setValue(null);
         seancePeriodEndDate.setValue(null);
         posterLayout.removeAllComponents();
@@ -196,7 +202,7 @@ class SubWindow extends Window {
 
     private int getPeriodDays(DateField seanceDate, DateField seancePeriodEndDate) {
         int periodDays = 0;
-        if (Integer.parseInt(periodGroup.getValue().toString()) == 2
+        if (Integer.parseInt(optionGroup.getValue().toString()) == 2
                 && seancePeriodEndDate.getValue() != null) {        //  for one day
             Date startDate = seanceDate.getValue();
             Date endDate = seancePeriodEndDate.getValue();
@@ -223,17 +229,17 @@ class SubWindow extends Window {
     }
 
     private void setValuesToOptionGroup() {
-        periodGroup.addItem(1);
-        periodGroup.setItemCaption(1, "Seance for one day");
-        periodGroup.addItem(2);
-        periodGroup.setItemCaption(2, "Seances for period");
-        periodGroup.addItem(3);
-        periodGroup.setItemCaption(3, "Add seance on the current date after all");
-        periodGroup.select(1);
-        periodGroup.setNullSelectionAllowed(false);
-        periodGroup.setImmediate(true);
+        optionGroup.addItem(1);
+        optionGroup.setItemCaption(1, "Seance for one day");
+        optionGroup.addItem(2);
+        optionGroup.setItemCaption(2, "Seances for period");
+        optionGroup.addItem(3);
+        optionGroup.setItemCaption(3, "Add seance on the current date after all");
+        optionGroup.select(1);
+        optionGroup.setNullSelectionAllowed(false);
+        optionGroup.setImmediate(true);
 
-        periodGroup.addValueChangeListener(e -> {
+        optionGroup.addValueChangeListener(e -> {
             String value = e.getProperty().getValue().toString();
             switch (value) {
                 case "1":                                                   //  for one day
