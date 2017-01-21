@@ -188,7 +188,7 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
   }
 
   .v-slot-hall-wrapper {
-    width: 75%;
+    width: 75% !important;
     height: 100%;
     min-width: 930px;
   }
@@ -220,7 +220,7 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     .v-verticallayout {
       .v-horizontallayout {
         width: 100%;
-        margin-bottom: 6px;
+        margin-bottom: 12px;
       }
     }
   }

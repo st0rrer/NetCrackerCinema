@@ -8,8 +8,8 @@ import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl;
 import com.netcracker.cinema.web.AdminUI;
-import com.netcracker.cinema.web.admin.movie.MovieForm;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -17,7 +17,6 @@ import com.vaadin.server.Page;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.Runo;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,10 +24,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.quartz.CronScheduleBuilder.cronSchedule;
-import static org.quartz.JobBuilder.newJob;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Titarenko on 22.12.2016.
@@ -148,7 +147,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
 
         movieInfo.addComponents(name, beginTime, endTime, prices);
 
-        Button editButton = new Button("Edit");
+        Button editButton = new Button(VaadinIcons.EDIT);
         editButton.setEnabled(seanceService.editableSeance(seance.getId()));
         editButton.addClickListener(e -> {
             if (subWindow != null) {
@@ -158,7 +157,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             UI.getCurrent().addWindow(subWindow);
         });
 
-        Button removeButton = new Button("Remove");
+        Button removeButton = new Button(VaadinIcons.CLOSE_CIRCLE_O);
         removeButton.setEnabled(seanceService.editableSeance(seance.getId()));
         removeButton.addClickListener(e -> UI.getCurrent().addWindow(confirmWindow(seance)));
 
