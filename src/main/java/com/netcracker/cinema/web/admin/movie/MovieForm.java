@@ -5,6 +5,9 @@ import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.utils.ConfirmationDialog;
 import com.netcracker.cinema.validation.MovieUIValidation;
+import com.netcracker.cinema.validation.ValidationExecutor;
+import com.netcracker.cinema.validation.ValidationResult;
+import com.netcracker.cinema.validation.routines.UrlValidator;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -90,14 +93,23 @@ public class MovieForm extends MovieFormDesign {
 
         MovieUIValidation movieUIValidation = new MovieUIValidation();
 
+        ValidationResult validationResult = new ValidationExecutor()
+                .addValidator(new UrlValidator(poster.getValue()))
+                .execute();
+
+        if(!validationResult.isValid()) {
+            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(validationResult.getMessage()));
+            return false;
+        }
+
         if(movieUIValidation.fieldsAreEmpty(empty)) {
             UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("Please, fill all fields"));
             return false;
         }
 
-        if(!movieUIValidation.isValidUrl(poster.getValue())) {
-            return false;
-        }
+//        if(!movieUIValidation.isValidUrl(poster.getValue())) {
+//            return false;
+//        }
 
         if(!movieUIValidation.isValuesInteger(list)) {
             UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("Value(s) isn't correct"));
