@@ -1,5 +1,6 @@
 package com.netcracker.cinema.web;
 
+import com.netcracker.cinema.utils.CinemaErrorHandler;
 import com.netcracker.cinema.web.user.UserMenu;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
@@ -9,20 +10,18 @@ import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Theme("cinema")
 @SpringUI
 public class UserUI extends UI {
-    private static final Logger logger = Logger.getLogger(UserUI.class);
-
     @Autowired
     private SpringViewProvider viewProvider;
     
     @Override
     protected void init(VaadinRequest request) {
         final VerticalLayout root = new VerticalLayout();
+        setErrorHandler(new CinemaErrorHandler());
         root.setSizeFull();
         setContent(root);
 

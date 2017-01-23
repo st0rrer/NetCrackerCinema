@@ -6,17 +6,12 @@ import com.netcracker.cinema.model.Zone;
 import com.netcracker.cinema.service.*;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @SpringComponent
 @UIScope
@@ -28,9 +23,6 @@ public class TicketSelect extends VerticalLayout {
     private static final String ZONE_THREE_PLACE_STYLE = "zone-3-button";
     private Seance seance;
     private List<PlaceButton> placeButtons;
-    private Zone zoneOneStyled;
-    private Zone zoneTwoStyled;
-    private Zone zoneThreeStyled;
     private int totalPrice;
     private GridLayout areaForTicketSelect;
     private Label areaForTotalPrice;
@@ -55,9 +47,6 @@ public class TicketSelect extends VerticalLayout {
 
     public void buildForThisSeance(Seance seance) {
         totalPrice = 0;
-        zoneOneStyled = null;
-        zoneTwoStyled = null;
-        zoneThreeStyled = null;
         this.seance = seance;
         List<Place> places = placeService.getByHall(seance.getHallId());
         placeButtons = new ArrayList<>(places.size());
@@ -116,15 +105,11 @@ public class TicketSelect extends VerticalLayout {
             this.selected = false;
             Zone placeZone = zoneService.getById(place.getZoneId());
             setStyleName(PLACE_STYLE);
-
-            if(zoneOneStyled == null || zoneOneStyled.equals(placeZone)) {
-                zoneOneStyled = placeZone;
+            if(placeZone.getName().equals("AA") || placeZone.getName().equals("DD")) {
                 addStyleName(ZONE_ONE_PLACE_STYLE);
-            } else if(zoneTwoStyled == null || zoneTwoStyled.equals(placeZone)) {
-                zoneTwoStyled = placeZone;
+            } else if(placeZone.getName().equals("BB") || placeZone.getName().equals("EE")) {
                 addStyleName(ZONE_TWO_PLACE_STYLE);
-            } else if(zoneThreeStyled == null || zoneThreeStyled.equals(placeZone)) {
-                zoneThreeStyled = placeZone;
+            } else if(placeZone.getName().equals("CC") || placeZone.getName().equals("HH")) {
                 addStyleName(ZONE_THREE_PLACE_STYLE);
             }
             setCaption(place.getRowNumber() + " " + place.getNumber());
