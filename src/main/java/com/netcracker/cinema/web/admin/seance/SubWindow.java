@@ -7,6 +7,7 @@ import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.*;
@@ -37,10 +38,10 @@ class SubWindow extends Window {
     private List<TextField> textFieldList = new ArrayList<>(10);
     private HorizontalLayout datesLayout = new HorizontalLayout();
 
-    private static final long ONE_DAY = 86_400_000;
     private static final long ONE_MINUTE = 60_000;
-    private static final long TWO_HOURS = 7_200_000;
-    private static final long TEN_HOURS = 36_000_000;
+    private static final long TWO_HOURS = ONE_MINUTE * 60 * 2;
+    private static final long TEN_HOURS = TWO_HOURS * 5;
+    private static final long ONE_DAY = ONE_MINUTE * 60 * 24;
     private DateFormat dateFormat;
     private DateFormat timeFormat;
     private boolean success;
@@ -114,6 +115,10 @@ class SubWindow extends Window {
         setCaptionsToTextFields(hallId.getValue());
         setValues();
 
+        Button closeButton = new Button();
+        closeButton.setClickShortcut(ShortcutAction.KeyCode.ESCAPE);
+        closeButton.addClickListener(e -> close());
+
         Button eraseButton = new Button("Erase all");
         eraseButton.setWidth("150px");
         eraseButton.addClickListener(e -> eraseAll());
@@ -121,6 +126,7 @@ class SubWindow extends Window {
         Button saveButton = new Button("Save seance");
         saveButton.setWidth("250px");
         saveButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        saveButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         saveButton.addClickListener(e -> {
             if (hallId.getValue() != null &&
                     movieName.getValue() != null &&

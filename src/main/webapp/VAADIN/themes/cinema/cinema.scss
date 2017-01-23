@@ -42,7 +42,7 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     background: -webkit-linear-gradient(top, #fafafa 2%, #efefef 98%);
     background: -o-linear-gradient(top, #fafafa 2%, #efefef 98%);
     background: -ms-linear-gradient(top, #fafafa 2%, #efefef 98%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#efefef',GradientType=0 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#efefef', GradientType=0);
     border-radius: 4px;
     border: 1px solid #c5c5c5;
     border-bottom-color: #bcbcbc;
@@ -62,9 +62,9 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
   }
 
   :hover.selectable-seance-with-poster {
-    box-shadow: 0 0 2px 1px rgba(0,0,0,0.2);
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
-    background-color: rgba(0,0,0,0.01);
+    background-color: rgba(0, 0, 0, 0.01);
     cursor: pointer;
   }
 
@@ -84,7 +84,7 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     background: -webkit-linear-gradient(top, #a1d1ff, #72d4ff);
     background: -o-linear-gradient(top, #a1d1ff, #72d4ff);
     background: -ms-linear-gradient(top, #a1d1ff, #72d4ff);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1d1ff', endColorstr='#72d4ff',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1d1ff', endColorstr='#72d4ff', GradientType=0);
   }
 
   .zone-2-button {
@@ -95,7 +95,7 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     background: -webkit-linear-gradient(top, #d0a7e2, #f99dff 98%);
     background: -o-linear-gradient(top, #d0a7e2, #f99dff 98%);
     background: -ms-linear-gradient(top, #d0a7e2, #f99dff 98%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d0a7e2', endColorstr='#f99dff',GradientType=0 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d0a7e2', endColorstr='#f99dff', GradientType=0);
   }
 
   .zone-3-button {
@@ -106,7 +106,7 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     background: -webkit-linear-gradient(top, #ffb2c7, #ffa69a);
     background: -o-linear-gradient(top, #ffb2c7, #ffa69a);
     background: -ms-linear-gradient(top, #ffb2c7, #ffa69a);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffb2c7', endColorstr='#ffa69a',GradientType=0 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffb2c7', endColorstr='#ffa69a', GradientType=0);
   }
 
   .selected-place {
@@ -117,7 +117,7 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     background: -webkit-linear-gradient(top, #afffa1, #81ff6f);
     background: -o-linear-gradient(top, #afffa1, #81ff6f);
     background: -ms-linear-gradient(top, #afffa1, #81ff6f);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#afffa1', endColorstr='#81ff6f',GradientType=0 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#afffa1', endColorstr='#81ff6f', GradientType=0);
   }
 
   .tickets-select {
@@ -158,7 +158,7 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     background-repeat: repeat;
   }
 
-  .v-grid-row.row_style > .v-grid-cell{
+  .v-grid-row.row_style > .v-grid-cell {
     background-color: #16b4ff;
     font-weight: 400;
   }
@@ -176,63 +176,44 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     float: right;
   }
 
-  .v-panel-content-seance-panel {
-    padding: 20px 20px 20px 20px !important;
+  .seances-calendar {
+    width: 252px;
+    margin-right: 20px;
   }
 
-  .v-slot-calendar-button {
-    width: 25% !important;
-    min-width: 300px;
-    margin-left: -20px !important;
-    margin-top: -20px !important;
-  }
-
-  .v-slot-hall-wrapper {
-    width: 75% !important;
-    height: 100%;
-    min-width: 930px;
-  }
-
-  .hall-wrapper {
+  .seances-calendar-button {
     width: 100%;
-    height: 100%;
+    margin-top: 20px;
   }
 
   .v-slot-hall-admin {
-    width: 50%;
+    width: 450px !important;
+    margin: 0 10px;
   }
 
-  .hall-admin {
+  .hall-label {
     width: 100%;
-  }
-
-  .v-panel-seance-panel {
-    width: 95%;
-  }
-
-  .seance-panel {
-    .v-verticallayout {
-      width: 100%;
-    }
+    margin: -6px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 26px;
+    font-weight: bold;
   }
 
   .seance-panel {
-    .v-verticallayout {
-      .v-horizontallayout {
-        width: 100%;
-        margin-bottom: 12px;
-      }
-    }
+    padding: 15px 0 15px 15px !important;
+    width: 450px;
   }
 
-  .v-slot-button-wrapper {
-    float: right;
+  .seance-row {
+    margin-bottom: 25px;
   }
 
-  .button-wrapper {
-    .v-button {
-      width: 100%;
-      margin-bottom: 5px;
-    }
+  .movie-name {
+    font-weight: 600;
+  }
+
+  .seance-buttons {
+    padding: 0 10px;
   }
 }

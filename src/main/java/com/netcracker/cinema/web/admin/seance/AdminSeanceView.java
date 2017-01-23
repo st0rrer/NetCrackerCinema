@@ -9,12 +9,13 @@ import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl;
 import com.netcracker.cinema.web.AdminUI;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
-import com.vaadin.icons.VaadinIcons;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.WebBrowser;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
@@ -24,10 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Titarenko on 22.12.2016.
@@ -46,7 +44,8 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     ScheduleServiceImpl schedule;
 
     Date date = new Date(System.currentTimeMillis());
-    DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+    Locale englishLocale = new Locale("en", "US");
+    DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", englishLocale);
     DateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private VerticalLayout verticalLayout1 = new VerticalLayout();
     private VerticalLayout hallLayout1 = new VerticalLayout();
@@ -59,7 +58,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     @PostConstruct
     protected void init() {
         InlineDateField calendar = new InlineDateField();
-        calendar.setShowISOWeekNumbers(true);
+        calendar.setLocale(englishLocale);
         calendar.setValue(date);
         calendar.addValueChangeListener(e -> {
             date = calendar.getValue();
@@ -68,7 +67,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         });
 
         Button windowButton = new Button("Add new seance");
-        windowButton.setWidth("286px");
+        windowButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
         windowButton.addClickListener(e -> {
             if (subWindow != null) {
                 subWindow.close();
@@ -77,21 +76,25 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             UI.getCurrent().addWindow(subWindow);
         });
 
+        verticalLayout1.setWidth("252px");
         verticalLayout1.setSpacing(true);
-        verticalLayout1.setMargin(true);
+        verticalLayout1.addStyleName("seances-calendar");
+        windowButton.addStyleName("seances-calendar-button");
         verticalLayout1.addComponents(calendar, windowButton);
+
         getHall(1);
         getHall(2);
-        addComponent(verticalLayout1);
-        HorizontalLayout wrapper = new HorizontalLayout();
-        wrapper.addStyleName("hall-wrapper");
-        wrapper.addComponent(hallLayout1);
-        wrapper.addComponent(hallLayout2);
-        addComponent(wrapper);
-        setSizeFull();
-        verticalLayout1.addStyleName("calendar-button");
         hallLayout1.addStyleName("hall-admin");
         hallLayout2.addStyleName("hall-admin");
+
+        HorizontalLayout wrapper = new HorizontalLayout();
+        wrapper.setMargin(true);
+        wrapper.setSpacing(true);
+        wrapper.addComponents(verticalLayout1, hallLayout1, hallLayout2);
+
+        addComponent(wrapper);
+        setComponentAlignment(wrapper, Alignment.TOP_CENTER);
+        setSizeFull();
     }
 
     private void notificationForUnmodifiedSeance() {
@@ -109,8 +112,9 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         layout.setSpacing(true);
 
         Label hallLabel = new Label("Hall " + hallId);
-        hallLabel.setStyleName(ValoTheme.LABEL_H2);
-        Label dateLabel = new Label(dateFormat.format(date));
+        hallLabel.addStyleName("hall-label");
+        Label dateLabel = new Label("<i>" + dateFormat.format(date) + "</i>",
+                ContentMode.HTML);
 
         VerticalLayout verticalLayout = new VerticalLayout();
         for (Seance seance : seanceList) {
@@ -120,18 +124,19 @@ public class AdminSeanceView extends HorizontalLayout implements View {
 
         Panel hallPanel = new Panel();
         hallPanel.addStyleName("seance-panel");
-        hallPanel.setHeight(screenHeight > 1000 ? "750px" : "450px");
+        hallPanel.setHeight(screenHeight > 1000 ? "800px" : "490px");
         hallPanel.setContent(verticalLayout);
+
         layout.addComponents(hallLabel, dateLabel, hallPanel);
+//        layout.setComponentAlignment(hallLabel, Alignment.MIDDLE_CENTER);
     }
 
     private HorizontalLayout getSeanceRow(Seance seance) {
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setSpacing(true);
         Movie movie = movieService.getById(seance.getMovieId());
 
-        VerticalLayout movieInfo = new VerticalLayout();
-        Label name = new Label(movie.getName());
+        Label movieName = new Label(movie.getName());
+        movieName.addStyleName("movie-name");
+
         Label beginTime = new Label("begin: " + timeFormat.format(seance.getSeanceDate()));
         Date endDate = new Date(seance.getSeanceDate().getTime() + movie.getDuration() * 60_000);
         Label endTime = new Label("end: " + timeFormat.format(endDate) + " + 20min");
@@ -145,9 +150,11 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         }
         Label prices = new Label("prices: " + priceList.substring(0, priceList.length() - 1));
 
-        movieInfo.addComponents(name, beginTime, endTime, prices);
+        VerticalLayout movieInfo = new VerticalLayout();
+        movieInfo.setWidth("185px");
+        movieInfo.addComponents(movieName, beginTime, endTime, prices);
 
-        Button editButton = new Button(VaadinIcons.EDIT);
+        Button editButton = new Button("edit");
         editButton.setEnabled(seanceService.editableSeance(seance.getId()));
         editButton.addClickListener(e -> {
             if (subWindow != null) {
@@ -156,18 +163,18 @@ public class AdminSeanceView extends HorizontalLayout implements View {
             subWindow = new SubWindow(this, seance);
             UI.getCurrent().addWindow(subWindow);
         });
+        editButton.addStyleName("seance-buttons");
 
-        Button removeButton = new Button(VaadinIcons.CLOSE_CIRCLE_O);
+        Button removeButton = new Button("remove");
         removeButton.setEnabled(seanceService.editableSeance(seance.getId()));
         removeButton.addClickListener(e -> UI.getCurrent().addWindow(confirmWindow(seance)));
+        removeButton.addStyleName("seance-buttons");
 
-        VerticalLayout buttonWrapper = new VerticalLayout();
-        buttonWrapper.addComponent(editButton);
-        buttonWrapper.addComponent(removeButton);
-        buttonWrapper.addStyleName("button-wrapper");
-
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(true);
+        horizontalLayout.addStyleName("seance-row");
         horizontalLayout.addComponents(
-                createPoster(movie, 80), movieInfo, buttonWrapper);
+                createPoster(movie, 90), movieInfo, editButton, removeButton);
         return horizontalLayout;
     }
 
@@ -179,14 +186,15 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         removalWindow.setModal(true);
         removalWindow.center();
 
+        Label message = new Label("Do you really want to delete this seance?");
         Label seanceDate = new Label();
         seanceDate.setValue("Seance date: " + dateFormat.format(seance.getSeanceDate())
                 + " " + timeFormat.format(seance.getSeanceDate()));
-        Label message = new Label();
-        message.setValue("Do you really want to delete this seance?");
 
         Button yesButton = new Button("Yes");
         yesButton.setWidth("60px");
+        yesButton.setStyleName(ValoTheme.BUTTON_DANGER);
+        yesButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         yesButton.addClickListener(e -> {
             if (seanceService.editableSeance(seance.getId())) {
                 seanceService.delete(seance);
@@ -200,18 +208,21 @@ public class AdminSeanceView extends HorizontalLayout implements View {
                 notificationForUnmodifiedSeance();
             }
         });
+
         Button noButton = new Button("No");
         noButton.setWidth("60px");
+        noButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        noButton.setClickShortcut(ShortcutAction.KeyCode.ESCAPE);
         noButton.addClickListener(e -> removalWindow.close());
 
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setSpacing(true);
-        horizontalLayout.addComponents(yesButton, noButton);
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.setSpacing(true);
+        buttons.addComponents(yesButton, noButton);
 
         AbsoluteLayout layout = new AbsoluteLayout();
-        layout.addComponent(seanceDate, "left: 20px; top: 10px;");
-        layout.addComponent(message, "left: 20px; top: 40px;");
-        layout.addComponent(horizontalLayout, "left: 100px; top: 80px;");
+        layout.addComponent(message, "left: 20px; top: 10px;");
+        layout.addComponent(seanceDate, "left: 20px; top: 40px;");
+        layout.addComponent(buttons, "left: 100px; top: 80px;");
 
         removalWindow.setContent(layout);
         return removalWindow;
