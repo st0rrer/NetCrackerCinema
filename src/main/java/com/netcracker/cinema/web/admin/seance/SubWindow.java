@@ -90,8 +90,11 @@ class SubWindow extends Window {
         movieName.setNullSelectionAllowed(false);
         movieName.setWidth("250px");
         for (Movie movie : movieList) {
-            movieName.addItem(movie.getId());
-            movieName.setItemCaption(movie.getId(), movie.getName());
+            if (adminSeanceView.date.after(movie.getStartDate()) &&
+                    adminSeanceView.date.before(movie.getEndDate())) {
+                movieName.addItem(movie.getId());
+                movieName.setItemCaption(movie.getId(), movie.getName());
+            }
         }
         movieName.addValueChangeListener(e -> {
             posterLayout.removeAllComponents();
@@ -363,14 +366,6 @@ class SubWindow extends Window {
             return false;
         }
 
-        long oldId = seance.getId();
-        if (oldId == 0 || seanceService.editableSeance(oldId)) {
-            newSeance.setId(oldId);
-        } else {
-            notificationForUnmodifiedSeance();
-            return false;
-        }
-
         if (!seanceService.checkIfHallIsFree(newSeance)) {
             String message = "There is other movie in this hall in the same time.";
             notificationForWrongDate(message);
@@ -384,16 +379,18 @@ class SubWindow extends Window {
             return false;
         }
 
+        long oldId = seance.getId();
+        if (oldId == 0 || seanceService.editableSeance(oldId)) {
+            newSeance.setId(oldId);
+        } else {
+            adminSeanceView.notificationForUnmodifiedSeance();
+            return false;
+        }
+
         return true;
     }
 
     private void notificationForWrongDate(String message) {
         Notification.show("Invalid date", message, Notification.Type.TRAY_NOTIFICATION);
-    }
-
-    private void notificationForUnmodifiedSeance() {
-        String message = "Few seconds ago someone has booked tickets"
-                + LineSeparator.Windows + "for this seance, so it can't be modified.";
-        Notification.show("Booked tickets", message, Notification.Type.TRAY_NOTIFICATION);
     }
 }

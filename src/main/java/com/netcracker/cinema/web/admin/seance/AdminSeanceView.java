@@ -97,7 +97,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         setSizeFull();
     }
 
-    private void notificationForUnmodifiedSeance() {
+    void notificationForUnmodifiedSeance() {
         String message = "Few seconds ago someone has booked tickets"
                 + LineSeparator.Windows + "for this seance, so it can't be modified.";
         Notification.show("Booked tickets", message, Notification.Type.TRAY_NOTIFICATION);
@@ -128,7 +128,6 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         hallPanel.setContent(verticalLayout);
 
         layout.addComponents(hallLabel, dateLabel, hallPanel);
-//        layout.setComponentAlignment(hallLabel, Alignment.MIDDLE_CENTER);
     }
 
     private HorizontalLayout getSeanceRow(Seance seance) {
