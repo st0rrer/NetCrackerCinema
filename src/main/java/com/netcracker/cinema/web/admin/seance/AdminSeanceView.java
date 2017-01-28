@@ -7,8 +7,8 @@ import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl;
+import com.netcracker.cinema.validation.SeancesValidation;
 import com.netcracker.cinema.web.AdminUI;
-import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -27,6 +27,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.netcracker.cinema.web.admin.seance.SeanceTimeSettings.*;
+
 /**
  * Created by Titarenko on 22.12.2016.
  */
@@ -42,6 +44,8 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     PriceService priceService;
     @Autowired
     ScheduleServiceImpl schedule;
+    @Autowired
+    SeancesValidation validator;
 
     Date date = new Date(System.currentTimeMillis());
     Locale englishLocale = new Locale("en", "US");
@@ -97,10 +101,9 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         setSizeFull();
     }
 
-    void notificationForUnmodifiedSeance() {
-        String message = "Few seconds ago someone has booked tickets"
-                + LineSeparator.Windows + "for this seance, so it can't be modified.";
-        Notification.show("Booked tickets", message, Notification.Type.TRAY_NOTIFICATION);
+    void notifications(String caption, String description) {
+//        Notification.show("Booked tickets", message, Notification.Type.TRAY_NOTIFICATION);
+        Notification.show(caption, description, Notification.Type.TRAY_NOTIFICATION);
     }
 
     void getHall(long hallId) {
@@ -113,8 +116,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
 
         Label hallLabel = new Label("Hall " + hallId);
         hallLabel.addStyleName("hall-label");
-        Label dateLabel = new Label("<i>" + dateFormat.format(date) + "</i>",
-                ContentMode.HTML);
+        Label dateLabel = new Label("<i>" + dateFormat.format(date) + "</i>", ContentMode.HTML);
 
         VerticalLayout verticalLayout = new VerticalLayout();
         for (Seance seance : seanceList) {
@@ -137,8 +139,8 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         movieName.addStyleName("movie-name");
 
         Label beginTime = new Label("begin: " + timeFormat.format(seance.getSeanceDate()));
-        Date endDate = new Date(seance.getSeanceDate().getTime() + movie.getDuration() * 60_000);
-        Label endTime = new Label("end: " + timeFormat.format(endDate) + " + 20min");
+        Date endDate = new Date(seance.getSeanceDate().getTime() + movie.getDuration() * ONE_MINUTE);
+        Label endTime = new Label("end: " + timeFormat.format(endDate) + " + " + TIME_FOR_CLEANING + "min");
 
         String priceList = "";
         int zoneId = (seance.getHallId() == 1 ? 3 : 6);
@@ -154,7 +156,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         movieInfo.addComponents(movieName, beginTime, endTime, prices);
 
         Button editButton = new Button("edit");
-        editButton.setEnabled(seanceService.editableSeance(seance.getId()));
+        editButton.setEnabled(validator.editableSeance(seance.getId()));
         editButton.addClickListener(e -> {
             if (subWindow != null) {
                 subWindow.close();
@@ -165,7 +167,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         editButton.addStyleName("seance-buttons");
 
         Button removeButton = new Button("remove");
-        removeButton.setEnabled(seanceService.editableSeance(seance.getId()));
+        removeButton.setEnabled(validator.editableSeance(seance.getId()));
         removeButton.addClickListener(e -> UI.getCurrent().addWindow(confirmWindow(seance)));
         removeButton.addStyleName("seance-buttons");
 
@@ -195,7 +197,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
         yesButton.setStyleName(ValoTheme.BUTTON_DANGER);
         yesButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         yesButton.addClickListener(e -> {
-            if (seanceService.editableSeance(seance.getId())) {
+            if (validator.editableSeance(seance.getId())) {
                 seanceService.delete(seance);
 
                 schedule.deleteTask(seance.getId());
@@ -204,7 +206,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
                 getHall(seance.getHallId());
                 Notification.show("Seance deleted");
             } else {
-                notificationForUnmodifiedSeance();
+                notifications(validator.getCaption().getFullName(), validator.getMessage());
             }
         });
 

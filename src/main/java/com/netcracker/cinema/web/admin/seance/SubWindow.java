@@ -6,7 +6,7 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl;
-import com.sun.org.apache.xml.internal.serialize.LineSeparator;
+import com.netcracker.cinema.validation.SeancesValidation;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.datefield.Resolution;
@@ -20,6 +20,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import static com.netcracker.cinema.web.admin.seance.SeanceTimeSettings.*;
+
+/**
+ * Created by Titarenko on 16.01.2016.
+ */
 class SubWindow extends Window {
     private AdminSeanceView adminSeanceView;
     private Seance seance;
@@ -27,6 +32,7 @@ class SubWindow extends Window {
     private List<Movie> movieList;
     private PriceService priceService;
     private ScheduleServiceImpl schedule;
+    private SeancesValidation validator;
 
     private AbsoluteLayout layout = new AbsoluteLayout();
     private VerticalLayout posterLayout = new VerticalLayout();
@@ -38,12 +44,7 @@ class SubWindow extends Window {
     private List<TextField> textFieldList = new ArrayList<>(10);
     private HorizontalLayout datesLayout = new HorizontalLayout();
 
-    private static final long ONE_MINUTE = 60_000;
-    private static final long TWO_HOURS = ONE_MINUTE * 60 * 2;
-    private static final long TEN_HOURS = TWO_HOURS * 5;
-    private static final long ONE_DAY = ONE_MINUTE * 60 * 24;
     private DateFormat dateFormat;
-    private DateFormat timeFormat;
     private boolean success;
 
     SubWindow(AdminSeanceView adminSeanceView, Seance seance) {
@@ -54,8 +55,8 @@ class SubWindow extends Window {
         priceService = adminSeanceView.priceService;
         seanceService = adminSeanceView.seanceService;
         schedule = adminSeanceView.schedule;
+        validator = adminSeanceView.validator;
         dateFormat = adminSeanceView.dateFormat;
-        timeFormat = adminSeanceView.timeFormat;
 
         setCaption(seance.getId() == 0 ? "Add new seance" : "Change seance");
         center();
@@ -78,8 +79,8 @@ class SubWindow extends Window {
         hallId.setNullSelectionAllowed(false);
         hallId.setImmediate(true);
         hallId.addValueChangeListener(e -> {
-            if (optionGroup.getValue().equals(3)) {             //  option for adding to current
-                seanceDate.setValue(getTimeOfLastSeance());
+            if (optionGroup.getValue().equals(3)) {                 //  option for adding to current
+                seanceDate.setValue(getTimeOfLastSeance(adminSeanceView.date));
             }
             setCaptionsToTextFields(hallId.getValue());
         });
@@ -131,42 +132,27 @@ class SubWindow extends Window {
         saveButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         saveButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         saveButton.addClickListener(e -> {
-            if (hallId.getValue() != null &&
-                    movieName.getValue() != null &&
-                    seanceDate.getValue() != null &&
-                    !textFieldList.get(0).getValue().isEmpty() &&
-                    !textFieldList.get(1).getValue().isEmpty() &&
-                    !textFieldList.get(2).getValue().isEmpty()) {
-                try {
-                    for (TextField priceField : textFieldList) {                    //  Checking characters
-                        Integer.parseInt(priceField.getValue());
+            if (areFieldsFilled() && checkPrices()) {
+                int periodDays = getPeriodDays(seanceDate, seancePeriodEndDate);
+                for (int i = 0; i <= periodDays; i++) {
+                    Date date = new Date(seanceDate.getValue().getTime() + i * ONE_DAY);
+                    Seance newSeance = new Seance();
+                    newSeance.setSeanceDate(date);
+                    newSeance.setHallId(Long.parseLong(hallId.getValue().toString()));
+                    newSeance.setMovieId(Long.parseLong(movieName.getValue().toString()));
+                    if (checks(newSeance)) {
+                        saveSeanceAndPrice(newSeance);
+                        success = true;
                     }
-
-                    int periodDays = getPeriodDays(seanceDate, seancePeriodEndDate);
-                    for (int i = 0; i <= periodDays; i++) {
-                        Date date = new Date(seanceDate.getValue().getTime() + i * ONE_DAY);
-                        Seance newSeance = new Seance();
-                        newSeance.setSeanceDate(date);
-                        newSeance.setHallId(Long.parseLong(hallId.getValue().toString()));
-                        newSeance.setMovieId(Long.parseLong(movieName.getValue().toString()));
-                        if (checks(newSeance)) {
-                            saveSeanceAndPrice(newSeance);
-                            success = true;
-                        }
-                    }
-                    if (success) {
-                        if (seance.getId() == 0 && checkBox.getValue()) {
-                            eraseAll();
-                        } else {
-                            close();
-                        }
-                        Notification.show("Success!");
-                    }
-                } catch (NumberFormatException ex) {
-                    Notification.show("Invalid price", "Only numbers!", Notification.Type.TRAY_NOTIFICATION);
                 }
-            } else {
-                Notification.show("Fill in all fields!");
+                if (success) {
+                    if (seance.getId() == 0 && checkBox.getValue()) {
+                        eraseAll();
+                    } else {
+                        close();
+                    }
+                    Notification.show("Success!");
+                }
             }
         });
 
@@ -209,18 +195,40 @@ class SubWindow extends Window {
         }
     }
 
+    private boolean areFieldsFilled() {
+        if (hallId.getValue() != null &&
+                movieName.getValue() != null &&
+                seanceDate.getValue() != null &&
+                !textFieldList.get(0).getValue().isEmpty() &&
+                !textFieldList.get(1).getValue().isEmpty() &&
+                !textFieldList.get(2).getValue().isEmpty()) {
+            return true;
+        } else {
+            Notification.show("Fill in all fields!");
+            return false;
+        }
+    }
+
+    private boolean checkPrices() {
+        for (TextField priceField : textFieldList) {
+            if (!validator.checkPrice(priceField.getValue())) {
+                adminSeanceView.notifications(validator.getCaption().getFullName(), validator.getMessage());
+                return false;
+            }
+        }
+        return true;
+    }
+
     private int getPeriodDays(DateField seanceDate, DateField seancePeriodEndDate) {
         int periodDays = 0;
         if (Integer.parseInt(optionGroup.getValue().toString()) == 2
-                && seancePeriodEndDate.getValue() != null) {        //  for one day
+                && seancePeriodEndDate.getValue() != null) {                //  for one day
             Date startDate = seanceDate.getValue();
             Date endDate = seancePeriodEndDate.getValue();
             double periodInMillis = endDate.getTime() - startDate.getTime();
             periodDays = (int) Math.ceil(periodInMillis / ONE_DAY);
-            if (periodDays < 0) {
-                String message = "Start date of period should be" +
-                        LineSeparator.Windows + "before end date of period.";
-                notificationForWrongDate(message);
+            if (!validator.checkPeriods(startDate, endDate)) {
+                adminSeanceView.notifications(validator.getCaption().getFullName(), validator.getMessage());
             }
         }
         return periodDays;
@@ -261,33 +269,44 @@ class SubWindow extends Window {
                     break;
                 case "3":                                                   //  add to current
                     datesLayout.removeComponent(seancePeriodEndDate);
-                    seanceDate.setValue(getTimeOfLastSeance());
+                    seanceDate.setValue(getTimeOfLastSeance(adminSeanceView.date));
                     seanceDate.setEnabled(false);
                     break;
             }
         });
     }
 
-    private Date getTimeOfLastSeance() {
+    private Date getTimeOfLastSeance(Date date) {
+        Date returnDate;
+        Date nextDate = new Date();
         if (hallId.getValue() != null) {
             long hall = Long.parseLong(hallId.getValue().toString());
-            List<Seance> seanceList = seanceService.getByHallAndDate(hall, adminSeanceView.date);
+            List<Seance> seanceList = seanceService.getByHallAndDate(hall, date);
             if (!seanceList.isEmpty()) {
                 seanceList.sort(Comparator.comparing(Seance::getSeanceDate));
                 Seance lastSeance = seanceList.get(seanceList.size() - 1);
                 Movie movie = adminSeanceView.movieService.getById(lastSeance.getMovieId());
                 long startTimeOfLastSeance = lastSeance.getSeanceDate().getTime();
-                Date nextDate = new Date(startTimeOfLastSeance + (movie.getDuration() + 20) * ONE_MINUTE);
-                return nextDate;
+                nextDate = new Date(startTimeOfLastSeance + (movie.getDuration() + TIME_FOR_CLEANING) * ONE_MINUTE);
             }
         }
-        return getStartTime();
+        Date minDate = new Date(System.currentTimeMillis() + (MIN_TIME_TO_START_SEANCE + 1) * ONE_MINUTE);
+        Date startDate = getStartTime(date);
+        if (minDate.after(startDate) && minDate.after(nextDate)) {
+            returnDate = minDate;
+        } else {
+            returnDate = startDate.after(nextDate) ? startDate : nextDate;
+        }
+        if (!validator.IsInWorkingTime(returnDate)) {
+            returnDate = getTimeOfLastSeance(new Date(date.getTime() + ONE_DAY));
+        }
+        return returnDate;
     }
 
-    private Date getStartTime() {
+    private Date getStartTime(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date currentDay = java.sql.Date.valueOf(dateFormat.format(adminSeanceView.date));
-        return new Date(currentDay.getTime() + TEN_HOURS);
+        Date currentDay = java.sql.Date.valueOf(dateFormat.format(date));
+        return new Date(currentDay.getTime() + START_TIME_OF_WORKING_DAY * ONE_HOUR / 100);
     }
 
     private void setCaptionsToTextFields(Object hallId) {
@@ -318,7 +337,7 @@ class SubWindow extends Window {
                 priceField.setValue(String.valueOf(price.getPrice()));
             }
         } else {
-            seanceDate.setValue(getStartTime());
+            seanceDate.setValue(getStartTime(adminSeanceView.date));
         }
     }
 
@@ -351,46 +370,17 @@ class SubWindow extends Window {
     }
 
     private boolean checks(Seance newSeance) {
-        Date minDate = new Date(System.currentTimeMillis() + TWO_HOURS);
-        if (newSeance.getSeanceDate().before(minDate)) {
-            String message = "Date can't be less than " + dateFormat.format(minDate) +
-                    " " + timeFormat.format(minDate);
-            notificationForWrongDate(message);
-            return false;
-        }
-
-        if (!seanceService.checkIfInWorkingTime(newSeance)) {
-            String message = "Start time of seance should be" +
-                    LineSeparator.Windows + "between 10:00 and 22:00 o'clock.";
-            notificationForWrongDate(message);
-            return false;
-        }
-
-        if (!seanceService.checkIfHallIsFree(newSeance)) {
-            String message = "There is other movie in this hall in the same time.";
-            notificationForWrongDate(message);
-            return false;
-        }
-
-        if (!seanceService.checkDate(newSeance)) {
-            String message = "Date of seance should be between" + LineSeparator.Windows +
-                    "start and final dates of selected movie.";
-            notificationForWrongDate(message);
-            return false;
-        }
-
         long oldId = seance.getId();
-        if (oldId == 0 || seanceService.editableSeance(oldId)) {
+        if (oldId == 0 || validator.editableSeance(oldId)) {
             newSeance.setId(oldId);
         } else {
-            adminSeanceView.notificationForUnmodifiedSeance();
+            adminSeanceView.notifications(validator.getCaption().getFullName(), validator.getMessage());
             return false;
         }
-
+        if (!validator.checkSeanceDate(newSeance)) {
+            adminSeanceView.notifications(validator.getCaption().getFullName(), validator.getMessage());
+            return false;
+        }
         return true;
-    }
-
-    private void notificationForWrongDate(String message) {
-        Notification.show("Invalid date", message, Notification.Type.TRAY_NOTIFICATION);
     }
 }
