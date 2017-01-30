@@ -8,13 +8,13 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>Login page</title>
-		<%--<link href="<c:url value='/static/css/bootstrap.css' />"  rel="stylesheet"/>
-		<link href="<c:url value='/static/css/app.css' />" rel="stylesheet"/>--%>
-		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="/VAADIN/themes/cinema/styles.css">
+        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
 	</head>
 
-	<body>
-		<div id="mainWrapper">
+	<body class="v-app cinema userui">
+		<div class="v-panel v-widget v-has-width v-has-height"
+               style="overflow: hidden; width: 100%; height: 100%; padding-top: 0px; padding-bottom: 0px;">
 			<div class="login-container">
 				<div class="login-card">
 					<div class="login-form">
@@ -42,7 +42,7 @@
 								
 							<div class="form-actions">
 								<input type="submit"
-									class="btn btn-block btn-primary btn-default" value="Log in">
+                                       class="v-button-wrap" value="Log in">
 							</div>
 						</form>
 					</div>

@@ -8,12 +8,12 @@
 
     <http use-expressions="true">
         <csrf disabled="true"/>
-        <!--<intercept-url pattern="/cashier"  access="hasRole('ROLE_CASHIER')" />
+        <intercept-url pattern="/cashier"  access="hasRole('ROLE_CASHIER') or hasRole('ROLE_ADMIN')" />
         <intercept-url pattern="/admin"  access="hasRole('ROLE_ADMIN')" />
 
-        <logout logout-success-url="/login"/>-->
-        <intercept-url pattern="/cashier"  access = "isAuthenticated()" />
-        <intercept-url pattern="/admin"  access="isAuthenticated()" />
+        <!--<logout logout-success-url="/login"/>-->
+        <!--<intercept-url pattern="/cashier"  access = "isAuthenticated()" />-->
+        <!--<intercept-url pattern="/admin"  access="isAuthenticated()" />-->
         <form-login login-page='/login'
                     authentication-failure-url="/login?error=true"
                     username-parameter="ssoId"
