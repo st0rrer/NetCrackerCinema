@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -43,9 +42,23 @@ public class RatingDaoImpl implements RatingDao {
 
     @Override
     public List<Rating> allRatings(Date startDate, Date endDate) {
-        List<Rating> ratings = jdbcTemplate.query(CALL_ALL_RATINGS, new RatingMapper(), startDate, endDate);
-        logger.info("Find all rating: found  rating objects");
-        return ratings;
+        if (startDate == null) {
+            logger.error("startDate can't be null");
+            throw new IllegalArgumentException("startDate can't be null");
+        }
+        if (endDate == null) {
+            logger.error("endDate can't be null");
+            throw new IllegalArgumentException("endDate can't be null");
+        }
+        try {
+            List<Rating> ratings = jdbcTemplate.query(CALL_ALL_RATINGS, new RatingMapper(), new java.sql.Date(startDate.getTime()),
+                    new java.sql.Date(endDate.getTime()));
+            logger.info("Find all rating: found  rating objects");
+            return ratings;
+        } catch (DataAccessException e) {
+            logger.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
     }
 
     class RatingMapper implements RowMapper<Rating> {

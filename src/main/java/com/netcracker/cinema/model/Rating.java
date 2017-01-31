@@ -19,8 +19,6 @@ public class Rating implements Serializable {
     private String zoneName;
     private long ticketSold;
     private long price;
-    //@DateTimeFormat(pattern = "dd/MM/yyyy")
-    // @Temporal(TemporalType.DATE)
     private Date startDate;
     private Date endDate;
 }
