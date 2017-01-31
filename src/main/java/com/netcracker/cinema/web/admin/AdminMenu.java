@@ -1,6 +1,7 @@
 package com.netcracker.cinema.web.admin;
 
 import com.netcracker.cinema.web.admin.movie.ModifyAdminMovieView;
+import com.netcracker.cinema.web.admin.rating.AllRatingsView;
 import com.netcracker.cinema.web.admin.seance.AdminSeanceView;
 import com.vaadin.server.Page;
 import com.vaadin.ui.MenuBar;
@@ -16,8 +17,11 @@ public class AdminMenu extends MenuBar {
             if(selectedItem.getText().equals("Seances")) {
                 getUI().getNavigator().navigateTo(AdminSeanceView.VIEW_NAME);
             }
+            if(selectedItem.getText().equals("Ratings")) {
+                getUI().getNavigator().navigateTo(AllRatingsView.VIEW_NAME);
+            }
             if(selectedItem.getText().equals("Logout")){
-                     SecurityContextHolder.clearContext();
+                SecurityContextHolder.clearContext();
                 getUI().getSession().close();
                 Page.getCurrent().open("login", null);
             }
