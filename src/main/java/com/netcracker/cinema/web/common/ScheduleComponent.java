@@ -2,7 +2,6 @@ package com.netcracker.cinema.web.common;
 
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
-import com.netcracker.cinema.service.MovieService;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
@@ -12,10 +11,9 @@ import java.text.SimpleDateFormat;
 
 public class ScheduleComponent extends VerticalLayout {
 
-    public ScheduleComponent(Seance seances, Movie movie) {
-        setMargin(true);
-        addPoster(seances, movie);
-        addSeanceAttributes(seances, movie);
+    public ScheduleComponent(Seance seance, Movie movie) {
+        addPoster(movie);
+        addSeanceAttributes(seance, movie);
         addStyleName("selectable-seance-with-poster");
     }
 
@@ -32,7 +30,7 @@ public class ScheduleComponent extends VerticalLayout {
         addComponent(hall);
     }
 
-    private void addPoster(Seance seance, Movie movie) {
+    private void addPoster(Movie movie) {
         ExternalResource resource = new ExternalResource(movie.getPoster());
         Image poster = new Image(null, resource);
         poster.setHeight("350px");
