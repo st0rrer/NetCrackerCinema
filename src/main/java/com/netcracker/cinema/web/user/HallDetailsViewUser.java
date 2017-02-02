@@ -5,7 +5,7 @@ import com.netcracker.cinema.model.Place;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
-import com.netcracker.cinema.validation.Validation;
+//import com.netcracker.cinema.service.notification.NotificationService;
 import com.netcracker.cinema.web.UserUI;
 import com.netcracker.cinema.web.common.TicketSelect;
 import com.vaadin.data.Validator;
@@ -41,6 +41,8 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
     private PriceService priceService;
     @Autowired
     private TicketService ticketService;
+//    @Autowired
+//    private NotificationService notificationService;
 
     private GridLayout areaForBookTicket;
     private Button book;
@@ -148,7 +150,7 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
                 buttonEnter.setEnabled(true);
             } else {
                 buttonEnter.setEnabled(false);
-                long codeForTickets = ticketService.getCode();
+                Long codeForTickets = ticketService.getCode();
                 for (Place place : ticketSelect.getSelectedPlaces()) {
                     Ticket ticket = new Ticket();
                     ticket.setEmail(emailField.getValue());
@@ -158,6 +160,7 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
                     ticket.setCode(codeForTickets);
                     ticketService.save(ticket);
                 }
+//                notificationService.sendNotification(emailField.getValue(), codeForTickets.toString());
                 getUI().removeWindow(windowForBook);
                 ticketSelect.buildForThisSeance(seance);
                 Notification successfulNotification = new Notification("Promo code sent to your email. Thank you!" +
@@ -215,9 +218,12 @@ public class HallDetailsViewUser extends VerticalLayout implements View {
     private class ValidationEmailTextField implements Validator {
         @Override
         public void validate(Object value) throws InvalidValueException {
-            LOGGER.debug("Validation data: " + value + " result: " +
-                    (!Validation.isValidEmailAddress((String) value)));
-            if (!Validation.isValidEmailAddress((String) value)) {
+            LOGGER.debug("Validation data: " + value);
+            String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+            java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+            java.util.regex.Matcher m = p.matcher((String) value);
+            boolean checkEmail = m.matches();
+            if (!checkEmail) {
                 throw new InvalidValueException("Incorrect email address");
             }
         }
