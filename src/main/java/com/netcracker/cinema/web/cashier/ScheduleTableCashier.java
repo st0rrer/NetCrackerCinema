@@ -25,7 +25,7 @@ public class ScheduleTableCashier extends ScheduleTable {
         super.updateGrid(seances);
         for (Seance seance : seances) {
             Movie movie = movieService.getById(seance.getMovieId());
-            ScheduleComponent seanceComponent = new ScheduleComponentUser(seance, movie);
+            ScheduleComponent seanceComponent = new ScheduleComponentCashier(seance, movie);
             addComponent(seanceComponent);
         }
     }
