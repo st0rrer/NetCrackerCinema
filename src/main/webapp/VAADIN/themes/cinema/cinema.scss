@@ -61,6 +61,31 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     font-size: 1.4em;
   }
 
+  .selectable-seance-with-poster {
+    padding-top: 10px;
+  }
+
+  .schedule-grid {
+    margin-left: 10px;
+  }
+
+  .v-slot-schedule-grid {
+    width: 97%;
+  }
+
+  .selectable-seance-with-poster {
+    img {
+      display: block;
+      margin: auto;
+    }
+  }
+
+  .selectable-seance-with-poster {
+    .v-label {
+      text-align: center;
+    }
+  }
+
   :hover.selectable-seance-with-poster {
     box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
     border-radius: 4px;

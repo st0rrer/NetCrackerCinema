@@ -31,6 +31,8 @@
 
     <bean id="priceDao" class="com.netcracker.cinema.dao.impl.PriceDaoImpl"></bean>
 
+    <bean id="ratingDao" class="com.netcracker.cinema.dao.impl.RatingDaoImpl"></bean>
+
     <bean id="hallService" class="com.netcracker.cinema.service.impl.HallServiceImpl"></bean>
 
     <bean id="zoneService" class="com.netcracker.cinema.service.impl.ZoneServiceImpl"></bean>
@@ -45,9 +47,11 @@
 
     <bean id="priceService" class="com.netcracker.cinema.service.impl.PriceServiceImpl"></bean>
 
+    <bean id="ratingService" class="com.netcracker.cinema.service.impl.RatingServiceImpl"></bean>
+
     <bean id="task" class="com.netcracker.cinema.service.schedule.impl.Task"></bean>
 
     <bean id="scheduleService"
           class="com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl"
-          destroy-method="shutdownSchedule" />
+          destroy-method="shutdownSchedule"/>
 </beans>
