@@ -22,9 +22,6 @@ import java.util.List;
 
 import static com.netcracker.cinema.web.admin.seance.SeanceTimeSettings.*;
 
-/**
- * Created by Titarenko on 16.01.2016.
- */
 class SubWindow extends Window {
     private AdminSeanceView adminSeanceView;
     private Seance seance;

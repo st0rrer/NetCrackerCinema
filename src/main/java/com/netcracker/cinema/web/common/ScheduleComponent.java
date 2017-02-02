@@ -2,6 +2,7 @@ package com.netcracker.cinema.web.common;
 
 import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
+import com.netcracker.cinema.web.cashier.HallDetailsViewCashier;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
@@ -15,6 +16,7 @@ public class ScheduleComponent extends VerticalLayout {
         addPoster(movie);
         addSeanceAttributes(seance, movie);
         addStyleName("selectable-seance-with-poster");
+        addLayoutClickListener(event -> getUI().getNavigator().navigateTo(HallDetailsView.VIEW_NAME + "/" + seance.getId()));
     }
 
     private void addSeanceAttributes(Seance seance, Movie movie) {

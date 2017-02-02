@@ -3,7 +3,6 @@ package com.netcracker.cinema.web.user;
 import com.vaadin.ui.MenuBar;
 
 public class UserMenu extends MenuBar {
-
     public UserMenu() {
         MenuBar.Command command = selectedItem -> {
             if (selectedItem.getText().equals("Movies")) {

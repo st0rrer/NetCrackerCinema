@@ -1,8 +1,5 @@
 package com.netcracker.cinema.dao.impl.queries;
 
-/**
- * Created by Mr. Tytarenko on 01.12.2016.
- */
 public interface TicketDaoQuery {
 
     String FIND_ALL_TICKETS =

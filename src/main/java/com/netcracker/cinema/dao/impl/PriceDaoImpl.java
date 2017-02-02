@@ -18,9 +18,6 @@ import java.util.List;
 
 import static com.netcracker.cinema.dao.impl.queries.PriceDaoQuery.*;
 
-/**
- * Created by Parpalak on 11.12.2016.
- */
 public class PriceDaoImpl implements PriceDao {
     private static final Logger LOGGER = Logger.getLogger(PriceDaoImpl.class);
     private JdbcTemplate jdbcTemplate;

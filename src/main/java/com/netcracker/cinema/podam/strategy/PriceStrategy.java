@@ -6,9 +6,6 @@ import uk.co.jemos.podam.api.AttributeMetadata;
 
 import java.util.Random;
 
-/**
- * Created by gaya on 16.11.2016.
- */
 public class PriceStrategy extends AbstractRandomDataProviderStrategy {
 
     private static final Random random = new Random(System.currentTimeMillis());

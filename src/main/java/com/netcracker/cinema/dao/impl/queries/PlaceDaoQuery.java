@@ -1,6 +1,5 @@
 package com.netcracker.cinema.dao.impl.queries;
 
-
 public interface PlaceDaoQuery {
     String FIND_ALL_SQL =
             "SELECT " +

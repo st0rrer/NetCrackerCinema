@@ -1,6 +1,5 @@
 package com.netcracker.cinema.service;
 
-
 import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
 import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.dao.Paginator;

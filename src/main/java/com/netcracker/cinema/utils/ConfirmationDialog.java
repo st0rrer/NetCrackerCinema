@@ -2,7 +2,6 @@ package com.netcracker.cinema.utils;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
-        import com.vaadin.ui.Button.ClickEvent;
 
 public class ConfirmationDialog {
 

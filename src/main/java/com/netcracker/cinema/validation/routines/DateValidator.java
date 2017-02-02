@@ -6,9 +6,6 @@ import org.apache.log4j.Logger;
 
 import java.util.Date;
 
-/**
- * Created by User on 31.01.2017.
- */
 public class DateValidator implements Validator {
 
     private static final Logger logger = Logger.getLogger(DateValidator.class);
@@ -22,7 +19,6 @@ public class DateValidator implements Validator {
         this.startDate = startDate;
         this.endDate = endDate;
     }
-
 
     @Override
     public boolean validate() {

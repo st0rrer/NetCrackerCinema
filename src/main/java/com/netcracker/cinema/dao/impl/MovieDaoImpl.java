@@ -19,10 +19,6 @@ import java.util.List;
 
 import static com.netcracker.cinema.dao.impl.queries.MovieDaoQuery.*;
 
-/**
- * Created by dimka on 16.11.2016.
- */
-
 public class MovieDaoImpl implements MovieDao {
     private static final Logger LOGGER = Logger.getLogger(MovieDaoImpl.class);
     private JdbcTemplate jdbcTemplate;

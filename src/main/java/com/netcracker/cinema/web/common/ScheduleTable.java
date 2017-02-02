@@ -1,20 +1,21 @@
 package com.netcracker.cinema.web.common;
 
+import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
+import com.netcracker.cinema.service.MovieService;
 import com.vaadin.ui.GridLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-/**
- * Created by dimka on 17.12.2016.
- */
-public class ScheduleTable extends GridLayout {
+public abstract class ScheduleTable extends GridLayout {
 
     private final int GRID_COLUMNS = 4;
 
+    @Autowired
+    private MovieService movieService;
+
     public ScheduleTable() {
-        setSpacing(true);
-        addStyleName("schedule-grid");
     }
 
     public void updateGrid(List<Seance> seances) {
@@ -22,6 +23,11 @@ public class ScheduleTable extends GridLayout {
         setGridSize(seances);
         if(this.getComponentCount() != 0) {
             this.removeAllComponents();
+        }
+        for (Seance seance : seances) {
+            Movie movie = movieService.getById(seance.getMovieId());
+            ScheduleComponent seanceComponent = new ScheduleComponent(seance, movie);
+            addComponent(seanceComponent);
         }
     }
 

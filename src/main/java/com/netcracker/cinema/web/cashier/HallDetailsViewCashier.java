@@ -6,8 +6,8 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
 import com.netcracker.cinema.web.CashierUI;
+import com.netcracker.cinema.web.common.HallDetailsView;
 import com.netcracker.cinema.web.common.TicketSelect;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.spring.annotation.SpringView;
@@ -20,10 +20,9 @@ import javax.annotation.PreDestroy;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 
-@SpringView(name = HallDetailsViewCashier.VIEW_NAME, ui = CashierUI.class)
-public class HallDetailsViewCashier extends VerticalLayout implements View {
+@SpringView(name = HallDetailsView.VIEW_NAME, ui = CashierUI.class)
+public class HallDetailsViewCashier extends HallDetailsView {
 
-    public static final String VIEW_NAME = "details";
     private static final Logger LOGGER = Logger.getLogger(HallDetailsViewCashier.class);
 
     @Autowired

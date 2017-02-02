@@ -9,9 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by gaya on 16.11.2016.
- */
 public class HallStrategy  extends AbstractRandomDataProviderStrategy {
 
     private static final Random random = new Random(System.currentTimeMillis());

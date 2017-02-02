@@ -4,9 +4,6 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.MenuBar;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-/**
- * Created by dimka on 04.12.2016.
- */
 public class CashierMenu extends MenuBar {
 
     public CashierMenu() {

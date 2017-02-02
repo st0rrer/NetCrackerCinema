@@ -8,12 +8,12 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.util.Date;
 
-
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
 public class Rating implements Serializable {
+
     private String movieName;
     private String hallName;
     private String zoneName;

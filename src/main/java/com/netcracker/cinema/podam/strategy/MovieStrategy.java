@@ -9,9 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by gaya on 15.11.2016.
- */
 public class MovieStrategy extends AbstractRandomDataProviderStrategy {
 
     private static final Random random = new Random(System.currentTimeMillis());

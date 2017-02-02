@@ -5,9 +5,6 @@ import com.vaadin.server.ErrorHandler;
 import com.vaadin.ui.UI;
 import org.apache.log4j.Logger;
 
-/**
- * Created by aogim on 21.01.2017.
- */
 public class CinemaErrorHandler implements ErrorHandler {
     private static final Logger LOGGER = Logger.getLogger(CinemaErrorHandler.class);
     @Override

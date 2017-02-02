@@ -4,16 +4,11 @@ import com.netcracker.cinema.dao.PlaceDao;
 import com.netcracker.cinema.model.Place;
 import com.netcracker.cinema.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * Created by Илья on 08.12.2016.
- */
-@Service
 public class PlaceServiceImpl implements PlaceService {
 
     private PlaceDao placeDao;

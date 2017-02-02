@@ -1,6 +1,5 @@
 package com.netcracker.cinema.podam.strategy;
 
-import com.netcracker.cinema.model.Hall;
 import com.netcracker.cinema.model.Zone;
 import uk.co.jemos.podam.api.AbstractRandomDataProviderStrategy;
 import uk.co.jemos.podam.api.AttributeMetadata;
@@ -10,9 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by gaya on 16.11.2016.
- */
 public class ZoneStrategy extends AbstractRandomDataProviderStrategy {
     private static final Random random = new Random(System.currentTimeMillis());
 

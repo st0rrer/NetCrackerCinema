@@ -2,6 +2,7 @@ package com.netcracker.cinema.web.cashier;
 
 import com.netcracker.cinema.web.CashierUI;
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -19,9 +20,6 @@ import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.Iterator;
 
-/**
- * Created by dimka on 01.12.2016.
- */
 @SpringView(name = PaymentView.VIEW_NAME, ui = CashierUI.class)
 @ViewScope
 public class PaymentView extends VerticalLayout implements View {
@@ -61,10 +59,8 @@ public class PaymentView extends VerticalLayout implements View {
         try {
             codeTicket = Long.parseLong(event.getParameters());
         } catch (NumberFormatException e) {
-            if(!"".equals(event.getParameters())) {
-                getUI().getPage().reload();
-                getUI().getNavigator().navigateTo(PaymentView.VIEW_NAME);
-            }
+            getUI().getPage().reload();
+            getUI().getNavigator().navigateTo(PaymentView.VIEW_NAME);
         }
 
         if(codeTicket != null) {
@@ -90,27 +86,28 @@ public class PaymentView extends VerticalLayout implements View {
     private void initAreaForCode() {
 
         ticketCode = new TextField();
+        ticketCode.addValidator(new ValidationTicketCode());
+        ticketCode.setValidationVisible(false);
+        ticketCode.setNullSettingAllowed(true);
 
         ticketCode.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 if(ticketCode.getValue().length() == 0) return;
                 String code = ticketCode.getValue();
-                try {
-                    if(code.length() <= 3 || code.length() >= 5) {
-                        Notification.show("Ticket code should not have less than 4 characters", Notification.Type.WARNING_MESSAGE);
-                        return;
-                    }
-                    if(hasChildComponent(areaForTicketsTable)) {
-                        areaForTicketsTable.removeAllComponents();
-                    }
-                    Long.parseLong(code);
-                    getUI().getNavigator().navigateTo(PaymentView.VIEW_NAME + "/" + code);
-
-                } catch (NumberFormatException e) {
-                    LOGGER.info("Expected code, but was " + code, e);
-                    Notification.show("Ticket code should not have the characters", Notification.Type.ERROR_MESSAGE);
+                if (code.length() <= 3) {
+                    Notification.show("Ticket code should not have less than 4 characters", Notification.Type.WARNING_MESSAGE);
+                    return;
                 }
+                if (!ticketCode.isValid()) {
+                    LOGGER.info("Ticket code should not have the characters, but was: " + code);
+                    Notification.show("Ticket code should not have the characters", Notification.Type.WARNING_MESSAGE);
+                    return;
+                }
+                if (hasChildComponent(areaForTicketsTable)) {
+                    areaForTicketsTable.removeAllComponents();
+                }
+                getUI().getNavigator().navigateTo(PaymentView.VIEW_NAME + "/" + code);
             }
         });
 
@@ -150,5 +147,19 @@ public class PaymentView extends VerticalLayout implements View {
         Iterator<Component> iterator = container.iterator();
         if(iterator.hasNext()) return true;
         return false;
+    }
+
+    private class ValidationTicketCode implements Validator {
+        @Override
+        public void validate(Object value) throws InvalidValueException {
+            LOGGER.debug("Validate data: " + value);
+            String regexCodeTicket = "[0-9]+";
+            java.util.regex.Pattern patternCodeTicket = java.util.regex.Pattern.compile(regexCodeTicket);
+            java.util.regex.Matcher matcherCodeTicket = patternCodeTicket.matcher((String) value);
+            boolean checkCodeTicket = matcherCodeTicket.matches();
+            if (!checkCodeTicket) {
+                throw new InvalidValueException("Incorrect code ticket");
+            }
+        }
     }
 }

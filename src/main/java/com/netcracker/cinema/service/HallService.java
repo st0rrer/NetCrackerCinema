@@ -4,9 +4,6 @@ import com.netcracker.cinema.model.Hall;
 
 import java.util.List;
 
-/**
- * Created by dimka on 24.11.2016.
- */
 public interface HallService {
 
     List<Hall> findAll();

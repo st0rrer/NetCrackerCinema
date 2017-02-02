@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-
 @SpringView(name = ModifyAdminMovieView.VIEW_NAME, ui = AdminUI.class)
 @Theme("valo")
 public class ModifyAdminMovieView extends VerticalLayout implements View {

@@ -11,9 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Titarenko on 10.12.2016.
- */
 public class TicketServiceImpl implements TicketService {
     private TicketDao ticketDao;
 
