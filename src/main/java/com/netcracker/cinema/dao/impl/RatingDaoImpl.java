@@ -14,10 +14,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
-
-import static com.netcracker.cinema.dao.impl.queries.RatingDaoQuery.ALL_RATINGS;
-import static com.netcracker.cinema.dao.impl.queries.RatingDaoQuery.CALL_ALL_RATINGS;
-
+import static com.netcracker.cinema.dao.impl.queries.RatingDaoQuery.*;
 
 public class RatingDaoImpl implements RatingDao {
     private static final Logger logger = Logger.getLogger(RatingDaoImpl.class);
@@ -31,8 +28,32 @@ public class RatingDaoImpl implements RatingDao {
     @Override
     public List<Rating> findAll() {
         try {
-            List<Rating> ratings = jdbcTemplate.query(ALL_RATINGS, new RatingMapper());
-            logger.info("Find all rating: found " + ratings.size() + " rating objects");
+            List<Rating> ratings = jdbcTemplate.query(ALL_RATINGS, new AllRatingMapper());
+            logger.info("Find all rating: found " + ratings.size() + " rating all objects");
+            return ratings;
+        } catch (DataAccessException e) {
+            logger.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Rating> hallRatings() {
+        try {
+            List<Rating> ratings = jdbcTemplate.query(HALL_RATINGS, new RatingMapperHall());
+            logger.info("Find hall rating: found " + ratings.size() + " rating objects");
+            return ratings;
+        } catch (DataAccessException e) {
+            logger.warn(e.getMessage(), e);
+            throw new CinemaDaoException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Rating> zoneRatings() {
+        try {
+            List<Rating> ratings = jdbcTemplate.query(ZONE_RATINGS, new RatingMapperZone());
+            logger.info("Find zone rating: found " + ratings.size() + " rating objects");
             return ratings;
         } catch (DataAccessException e) {
             logger.warn(e.getMessage(), e);
@@ -51,7 +72,7 @@ public class RatingDaoImpl implements RatingDao {
             throw new IllegalArgumentException("endDate can't be null");
         }
         try {
-            List<Rating> ratings = jdbcTemplate.query(CALL_ALL_RATINGS, new RatingMapper(), new java.sql.Date(startDate.getTime()),
+            List<Rating> ratings = jdbcTemplate.query(CALL_ALL_RATINGS, new AllRatingMapper(), new java.sql.Date(startDate.getTime()),
                     new java.sql.Date(endDate.getTime()));
             logger.info("Find all rating: found  rating objects");
             return ratings;
@@ -61,7 +82,7 @@ public class RatingDaoImpl implements RatingDao {
         }
     }
 
-    class RatingMapper implements RowMapper<Rating> {
+    class AllRatingMapper implements RowMapper<Rating> {
         @Override
         public Rating mapRow(ResultSet resultSet, int i) throws SQLException {
             Rating rating = new Rating();
@@ -77,4 +98,28 @@ public class RatingDaoImpl implements RatingDao {
         }
     }
 
+    class RatingMapperHall implements RowMapper<Rating> {
+        @Override
+        public Rating mapRow(ResultSet resultSet, int i) throws SQLException {
+            Rating rating = new Rating();
+            logger.debug(resultSet);
+            rating.setHallName(resultSet.getString("HALL"));
+            rating.setTicketSold(resultSet.getLong("TICKET_SOLD"));
+            rating.setPrice(resultSet.getInt("TICKET_PRICE"));
+            return rating;
+        }
+    }
+
+    class RatingMapperZone implements RowMapper<Rating> {
+        @Override
+        public Rating mapRow(ResultSet resultSet, int i) throws SQLException {
+            Rating rating = new Rating();
+            logger.debug(resultSet);
+            rating.setHallName(resultSet.getString("HALL"));
+            rating.setZoneName(resultSet.getString("ZONE"));
+            rating.setTicketSold(resultSet.getLong("TICKET_SOLD"));
+            rating.setPrice(resultSet.getInt("TICKET_PRICE"));
+            return rating;
+        }
+    }
 }

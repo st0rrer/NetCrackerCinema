@@ -5,8 +5,7 @@ import com.netcracker.cinema.model.Rating;
 import com.netcracker.cinema.service.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class RatingServiceImpl implements RatingService {
     private RatingDao ratingDao;
@@ -21,7 +20,17 @@ public class RatingServiceImpl implements RatingService {
         return ratingDao.findAll();
     }
 
-	    @Override
+    @Override
+    public List<Rating> hallRatings() {
+        return ratingDao.hallRatings();
+    }
+
+    @Override
+    public List<Rating> zoneRatings() {
+        return ratingDao.zoneRatings();
+    }
+
+    @Override
     public List<Rating> allRating(Date startDate, Date endDate) {
         return ratingDao.allRatings(startDate, endDate);
     }
