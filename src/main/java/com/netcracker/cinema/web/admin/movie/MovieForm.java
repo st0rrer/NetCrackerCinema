@@ -4,9 +4,11 @@ import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.utils.ConfirmationDialog;
-import com.netcracker.cinema.validation.MovieUIValidation;
 import com.netcracker.cinema.validation.ValidationExecutor;
 import com.netcracker.cinema.validation.ValidationResult;
+import com.netcracker.cinema.validation.routines.DateValidator;
+import com.netcracker.cinema.validation.routines.EmptyFieldsValidator;
+import com.netcracker.cinema.validation.routines.IntegerValidator;
 import com.netcracker.cinema.validation.routines.UrlValidator;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -55,7 +57,7 @@ public class MovieForm extends MovieFormDesign {
         this.window = window;
         initInfo();
         this.movie = movie;
-        BeanFieldGroup<Movie> movieBeanFieldGroup = BeanFieldGroup.bindFieldsUnbuffered(movie, this);
+        BeanFieldGroup.bindFieldsUnbuffered(movie, this);
         name.selectAll();
     }
 
@@ -91,32 +93,15 @@ public class MovieForm extends MovieFormDesign {
         empty.add(description.getValue());
         empty.add(poster.getValue());
 
-        MovieUIValidation movieUIValidation = new MovieUIValidation();
-
         ValidationResult validationResult = new ValidationExecutor()
                 .addValidator(new UrlValidator(poster.getValue()))
+                .addValidator(new IntegerValidator(list))
+                .addValidator(new EmptyFieldsValidator(empty))
+                .addValidator(new DateValidator(startDate.getValue(), endDate.getValue()))
                 .execute();
 
         if(!validationResult.isValid()) {
             UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog(validationResult.getMessage()));
-            return false;
-        }
-
-        if(movieUIValidation.fieldsAreEmpty(empty)) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("Please, fill all fields"));
-            return false;
-        }
-
-//        if(!movieUIValidation.isValidUrl(poster.getValue())) {
-//            return false;
-//        }
-
-        if(!movieUIValidation.isValuesInteger(list)) {
-            UI.getCurrent().addWindow(new ConfirmationDialog().infoDialog("Value(s) isn't correct"));
-            return false;
-        }
-
-        if(!movieUIValidation.isDateValid(startDate.getValue(), endDate.getValue())) {
             return false;
         }
 

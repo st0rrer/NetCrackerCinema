@@ -9,19 +9,6 @@ public abstract class AbstractValidator implements Validator {
     private Caption caption;
     private String message = "Error";
 
-    // константы
-    protected final String JPG = ".jpg";
-    protected final String JPEG = ".jpeg";
-    protected final String PNG = ".png";
-    protected final String HTTP = "http://";
-    protected final String HTTPS = "https://";
-
-    // коды ошибок
-    protected final String EMPTY_URL = "Url should not be empty";
-    protected final String NOT_CORRECT_URL_EXTENSION = "Url should not be empty";
-    protected final String URL_IS_NOT_VALID = "Url is not valid";
-    protected final String URL_NOT_CONTAIN_HTTP_OR_HTTPS = "Url must contain: " + HTTP + " or " + HTTPS;
-
     public Caption getCaption() {
         return caption;
     }

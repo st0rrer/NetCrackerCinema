@@ -35,8 +35,5 @@ public class ValidationExecutor {
 
         return new ValidationResult(true);
 
-//        validators.forEach(t -> {
-//            t.validate();
-//        });
     }
 }

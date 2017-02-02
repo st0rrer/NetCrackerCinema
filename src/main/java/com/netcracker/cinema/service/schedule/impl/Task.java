@@ -18,7 +18,6 @@ import org.springframework.context.ApplicationContext;
 public class Task implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-//        TicketService ticketService =(TicketService) jobExecutionContext.getMergedJobDataMap().get("ticketService");
         ApplicationContext ctx = ApplicationContextHandler.getApplicationContext();
         TicketService ticketService = (TicketService) ctx.getBean("ticketService");
         long seanceId = (long)jobExecutionContext.getMergedJobDataMap().get("id");
