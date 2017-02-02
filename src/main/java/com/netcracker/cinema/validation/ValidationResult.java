@@ -1,8 +1,5 @@
 package com.netcracker.cinema.validation;
 
-/**
- * Created by User on 23.01.2017.
- */
 public class ValidationResult {
 
     private boolean valid;

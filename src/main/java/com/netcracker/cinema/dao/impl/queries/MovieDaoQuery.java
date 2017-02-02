@@ -1,8 +1,5 @@
 package com.netcracker.cinema.dao.impl.queries;
 
-/**
- * Created by dimka on 18.11.2016.
- */
 public interface MovieDaoQuery {
 
     String FIND_ALL_SQL =

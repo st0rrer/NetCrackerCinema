@@ -18,7 +18,6 @@ import java.util.Date;
 import static com.netcracker.cinema.dao.impl.queries.RatingDaoQuery.ALL_RATINGS;
 import static com.netcracker.cinema.dao.impl.queries.RatingDaoQuery.CALL_ALL_RATINGS;
 
-
 public class RatingDaoImpl implements RatingDao {
     private static final Logger logger = Logger.getLogger(RatingDaoImpl.class);
     private JdbcTemplate jdbcTemplate;

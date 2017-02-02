@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * Created by titarenko on 28.01.2017.
- */
 public class SeanceTimeSettings {
 
     public static final long ONE_MINUTE = 60_000;

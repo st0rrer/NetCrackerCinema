@@ -5,9 +5,6 @@ import com.vaadin.ui.GridLayout;
 
 import java.util.List;
 
-/**
- * Created by dimka on 17.12.2016.
- */
 public class ScheduleTable extends GridLayout {
 
     private final int GRID_COLUMNS = 4;
@@ -30,5 +27,4 @@ public class ScheduleTable extends GridLayout {
         setColumns(GRID_COLUMNS);
         setRows(rows);
     }
-
 }

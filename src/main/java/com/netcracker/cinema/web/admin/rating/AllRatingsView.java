@@ -1,6 +1,5 @@
 package com.netcracker.cinema.web.admin.rating;
 
-
 import com.netcracker.cinema.model.*;
 import com.netcracker.cinema.service.RatingService;
 import com.netcracker.cinema.web.AdminUI;
@@ -18,7 +17,6 @@ import com.vaadin.ui.CustomTable.RowHeaderMode;
 import com.vaadin.annotations.*;
 
 import javax.annotation.PostConstruct;
-
 
 @SpringView(name = AllRatingsView.VIEW_NAME, ui = AdminUI.class)
 @SuppressWarnings("serial")

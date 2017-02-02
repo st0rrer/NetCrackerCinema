@@ -1,13 +1,8 @@
 package com.netcracker.cinema.validation;
 
-import org.apache.commons.validator.ValidatorResults;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by User on 20.01.2017.
- */
 public class ValidationExecutor {
 
     private List<Validator> validators;

@@ -3,18 +3,12 @@ package com.netcracker.cinema.service.impl;
 import com.netcracker.cinema.dao.Paginator;
 import com.netcracker.cinema.dao.SeanceDao;
 import com.netcracker.cinema.dao.filter.impl.SeanceFilter;
-import com.netcracker.cinema.model.Movie;
 import com.netcracker.cinema.model.Seance;
-import com.netcracker.cinema.model.Ticket;
-import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
-import com.netcracker.cinema.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 

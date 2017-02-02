@@ -7,9 +7,6 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by User on 31.01.2017.
- */
 public class EmptyFieldsValidator implements Validator {
 
     private static final Logger logger = Logger.getLogger(EmptyFieldsValidator.class);

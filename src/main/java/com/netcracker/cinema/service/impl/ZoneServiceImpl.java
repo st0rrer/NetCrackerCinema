@@ -4,16 +4,11 @@ import com.netcracker.cinema.dao.ZoneDao;
 import com.netcracker.cinema.model.Zone;
 import com.netcracker.cinema.service.ZoneService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * Created by dimka on 24.11.2016.
- */
-@Service
 public class ZoneServiceImpl implements ZoneService {
 
     private ZoneDao zoneDao;

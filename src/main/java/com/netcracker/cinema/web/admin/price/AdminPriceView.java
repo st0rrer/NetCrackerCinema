@@ -20,9 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Titarenko on 31.12.2016.
- */
 @SpringView(name = AdminPriceView.VIEW_NAME, ui = AdminUI.class)
 public class AdminPriceView extends HorizontalLayout implements View {
     public static final String VIEW_NAME = "price";

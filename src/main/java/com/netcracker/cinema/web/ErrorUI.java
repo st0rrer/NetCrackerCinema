@@ -7,9 +7,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-/**
- * Created by aogim on 21.01.2017.
- */
 @SpringUI(path = "/error")
 public class ErrorUI extends UI {
     @Override

@@ -12,7 +12,7 @@ public interface Paginator<T> {
 
     long availablePages();
 
-    public interface PaginatorQuery {
+    interface PaginatorQuery {
         String SELECT_AVAILABLE_PAGES =
                 "SELECT COUNT(*) FROM (%s)";
 

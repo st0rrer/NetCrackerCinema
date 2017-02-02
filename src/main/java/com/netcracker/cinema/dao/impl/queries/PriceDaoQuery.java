@@ -1,8 +1,5 @@
 package com.netcracker.cinema.dao.impl.queries;
 
-/**
- * Created by Parpalak on 10.12.2016.
- */
 public interface PriceDaoQuery {
 
     String FIND_ALL_PRICES =

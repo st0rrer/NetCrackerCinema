@@ -5,9 +5,6 @@ import com.netcracker.cinema.model.Ticket;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Titarenko on 10.12.2016.
- */
 public interface TicketService {
 
     List<Ticket> findAll();

@@ -4,23 +4,18 @@ import com.netcracker.cinema.validation.Validator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-/**
- * Created by User on 20.01.2017.
- */
 public class UrlValidator implements Validator {
 
     private final String url;
 
     private String message;
 
-    // константы
     private final String JPG = ".jpg";
     private final String JPEG = ".jpeg";
     private final String PNG = ".png";
     private final String HTTP = "http://";
     private final String HTTPS = "https://";
 
-    // коды ошибок
     private final String EMPTY_URL = "Url should not be empty";
     private final String NOT_CORRECT_URL_EXTENSION = "Url should not be empty";
     private final String URL_IS_NOT_VALID = "Url is not valid";

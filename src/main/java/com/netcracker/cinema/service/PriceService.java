@@ -4,9 +4,6 @@ import com.netcracker.cinema.model.Price;
 
 import java.util.List;
 
-/**
- * Created by User on 16.12.2016.
- */
 public interface PriceService {
 
     List<Price> findAll();

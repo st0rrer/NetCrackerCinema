@@ -29,9 +29,6 @@ import java.util.*;
 
 import static com.netcracker.cinema.web.admin.seance.SeanceTimeSettings.*;
 
-/**
- * Created by Titarenko on 22.12.2016.
- */
 @SpringView(name = AdminSeanceView.VIEW_NAME, ui = AdminUI.class)
 public class AdminSeanceView extends HorizontalLayout implements View {
     public static final String VIEW_NAME = "seances";

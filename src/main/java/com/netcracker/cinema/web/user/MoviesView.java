@@ -84,7 +84,6 @@ public class MoviesView extends VerticalLayout implements View {
         return findBox;
     }
 
-
 	private Component createSortButtons() {
 		NativeSelect selector = new NativeSelect("Sort by");
 		selector.addItem(SORT_BY_IMDB_OPTION);

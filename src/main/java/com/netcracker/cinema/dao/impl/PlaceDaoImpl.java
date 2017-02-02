@@ -18,9 +18,6 @@ import java.util.List;
 
 import static com.netcracker.cinema.dao.impl.queries.PlaceDaoQuery.*;
 
-/**
- * Created by Илья on 08.12.2016.
- */
 public class PlaceDaoImpl implements PlaceDao {
     private static final Logger LOGGER = Logger.getLogger(PlaceDaoImpl.class);
     private JdbcTemplate jdbcTemplate;

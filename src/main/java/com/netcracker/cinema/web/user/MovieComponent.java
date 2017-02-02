@@ -9,9 +9,6 @@ import com.vaadin.ui.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-/**
- * Created by aogim on 02.01.2017.
- */
 class MovieComponent extends HorizontalLayout {
     private Movie movie;
     private VerticalLayout seancesRoot;

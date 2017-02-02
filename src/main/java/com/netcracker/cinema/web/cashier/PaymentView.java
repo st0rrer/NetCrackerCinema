@@ -20,9 +20,6 @@ import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.Iterator;
 
-/**
- * Created by dimka on 01.12.2016.
- */
 @SpringView(name = PaymentView.VIEW_NAME, ui = CashierUI.class)
 @ViewScope
 public class PaymentView extends VerticalLayout implements View {

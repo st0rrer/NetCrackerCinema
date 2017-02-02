@@ -19,9 +19,6 @@ import java.util.List;
 
 import static com.netcracker.cinema.dao.impl.queries.TicketDaoQuery.*;
 
-/**
- * Created by Titarenko on 01.12.2016.
- */
 public class TicketDaoImpl implements TicketDao {
     private static final Logger LOGGER = Logger.getLogger(TicketDaoImpl.class);
     private JdbcTemplate jdbcTemplate;

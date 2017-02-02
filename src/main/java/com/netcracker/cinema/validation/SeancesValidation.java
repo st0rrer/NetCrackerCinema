@@ -17,9 +17,6 @@ import java.util.List;
 
 import static com.netcracker.cinema.web.admin.seance.SeanceTimeSettings.*;
 
-/**
- * Created by Titarenko on 26.01.2017.
- */
 @Service
 public class SeancesValidation extends AbstractValidator {
     @Autowired

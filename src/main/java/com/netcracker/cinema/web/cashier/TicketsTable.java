@@ -19,9 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by dimka on 10.12.2016.
- */
 @SpringComponent
 @UIScope
 @Getter

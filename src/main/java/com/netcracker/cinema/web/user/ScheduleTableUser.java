@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-/**
- * Created by dimka on 25.12.2016.
- */
 @SpringComponent
 public class ScheduleTableUser extends ScheduleTable {
 
