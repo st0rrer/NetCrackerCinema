@@ -7,7 +7,6 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +25,7 @@ public class UrlAuthenticationSuccessHandler implements AuthenticationSuccessHan
         clearAuthenticationAttributes(request);
     }
 
-    protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    private void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         String targetUrl = determineTargetUrl(authentication);
         if (response.isCommitted()) {
             LOGGER.debug("Response has already been committed. Unable to redirect to " + targetUrl);
@@ -36,7 +35,7 @@ public class UrlAuthenticationSuccessHandler implements AuthenticationSuccessHan
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 
-    protected String determineTargetUrl(Authentication authentication) {
+    private String determineTargetUrl(Authentication authentication) {
         boolean isUser = false;
         boolean isAdmin = false;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -59,18 +58,10 @@ public class UrlAuthenticationSuccessHandler implements AuthenticationSuccessHan
         }
     }
 
-    protected void clearAuthenticationAttributes(HttpServletRequest request) {
+    private void clearAuthenticationAttributes(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            return;
+        if (session != null) {
+            session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
         }
-        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-    }
-
-    public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
-        this.redirectStrategy = redirectStrategy;
-    }
-    protected RedirectStrategy getRedirectStrategy() {
-        return redirectStrategy;
     }
 }
