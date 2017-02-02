@@ -44,14 +44,14 @@ public abstract class ScheduleView extends VerticalLayout implements View {
 
     @PostConstruct
     public void init() {
-
         scheduleFilterComponent = new ScheduleFilterComponent();
         paginationBar = new PaginationBar();
 
         addComponent(scheduleFilterComponent);
         addComponent(paginationBar);
         setComponentAlignment(paginationBar, Alignment.TOP_CENTER);
-
+        setMargin(true);
+        setSpacing(true);
         this.updatePaginator(seanceFilter);
     }
 
@@ -168,7 +168,6 @@ public abstract class ScheduleView extends VerticalLayout implements View {
         private Object hallFilter = DEFAULT_HALL;
 
         ScheduleFilterComponent() {
-            this.setMargin(true);
             this.setSpacing(true);
             filterDay();
             filterHall();
