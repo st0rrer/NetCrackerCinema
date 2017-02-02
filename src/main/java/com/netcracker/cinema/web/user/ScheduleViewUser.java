@@ -9,15 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-@SpringView(name = ScheduleViewUser.VIEW_NAME, ui = UserUI.class)
+@SpringView(name = ScheduleView.VIEW_NAME, ui = UserUI.class)
 public class ScheduleViewUser extends ScheduleView {
 
     @Autowired
     ScheduleTableUser scheduleTable;
-
-    public ScheduleViewUser() {
-        super();
-    }
 
     @PostConstruct
     public void init() {

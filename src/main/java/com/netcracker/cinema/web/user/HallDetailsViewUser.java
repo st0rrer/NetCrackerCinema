@@ -7,9 +7,9 @@ import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
 //import com.netcracker.cinema.service.notification.NotificationService;
 import com.netcracker.cinema.web.UserUI;
+import com.netcracker.cinema.web.common.HallDetailsView;
 import com.netcracker.cinema.web.common.TicketSelect;
 import com.vaadin.data.Validator;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
@@ -23,10 +23,9 @@ import javax.annotation.PreDestroy;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 
-@SpringView(name = HallDetailsViewUser.VIEW_NAME, ui = UserUI.class)
-public class HallDetailsViewUser extends VerticalLayout implements View {
+@SpringView(name = HallDetailsView.VIEW_NAME, ui = UserUI.class)
+public class HallDetailsViewUser extends HallDetailsView {
 
-    public static final String VIEW_NAME = "details";
     private static final Logger LOGGER = Logger.getLogger(HallDetailsViewUser.class);
 
     @Autowired
