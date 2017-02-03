@@ -99,7 +99,6 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     }
 
     void notifications(String caption, String description) {
-//        Notification.show("Booked tickets", message, Notification.Type.TRAY_NOTIFICATION);
         Notification.show(caption, description, Notification.Type.TRAY_NOTIFICATION);
     }
 
@@ -203,7 +202,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
                 getHall(seance.getHallId());
                 Notification.show("Seance deleted");
             } else {
-                notifications(validator.getCaption().getFullName(), validator.getMessage());
+                notifications(validator.getCaption(), validator.getMessage());
             }
         });
 

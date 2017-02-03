@@ -106,8 +106,10 @@ class SubWindow extends Window {
             }
         });
 
+        seanceDate.setLocale(adminSeanceView.englishLocale);
         seanceDate.setResolution(Resolution.MINUTE);
         seanceDate.setWidth("250px");
+        seancePeriodEndDate.setLocale(adminSeanceView.englishLocale);
 
         CheckBox checkBox = new CheckBox("Add one more seance after this");
         checkBox.setVisible(false);
@@ -209,7 +211,7 @@ class SubWindow extends Window {
     private boolean checkPrices() {
         for (TextField priceField : textFieldList) {
             if (!validator.checkPrice(priceField.getValue())) {
-                adminSeanceView.notifications(validator.getCaption().getFullName(), validator.getMessage());
+                adminSeanceView.notifications(validator.getCaption(), validator.getMessage());
                 return false;
             }
         }
@@ -225,7 +227,7 @@ class SubWindow extends Window {
             double periodInMillis = endDate.getTime() - startDate.getTime();
             periodDays = (int) Math.ceil(periodInMillis / ONE_DAY);
             if (!validator.checkPeriods(startDate, endDate)) {
-                adminSeanceView.notifications(validator.getCaption().getFullName(), validator.getMessage());
+                adminSeanceView.notifications(validator.getCaption(), validator.getMessage());
             }
         }
         return periodDays;
@@ -371,11 +373,11 @@ class SubWindow extends Window {
         if (oldId == 0 || validator.editableSeance(oldId)) {
             newSeance.setId(oldId);
         } else {
-            adminSeanceView.notifications(validator.getCaption().getFullName(), validator.getMessage());
+            adminSeanceView.notifications(validator.getCaption(), validator.getMessage());
             return false;
         }
         if (!validator.checkSeanceDate(newSeance)) {
-            adminSeanceView.notifications(validator.getCaption().getFullName(), validator.getMessage());
+            adminSeanceView.notifications(validator.getCaption(), validator.getMessage());
             return false;
         }
         return true;

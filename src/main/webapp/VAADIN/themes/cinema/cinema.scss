@@ -242,6 +242,30 @@ $v-focus-color: #197de1; // Calculates a suitable color automatically
     padding: 0 10px;
   }
 
+  .settings-form {
+    margin-top: -30px;
+    margin-bottom: -30px;
+  }
+
+  //.cinema [class*="margin-top"] > tbody > [class*="firstrow"] > td {
+  //  padding-top: 0px;
+  //}
+  //
+  //.cinema [class*="margin-bottom"] > tbody > [class*="lastrow"] > td {
+  //  padding-bottom: 0px;
+  //}
+
+  .v-caption-time-only,
+  .v-caption-field-caption {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .time-only .v-inline-datefield-calendarpanel-header,
+  .time-only .v-inline-datefield-calendarpanel-body {
+    display: none;
+  }
+
   .v-tabsheet-content {
     margin-top: 10px;
   }
