@@ -15,16 +15,37 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static com.netcracker.cinema.validation.MessagesAndCaptions.*;
 import static com.netcracker.cinema.web.admin.seance.SeanceTimeSettings.*;
 
 @Service
-public class SeancesValidation extends AbstractValidator {
+public class SeancesValidation implements Validator {
+    private String caption;
+    private String message;
+
     @Autowired
     private SeanceService seanceService;
     @Autowired
     private TicketService ticketService;
     @Autowired
     private MovieService movieService;
+
+    public String getCaption() {
+        return caption;
+    }
+
+    private void setCaption(String caption) {
+        this.caption = caption;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    private void setMessage(String message) {
+        this.message = message;
+    }
 
     @Override
     public boolean validate() {
@@ -34,9 +55,8 @@ public class SeancesValidation extends AbstractValidator {
     public boolean editableSeance(long seanceId) {
         List<Ticket> list = ticketService.getBySeance(seanceId);
         if (!list.isEmpty()) {
-            setCaption(Caption.booked_tickets);
-            setMessage("Few seconds ago someone has booked tickets"
-                    + LineSeparator.Windows + "for this seance, so it can't be modified.");
+            setCaption(BOOKED_TICKETS_CAPTION);
+            setMessage(BOOKED_TICKETS_MESSAGE);
         }
         return list.isEmpty();
     }
@@ -46,8 +66,8 @@ public class SeancesValidation extends AbstractValidator {
             Integer.parseInt(price);
             return true;
         } catch (NumberFormatException ex) {
-            setCaption(Caption.invalid_price);
-            setMessage("Only numbers!");
+            setCaption(INVALID_PRICE_CAPTION);
+            setMessage(INVALID_PRICE_MESSAGE);
             return false;
         }
     }
@@ -55,45 +75,41 @@ public class SeancesValidation extends AbstractValidator {
     public boolean checkSeanceDate(Seance newSeance) {
         Date minDate = new Date(System.currentTimeMillis() + MIN_TIME_TO_START_SEANCE * ONE_MINUTE);
         if (newSeance.getSeanceDate().before(minDate)) {
-            setCaption(Caption.invalid_date);
+            setCaption(INVALID_DATE);
             setMessage("Must be at least " + MIN_TIME_TO_START_SEANCE
                     + " minutes before the beginning of the seance");
             return false;
         }
-
         if (!IsBetweenMovieRolledDates(newSeance)) {
-            setCaption(Caption.invalid_date);
-            setMessage("Date of seance should be between" + LineSeparator.Windows +
-                    "start and final dates of selected movie.");
+            setCaption(INVALID_DATE);
+            setMessage(ROLLED_DATES);
             return false;
         }
-
         if (!IsInWorkingTime(newSeance)) {
             String start = String.valueOf(START_TIME_OF_WORKING_DAY);
-            start = start.substring(0, 2) + ":" + start.substring(2);
+            start = start.length() < 4 ?
+                    "0" + start.substring(0, 1) + ":" + start.substring(1) :
+                    start.substring(0, 2) + ":" + start.substring(2);
             String last = String.valueOf(LAST_START_TIME_OF_SEANCE);
             last = last.substring(0, 2) + ":" + last.substring(2);
 
-            setCaption(Caption.invalid_date);
+            setCaption(INVALID_DATE);
             setMessage("Start time of seance should be" +
                     LineSeparator.Windows + "between " + start + " and " + last + " o'clock.");
             return false;
         }
-
         if (!IsHallFree(newSeance)) {
-            setCaption(Caption.invalid_date);
-            setMessage("There is other movie in this hall in the same time.");
+            setCaption(INVALID_DATE);
+            setMessage(MOVIES_CONFLICT);
             return false;
         }
-
         return true;
     }
 
     public boolean checkPeriods(Date startDate, Date endDate) {
         if (endDate.getTime() - startDate.getTime() < 0) {
-            setCaption(Caption.invalid_date);
-            setMessage("Start date of period should be" +
-                    LineSeparator.Windows + "before end date of period.");
+            setCaption(INVALID_DATE);
+            setMessage(PERIOD_DATES);
             return false;
         }
         return true;
