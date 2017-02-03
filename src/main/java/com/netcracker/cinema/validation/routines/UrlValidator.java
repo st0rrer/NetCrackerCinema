@@ -39,7 +39,6 @@ public class UrlValidator implements Validator {
 
     @Override
     public boolean validate() {
-        System.out.println(getMessage());
         if (url == null) {
             setMessage(EMPTY_URL);
             LOGGER.log(Level.WARN, getMessage());

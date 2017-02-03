@@ -41,11 +41,11 @@ public class EmptyFieldsValidator implements Validator {
     private boolean fieldsAreEmpty(List<String> list) {
         for (String str : list) {
             if (str == null || str.trim().length() == 0) {
-                setMessage("Field(s) are empty");
-                logger.log(Level.WARN, getMessage());
-                return true;
+                return false;
             }
         }
-        return false;
+        setMessage("Field(s) are empty");
+        logger.log(Level.WARN, getMessage());
+        return true;
     }
 }
