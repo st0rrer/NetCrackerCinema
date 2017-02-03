@@ -1,5 +1,3 @@
--- Created by Titarenko on 09.12.2016.
-
 CREATE OR REPLACE FUNCTION Sold_Tickets
   ( obj_id_in IN VARCHAR2
   ,	start_date_in IN DATE

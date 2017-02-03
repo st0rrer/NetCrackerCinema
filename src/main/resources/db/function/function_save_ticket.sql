@@ -1,5 +1,3 @@
--- Created by Titarenko on 09.12.2016.
-
 CREATE OR REPLACE FUNCTION Save_Ticket
   ( ticket_id_in IN NUMBER
   , code_in IN VARCHAR2
