@@ -2,40 +2,38 @@ DROP TABLE rating_table;
 DROP TYPE type_rating_objects FORCE;
 DROP TYPE Rating_List FORCE;
 
-
-
 CREATE TABLE rating_table (
-  movie_name VARCHAR2(500),
-  hall_name  VARCHAR2(500),
-  zone_name  VARCHAR2(500),
-  ticket_bay NUMBER,
-  price      NUMBER,
-  start_date DATE,
-  end_date   DATE
+  MOVIE_NAME   VARCHAR2(500),
+  HALL         VARCHAR2(500),
+  ZONE         VARCHAR2(500),
+  TICKET_SOLD  NUMBER,
+  TICKET_PRICE NUMBER,
+  START_DATE   DATE,
+  END_DATE     DATE
 );
 
 -- объявление типа
 CREATE TYPE type_rating_objects IS OBJECT (
-  movie_name VARCHAR2(500),
-  hall_name  VARCHAR2(500),
-  zone_name  VARCHAR2(500),
-  ticket_bay NUMBER,
-  price      NUMBER,
-  start_date DATE,
-  end_date   DATE
+  MOVIE_NAME   VARCHAR2(500),
+  HALL         VARCHAR2(500),
+  ZONE         VARCHAR2(500),
+  TICKET_SOLD  NUMBER,
+  TICKET_PRICE NUMBER,
+  START_DATE   DATE,
+  END_DATE     DATE
 );
 
 -- объявление типа
 CREATE TYPE Rating_List IS TABLE OF type_rating_objects;
 
-INSERT INTO rating_table (movie_name,
-                          hall_name,
-                          zone_name,
-                          ticket_bay,
-                          price,
-                          start_date,
-                          end_date
-)   SELECT
+INSERT INTO rating_table (MOVIE_NAME,
+                          HALL,
+                          ZONE,
+                          TICKET_SOLD,
+                          TICKET_PRICE,
+                          START_DATE,
+                          END_DATE
+) SELECT
     movie.name                 movie_name,
     HALL.NAME                  HALL,
     ZONE.NAME                  ZONE,
@@ -79,34 +77,9 @@ INSERT INTO rating_table (movie_name,
         AND zone.object_type_id = 3 /*ZONE*/
         AND seance.object_type_id = 5 /*SEANCE*/
         AND movie.object_type_id = 1 /*MOVIE*/
-        AND rstart_att.date_value >= ?
-        AND rend_att.date_value <= ?
 
   GROUP BY ZONE.NAME
     , HALL.NAME
     , movie.name
     , rstart_att.date_value
     , rend_att.date_value;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

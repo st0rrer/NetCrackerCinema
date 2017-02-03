@@ -34,7 +34,7 @@ public class AllRatingsView extends VerticalLayout implements View {
     @PostConstruct
     protected void init() {
         setMargin(true);
-        setLocale(new Locale("ru", "RU"));
+        setLocale(new Locale("en", "US"));
 
         final TabSheet tabSheet = new TabSheet();
         tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);

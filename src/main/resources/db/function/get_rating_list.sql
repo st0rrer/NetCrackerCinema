@@ -7,19 +7,20 @@ CREATE OR REPLACE FUNCTION get_rating_list(
     FOR i IN (
     SELECT
       movie_name,
-      hall_name,
-      zone_name,
-      ticket_bay,
-      price,
-      start_date,
-      end_date
+      HALL,
+      ZONE,
+      TICKET_SOLD,
+      TICKET_PRICE,
+      START_DATE,
+      END_DATE
     FROM rating_table
-    WHERE start_date >= F_START_DATE
-          AND end_date <= F_END_DATE
+    WHERE START_DATE >= F_START_DATE
+          AND END_DATE <= F_END_DATE
     )
     LOOP
-      PIPE ROW (type_rating_objects(i.movie_name, i.hall_name, i.zone_name, i.ticket_bay, i.price, i.start_date,
-                                    i.end_date));
+      PIPE ROW (type_rating_objects(i.movie_name, i.HALL, i.ZONE, i.TICKET_SOLD,
+                                    i.TICKET_PRICE, i.START_DATE,
+                                    i.END_DATE));
     END LOOP;
     RETURN;
   END;
