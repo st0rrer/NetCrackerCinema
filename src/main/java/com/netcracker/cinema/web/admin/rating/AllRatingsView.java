@@ -33,22 +33,18 @@ public class AllRatingsView extends VerticalLayout implements View {
 
     @PostConstruct
     protected void init() {
+        setMargin(true);
         setLocale(new Locale("ru", "RU"));
-        VerticalLayout mainLayout = new VerticalLayout();
-        mainLayout.setMargin(new MarginInfo(true, false, false, false));
-        mainLayout.setSizeFull();
 
         final TabSheet tabSheet = new TabSheet();
         tabSheet.setStyleName(Reindeer.TABSHEET_MINIMAL);
         tabSheet.setSizeFull();
-        mainLayout.addComponent(tabSheet);
-        mainLayout.setExpandRatio(tabSheet, 1);
+        addComponent(tabSheet);
+        setExpandRatio(tabSheet, 1);
 
         tabSheet.addTab(allBuildPagedTableTab(), "All Rating");
         tabSheet.addTab(hallBuildPagedTableTab(), "Hall Rating");
         tabSheet.addTab(zoneBuildPagedTableTab(), "Zone Rating");
-
-        addComponents(mainLayout);
     }
 
 
@@ -58,7 +54,6 @@ public class AllRatingsView extends VerticalLayout implements View {
         final VerticalLayout mainLayout = new VerticalLayout();
         addComponent(mainLayout);
         mainLayout.setSpacing(true);
-        mainLayout.setMargin(true);
         mainLayout.addComponent(pagedFilterTable);
         mainLayout.addComponent(pagedFilterTable.createControls(new PagedFilterControlConfig()));
         return mainLayout;
@@ -92,7 +87,6 @@ public class AllRatingsView extends VerticalLayout implements View {
         final VerticalLayout mainLayout = new VerticalLayout();
         addComponent(mainLayout);
         mainLayout.setSpacing(true);
-        mainLayout.setMargin(true);
         mainLayout.addComponent(hallBuildPagedFilterTable());
         return mainLayout;
     }
@@ -125,7 +119,6 @@ public class AllRatingsView extends VerticalLayout implements View {
         final VerticalLayout mainLayout = new VerticalLayout();
         addComponent(mainLayout);
         mainLayout.setSpacing(true);
-        mainLayout.setMargin(true);
         mainLayout.addComponent(zoneBuildPagedFilterTable());
         return mainLayout;
     }
