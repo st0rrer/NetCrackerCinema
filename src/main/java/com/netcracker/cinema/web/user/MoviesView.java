@@ -17,6 +17,7 @@ import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @SpringView(name = MoviesView.VIEW_NAME, ui = UserUI.class)
@@ -47,16 +48,20 @@ public class MoviesView extends VerticalLayout implements View {
         for (Movie movie: movies) {
             MovieComponent movieComponent = new MovieComponent(movie);
             movieComponents.add(movieComponent);
-            addComponent(movieComponent);
             List<Seance> seances = seanceService.findAll(new SeanceFilter().forMovieId(movie.getId()).actual());
             for(Seance seance: seances) {
                 Hall hall = hallService.getById(seance.getHallId());
                 movieComponent.addSeance(seance, hall);
             }
         }
+        movieComponents.sort(new ImdbComparator());
+        for (MovieComponent movieComponent: movieComponents) {
+            addComponent(movieComponent);
+        }
 
         setMargin(true);
         setSpacing(true);
+
 	}
 
 	@Override
@@ -92,15 +97,7 @@ public class MoviesView extends VerticalLayout implements View {
 		selector.addValueChangeListener((Property.ValueChangeListener) event -> {
             String value = (String) event.getProperty().getValue();
             if(value.equals(SORT_BY_IMDB_OPTION)) {
-                movieComponents.sort((o1, o2) -> {
-                    if(o1.getMovie().getImdb() > o2.getMovie().getImdb()) {
-                        return -1;
-                    } else if (o1.getMovie().getImdb() < o2.getMovie().getImdb()){
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                });
+                movieComponents.sort(new ImdbComparator());
             }
 
             if(value.equals(SORT_BY_PRICE_OPTION)) {
@@ -131,6 +128,19 @@ public class MoviesView extends VerticalLayout implements View {
 
         for (MovieComponent movieComponent: movieComponents) {
 	        addComponent(movieComponent);
+        }
+    }
+
+    private class ImdbComparator implements Comparator<MovieComponent> {
+        @Override
+        public int compare(MovieComponent o1, MovieComponent o2) {
+            if(o1.getMovie().getImdb() > o2.getMovie().getImdb()) {
+                return -1;
+            } else if (o1.getMovie().getImdb() < o2.getMovie().getImdb()){
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 }

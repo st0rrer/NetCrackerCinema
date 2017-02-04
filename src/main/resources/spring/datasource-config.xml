@@ -21,8 +21,9 @@
 
     <jdbc:initialize-database data-source="oracleDataSource">
         <jdbc:script location="classpath:db/initDB.sql"/>
-        <jdbc:script location="classpath:db/staticDB.sql"/>
-        <jdbc:script location="classpath:db/populDB.sql"/>
+        <jdbc:script location="classpath:db/OBJECTS.sql"/>
+        <jdbc:script location="classpath:db/ATTRIBUTES.sql"/>
+        <jdbc:script location="classpath:db/OBJREFERENCE.sql"/>
         <jdbc:script separator="#" location="classpath:db/function/function_save_ticket.sql"/>
         <jdbc:script separator="#" location="classpath:db/function/function_sold_tickets.sql"/>
     </jdbc:initialize-database>
