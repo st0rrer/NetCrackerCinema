@@ -1,6 +1,9 @@
 package com.netcracker.cinema.web.admin.settings;
 
+import com.netcracker.cinema.validation.Validator;
+import com.netcracker.cinema.validation.routines.IntegerValidator;
 import com.netcracker.cinema.web.AdminUI;
+import com.netcracker.cinema.web.admin.seance.AdminSeanceView;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -23,59 +26,84 @@ public class AdminSettingsView extends HorizontalLayout implements View {
     InlineDateField startTime = new InlineDateField("Start time: ");
     InlineDateField lastTime = new InlineDateField("Last time: ");
     TextField cleaningTime = new TextField("Cleaning time (min): ");
-    TextField reserveTime = new TextField("Reserve time (min): ");
+    TextField reserveTime = new TextField("Minutes before seance: ");
+
+    Button apply = new Button("Apply");
+    Button reset = new Button("Reset");
+    Button defaultButton = new Button("Default");
 
     @PostConstruct
     protected void init() {
         DateFormat timeFormat = new SimpleDateFormat("HHmm");
 
+        startTime.setDateFormat("dd MMM yyyy HH:mm");
+        startTime.setLocale(AdminSeanceView.englishLocale);
         startTime.setResolution(Resolution.MINUTE);
         startTime.addStyleName("time-only");
+        startTime.setDescription("First available time for starting seance");
 
+        lastTime.setLocale(AdminSeanceView.englishLocale);
         lastTime.setResolution(Resolution.MINUTE);
         lastTime.addStyleName("time-only");
+        lastTime.setDescription("Last available time for starting seance");
 
         cleaningTime.setMaxLength(3);
         cleaningTime.setWidth("125px");
         cleaningTime.addStyleName("field-caption");
+        cleaningTime.setDescription("Minimal time between seances for cleaning");
 
         reserveTime.setMaxLength(3);
         reserveTime.setWidth("125px");
         reserveTime.addStyleName("field-caption");
+        reserveTime.setDescription("Set minimal time that should be between creating "
+                + "time of new seance and start time of this new seance");
 
         CheckBox checkBox = new CheckBox("Change settings");
         checkBox.addValueChangeListener(e -> {
             if (checkBox.getValue()) {
-                startTime.setEnabled(true);
-                lastTime.setEnabled(true);
-                cleaningTime.setEnabled(true);
-                reserveTime.setEnabled(true);
+                setEnable(true);
             } else {
                 setDefaultValues();
+                setEnable(false);
             }
         });
 
-        Button apply = new Button("Apply");
         apply.setWidth("90px");
-        apply.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        apply.setStyleName(ValoTheme.BUTTON_FRIENDLY);
         apply.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        apply.setDescription("Save current settings");
         apply.addClickListener(e -> {
-            START_TIME_OF_WORKING_DAY = Long.parseLong(timeFormat.format(startTime.getValue()));
-            LAST_START_TIME_OF_SEANCE = Long.parseLong(timeFormat.format(lastTime.getValue()));
-            TIME_FOR_CLEANING = Long.parseLong(cleaningTime.getValue());
-            MIN_TIME_TO_START_SEANCE = Long.parseLong(reserveTime.getValue());
+            if (fieldValidation(cleaningTime.getValue()) &&
+                    fieldValidation(reserveTime.getValue())) {
+                START_TIME_OF_WORKING_DAY = Long.parseLong(timeFormat.format(startTime.getValue()));
+                LAST_START_TIME_OF_SEANCE = Long.parseLong(timeFormat.format(lastTime.getValue()));
+                TIME_FOR_CLEANING = Long.parseLong(cleaningTime.getValue());
+                MIN_TIME_TO_START_SEANCE = Long.parseLong(reserveTime.getValue());
+
+                checkBox.setValue(false);
+                Notification.show("Success!");
+            }
+        });
+
+        reset.setWidth("90px");
+        reset.setDescription("Reset last save settings");
+        reset.addClickListener(e -> checkBox.setValue(false));
+
+        defaultButton.setWidth("90px");
+        defaultButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        defaultButton.setDescription("Set and save work time 10:00-22:00, "
+                + "20 minutes for cleaning and 120 minutes before seance");
+        defaultButton.addClickListener(e -> {
+            initializeDefaultTimes();
             checkBox.setValue(false);
         });
 
-        Button reset = new Button("Reset");
-        reset.setWidth("90px");
-        reset.addClickListener(e -> setDefaultValues());
-
         setDefaultValues();
+        setEnable(false);
 
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setSpacing(true);
-        buttonsLayout.addComponents(apply, reset);
+        buttonsLayout.addComponents(apply, reset, defaultButton);
 
         FormLayout wrapper = new FormLayout();
         wrapper.addComponents(startTime, lastTime, cleaningTime, reserveTime);
@@ -84,9 +112,8 @@ public class AdminSettingsView extends HorizontalLayout implements View {
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
-        layout.setWidth("320px");
+        layout.setWidth("325px");
         layout.addComponents(checkBox, wrapper, buttonsLayout);
-        layout.setComponentAlignment(checkBox, Alignment.TOP_CENTER);
         layout.setComponentAlignment(buttonsLayout, Alignment.BOTTOM_CENTER);
 
         addComponent(layout);
@@ -95,15 +122,35 @@ public class AdminSettingsView extends HorizontalLayout implements View {
     }
 
     private void setDefaultValues() {
-        startTime.setValue(new Date((START_TIME_OF_WORKING_DAY - 200) * ONE_HOUR / 100));
-        lastTime.setValue(new Date((LAST_START_TIME_OF_SEANCE - 200) * ONE_HOUR / 100));
+        startTime.setValue(new Date(getTime(START_TIME_OF_WORKING_DAY)));
+        lastTime.setValue(new Date(getTime(LAST_START_TIME_OF_SEANCE)));
         cleaningTime.setValue(TIME_FOR_CLEANING + "");
         reserveTime.setValue(MIN_TIME_TO_START_SEANCE + "");
+    }
 
-        startTime.setEnabled(false);
-        lastTime.setEnabled(false);
-        cleaningTime.setEnabled(false);
-        reserveTime.setEnabled(false);
+    private void setEnable(boolean b) {
+        startTime.setEnabled(b);
+        lastTime.setEnabled(b);
+        cleaningTime.setEnabled(b);
+        reserveTime.setEnabled(b);
+
+        apply.setEnabled(b);
+        reset.setEnabled(b);
+        defaultButton.setEnabled(b);
+    }
+
+    private long getTime(long time) {
+        final int timezoneOffset = AdminSeanceView.webBrowser.getRawTimezoneOffset();
+        return time / 100 * ONE_HOUR + time % 100 * ONE_MINUTE - timezoneOffset;
+    }
+
+    private boolean fieldValidation(String str) {
+        Validator intValidator = new IntegerValidator(str);
+        if (!intValidator.validate()) {
+            Notification.show("Invalid time", intValidator.getMessage(), Notification.Type.TRAY_NOTIFICATION);
+            return false;
+        }
+        return true;
     }
 
     @Override
