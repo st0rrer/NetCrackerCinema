@@ -3,6 +3,7 @@ package com.netcracker.cinema.web;
 import com.netcracker.cinema.utils.CinemaErrorHandler;
 import com.netcracker.cinema.web.admin.AdminMenu;
 import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Title;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -13,6 +14,7 @@ import com.vaadin.ui.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringUI(path = "/admin")
+@Title("Cinema - Admin")
 @Theme("cinema")
 public class AdminUI extends UI {
     @Autowired

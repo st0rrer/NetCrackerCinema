@@ -25,6 +25,7 @@ public class MoviesView extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "";
 	private static final String SORT_BY_IMDB_OPTION = "IMDB";
 	private static final String SORT_BY_PRICE_OPTION = "Price";
+	private static final int MAX_SEANCE_BUTTON_COUNT = 5;
 
 	@Autowired
 	private MovieService movieService;
@@ -48,8 +49,10 @@ public class MoviesView extends VerticalLayout implements View {
         for (Movie movie: movies) {
             MovieComponent movieComponent = new MovieComponent(movie);
             movieComponents.add(movieComponent);
-            List<Seance> seances = seanceService.findAll(new SeanceFilter().forMovieId(movie.getId()).actual());
-            for(Seance seance: seances) {
+            List<Seance> seances = seanceService.findAll(new SeanceFilter().forMovieId(movie.getId()).orderByStartDateAsc().actual());
+            int buttonCount = seances.size() < MAX_SEANCE_BUTTON_COUNT ? seances.size() : MAX_SEANCE_BUTTON_COUNT;
+            for(int i = 0; i < buttonCount; i++) {
+                Seance seance = seances.get(i);
                 Hall hall = hallService.getById(seance.getHallId());
                 movieComponent.addSeance(seance, hall);
             }

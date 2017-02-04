@@ -8,7 +8,6 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
@@ -23,7 +22,6 @@ import java.util.Locale;
 
 @SpringView(name = AllRatingsView.VIEW_NAME, ui = AdminUI.class)
 @SuppressWarnings("serial")
-@Title("Rating")
 @Theme("valo")
 public class AllRatingsView extends VerticalLayout implements View {
     public static final String VIEW_NAME = "ratings";
