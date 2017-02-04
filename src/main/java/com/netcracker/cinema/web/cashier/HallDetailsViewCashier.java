@@ -143,7 +143,7 @@ public class HallDetailsViewCashier extends HallDetailsView {
             getUI().getNavigator().navigateTo(PaymentView.VIEW_NAME + "/" + codeForTickets);
         });
         confirmSale.addComponent(buttonEnter);
-        Label priceSum = new Label("Total price: " + String.valueOf(ticketSelect.getTotalPrice()) + "$");
+        Label priceSum = new Label("Total price: " + String.valueOf(ticketSelect.getTotalPrice()));
         confirmSale.addComponent(priceSum);
         confirmSale.setComponentAlignment(priceSum, Alignment.BOTTOM_CENTER);
         return confirmSale;

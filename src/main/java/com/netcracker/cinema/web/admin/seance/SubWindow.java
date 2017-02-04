@@ -317,7 +317,7 @@ class SubWindow extends Window {
         } else if (hallId != null && hallId.equals(2)) {
             textFieldList.get(0).setCaption("Zone 'DD'");
             textFieldList.get(1).setCaption("Zone 'EE'");
-            textFieldList.get(2).setCaption("Zone 'FF'");
+            textFieldList.get(2).setCaption("Zone 'HH'");
         } else {
             textFieldList.get(0).setCaption("Zone");
             textFieldList.get(1).setCaption("Zone");
