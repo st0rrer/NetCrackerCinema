@@ -6,7 +6,9 @@ import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.MovieService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.TicketService;
+import com.netcracker.cinema.validation.routines.IntegerValidator;
 import com.sun.org.apache.xml.internal.serialize.LineSeparator;
+import com.vaadin.ui.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,14 +64,13 @@ public class SeancesValidation implements Validator {
     }
 
     public boolean checkPrice(String price) {
-        try {
-            Integer.parseInt(price);
-            return true;
-        } catch (NumberFormatException ex) {
+        Validator intValidator = new IntegerValidator(price);
+        if (!intValidator.validate()) {
             setCaption(INVALID_PRICE_CAPTION);
-            setMessage(INVALID_PRICE_MESSAGE);
+            setMessage(intValidator.getMessage());
             return false;
         }
+        return true;
     }
 
     public boolean checkSeanceDate(Seance newSeance) {
@@ -86,12 +87,13 @@ public class SeancesValidation implements Validator {
             return false;
         }
         if (!IsInWorkingTime(newSeance)) {
-            String start = String.valueOf(START_TIME_OF_WORKING_DAY);
-            start = start.length() < 4 ?
-                    "0" + start.substring(0, 1) + ":" + start.substring(1) :
-                    start.substring(0, 2) + ":" + start.substring(2);
-            String last = String.valueOf(LAST_START_TIME_OF_SEANCE);
-            last = last.substring(0, 2) + ":" + last.substring(2);
+            long startHours = START_TIME_OF_WORKING_DAY / 100;
+            long startMins = START_TIME_OF_WORKING_DAY % 100;
+            String start = startHours + ":" + (startMins > 0 ? startMins : "00");
+
+            long lastHours = LAST_START_TIME_OF_SEANCE / 100;
+            long lastMins = LAST_START_TIME_OF_SEANCE % 100;
+            String last = lastHours + ":" + (lastMins > 0 ? lastMins : "00");
 
             setCaption(INVALID_DATE);
             setMessage("Start time of seance should be" +
@@ -127,8 +129,17 @@ public class SeancesValidation implements Validator {
 
     public boolean IsInWorkingTime(Date date) {
         DateFormat timeFormat = new SimpleDateFormat("HHmm");
-        int time = Integer.parseInt(timeFormat.format(date));
-        return time >= START_TIME_OF_WORKING_DAY && time <= LAST_START_TIME_OF_SEANCE;
+        long time = Integer.parseInt(timeFormat.format(date));
+        long lastTime;
+        if (START_TIME_OF_WORKING_DAY >= LAST_START_TIME_OF_SEANCE) {
+            lastTime = LAST_START_TIME_OF_SEANCE + 2400;
+            if (time <= LAST_START_TIME_OF_SEANCE) {
+                time += 2400;
+            }
+        } else {
+            lastTime = LAST_START_TIME_OF_SEANCE;
+        }
+        return time >= START_TIME_OF_WORKING_DAY && time <= lastTime;
     }
 
     private boolean IsHallFree(Seance newSeance) {

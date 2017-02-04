@@ -4,7 +4,6 @@ import com.sun.org.apache.xml.internal.serialize.LineSeparator;
 
 public interface MessagesAndCaptions {
     String INVALID_PRICE_CAPTION = "Invalid price";
-    String INVALID_PRICE_MESSAGE = "Only numbers!";
     String BOOKED_TICKETS_CAPTION = "Booked tickets";
     String BOOKED_TICKETS_MESSAGE = "Few seconds ago someone has booked tickets" +
             LineSeparator.Windows + "for this seance, so it can't be modified.";

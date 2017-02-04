@@ -39,10 +39,10 @@ public class IntegerValidator implements Validator {
     }
 
     private boolean isInteger(String value) {
-        if (value != null && value.matches("[-+]?\\d+")) {
+        if (value != null && value.matches("\\d+")) {
             return true;
         }
-        setMessage("String can not convert to Integer");
+        setMessage("Only numbers are allowed");
         logger.log(Level.WARN, getMessage());
         return false;
     }
