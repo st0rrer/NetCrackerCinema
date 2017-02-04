@@ -6,6 +6,7 @@ import com.netcracker.cinema.model.Seance;
 import com.netcracker.cinema.model.Ticket;
 import com.netcracker.cinema.service.*;
 //import com.netcracker.cinema.service.notification.NotificationService;
+import com.netcracker.cinema.service.notification.NotificationService;
 import com.netcracker.cinema.web.UserUI;
 import com.netcracker.cinema.web.common.HallDetailsView;
 import com.netcracker.cinema.web.common.TicketSelect;
@@ -40,8 +41,8 @@ public class HallDetailsViewUser extends HallDetailsView {
     private PriceService priceService;
     @Autowired
     private TicketService ticketService;
-//    @Autowired
-//    private NotificationService notificationService;
+    @Autowired
+    private NotificationService notificationService;
 
     private GridLayout areaForBookTicket;
     private Button book;
@@ -159,7 +160,7 @@ public class HallDetailsViewUser extends HallDetailsView {
                     ticket.setCode(codeForTickets);
                     ticketService.save(ticket);
                 }
-//                notificationService.sendNotification(emailField.getValue(), codeForTickets.toString());
+                notificationService.sendNotification(emailField.getValue(), codeForTickets.toString());
                 getUI().removeWindow(windowForBook);
                 ticketSelect.buildForThisSeance(seance);
                 Notification successfulNotification = new Notification("Promo code sent to your email. Thank you!" +
