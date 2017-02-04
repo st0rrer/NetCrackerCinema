@@ -21,6 +21,10 @@ public class SeanceTimeSettings {
     private static final Logger LOGGER = Logger.getLogger(SeancesValidation.class);
 
     static {
+        initializeDefaultTimes();
+    }
+
+    public static void initializeDefaultTimes() {
         Properties property = new Properties();
         try {
             InputStream stream = SeancesValidation.class.getResourceAsStream("/cinema.properties");

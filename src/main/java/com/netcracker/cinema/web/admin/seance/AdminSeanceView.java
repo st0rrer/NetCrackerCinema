@@ -45,7 +45,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     SeancesValidation validator;
 
     Date date = new Date(System.currentTimeMillis());
-    Locale englishLocale = new Locale("en", "US");
+    public static Locale englishLocale = Locale.UK;
     DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", englishLocale);
     DateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private VerticalLayout verticalLayout1 = new VerticalLayout();
@@ -53,7 +53,7 @@ public class AdminSeanceView extends HorizontalLayout implements View {
     private VerticalLayout hallLayout2 = new VerticalLayout();
     private Window subWindow;
 
-    private WebBrowser webBrowser = Page.getCurrent().getWebBrowser();
+    public static WebBrowser webBrowser = Page.getCurrent().getWebBrowser();
     private int screenHeight = webBrowser.getScreenHeight();
 
     @PostConstruct

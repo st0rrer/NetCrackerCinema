@@ -7,6 +7,7 @@ import com.netcracker.cinema.service.PriceService;
 import com.netcracker.cinema.service.SeanceService;
 import com.netcracker.cinema.service.schedule.impl.ScheduleServiceImpl;
 import com.netcracker.cinema.validation.SeancesValidation;
+import com.netcracker.cinema.web.AdminUI;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.datefield.Resolution;
@@ -106,10 +107,10 @@ class SubWindow extends Window {
             }
         });
 
-        seanceDate.setLocale(adminSeanceView.englishLocale);
+        seanceDate.setLocale(AdminSeanceView.englishLocale);
         seanceDate.setResolution(Resolution.MINUTE);
         seanceDate.setWidth("250px");
-        seancePeriodEndDate.setLocale(adminSeanceView.englishLocale);
+        seancePeriodEndDate.setLocale(AdminSeanceView.englishLocale);
 
         CheckBox checkBox = new CheckBox("Add one more seance after this");
         checkBox.setVisible(false);
