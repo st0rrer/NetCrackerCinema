@@ -96,8 +96,12 @@ public abstract class ScheduleView extends VerticalLayout implements View {
             public void buttonClick(Button.ClickEvent event) {
                 if (event.getButton() == first) {
                     currentPage = 1;
+                    next.setEnabled(true);
+                    previous.setEnabled(false);
                 } else if (event.getButton() == last) {
                     currentPage = (int) maxPage;
+                    previous.setEnabled(true);
+                    next.setEnabled(false);
                 } else if (event.getButton() == next) {
                     currentPage++;
                     if(currentPage == maxPage) {
