@@ -21,7 +21,7 @@
             <div class="col-md-4 col-md-offset-4">
                 <div id="logo-login">
                     <h1>WEL<span>COME</span>
-                        <span>admin panel</span>
+                        <span>login panel</span>
                     </h1>
                 </div>
             </div>

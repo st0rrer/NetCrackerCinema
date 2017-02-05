@@ -99,12 +99,8 @@ body {
     overflow-x: hidden !important;
     min-height: 100%;
     z-index: -2;
-    margin: 0px !important;
-    background: url('/VAADIN/themes/cinema/img/admin.jpg') no-repeat top center fixed;
-    -moz-background-size: cover;
-    -webkit-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    margin: 0 !important;
+    background: url('/VAADIN/themes/cinema/img/bg.png') repeat;
 }
 
 #login-wrapper {
