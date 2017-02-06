@@ -51,6 +51,7 @@ public class AllRatingsView extends VerticalLayout implements View {
         PagedFilterTable<IndexedContainer> pagedFilterTable = allBuildPagedFilterTable();
         final VerticalLayout mainLayout = new VerticalLayout();
         addComponent(mainLayout);
+        pagedFilterTable.setPageLength(10);
         mainLayout.setSpacing(true);
         mainLayout.addComponent(pagedFilterTable);
         mainLayout.addComponent(pagedFilterTable.createControls(new PagedFilterControlConfig()));
