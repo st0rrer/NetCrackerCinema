@@ -36,20 +36,15 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
     @PostConstruct
     protected void init() {
 
-        UI ui = UI.getCurrent();
-
-        // menu
         AdminMenu adminMenu = new AdminMenu();
         adminMenu.setWidth("100%");
 
-        // filter and clear
         filterText.setInputPrompt("filter by movie...");
         filterText.setWidth("900");
         filterText.addTextChangeListener(e -> {
             grid.setContainerDataSource(new BeanItemContainer<>(Movie.class, search(e.getText())));
         });
 
-        // clear text field
         Button clearFilterTextBtn = new Button(FontAwesome.TIMES);
         clearFilterTextBtn.setDescription("Clear the current filter");
         clearFilterTextBtn.addClickListener(e -> {
@@ -57,13 +52,10 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
             updateList();
         });
 
-        // concat elements
         CssLayout filtering = new CssLayout();
         filtering.addComponents(filterText, clearFilterTextBtn);
         filtering.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 
-
-        // show window with form, using vertical layout
         VerticalLayout subContent = new VerticalLayout();
         subContent.setMargin(true);
 
@@ -73,21 +65,17 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
         subWindow.setHeight("550");
         subWindow.setWidth("700");
 
-        // add form to panel for form's resizing
         Panel panel = new Panel();
         panel.setContent(movieForm);
 
-        // add panel to vertical layout
         subContent.addComponent(panel);
 
-        // Button "Add new movie"
         Button addMovieBtn = new Button("Add new movie");
         addMovieBtn.addClickListener(e -> {
             movieForm.setMovie(new Movie(), subWindow, this);
             UI.getCurrent().addWindow(subWindow);
         });
 
-        // Button "Edit movie"
         Button editMovieBtn = new Button("Edit");
         editMovieBtn.addClickListener(e -> {
             if(!grid.getSelectionModel().getSelectedRows().isEmpty()) {
@@ -100,7 +88,6 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
             }
         });
 
-        // Button "Delete movie"
         Button deleteMovieBtn = new Button("Delete");
         deleteMovieBtn.addClickListener(e -> {
             if(!grid.getSelectionModel().getSelectedRows().isEmpty()) {
@@ -117,7 +104,6 @@ public class ModifyAdminMovieView extends VerticalLayout implements View {
             }
         });
 
-        // horizontal
         HorizontalLayout toolbar = new HorizontalLayout(filtering, addMovieBtn, editMovieBtn, deleteMovieBtn);
         toolbar.setSpacing(true);
 

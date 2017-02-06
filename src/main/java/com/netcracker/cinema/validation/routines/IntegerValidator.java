@@ -42,7 +42,7 @@ public class IntegerValidator implements Validator {
         if (value != null && value.matches("\\d+")) {
             return true;
         }
-        setMessage("Only numbers are allowed");
+        setMessage("Only numbers are allowed or number is negative");
         logger.log(Level.WARN, getMessage());
         return false;
     }

@@ -2,6 +2,8 @@ package com.netcracker.cinema.service.schedule.impl;
 
 import com.netcracker.cinema.service.TicketService;
 import com.netcracker.cinema.service.schedule.ScheduleService;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     SchedulerFactory sf = new StdSchedulerFactory();
     Scheduler scheduler = sf.getScheduler();
 
+    private static final Logger LOGGER = Logger.getLogger(ScheduleServiceImpl.class);
+
     public ScheduleServiceImpl() throws SchedulerException {}
 
     @Override
@@ -39,7 +43,6 @@ public class ScheduleServiceImpl implements ScheduleService {
             deleteTask(seanceId);
         }
 
-        //String cronTime = "50 8 16 13 1 ? 2017";
         String cronTime = seconds + " " + minute + " " + hour + " " + day + " " + (month+1) + " ? " + year;
 
         JobDetail job = newJob(Task.class)
@@ -57,7 +60,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduler.scheduleJob(job, trigger);
             scheduler.start();
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage(), e);
         }
 
         hashMap.put(seanceId, job.getKey());
@@ -68,7 +71,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             scheduler.deleteJob(hashMap.get(seanceId));
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage(), e);
         }
         hashMap.remove(seanceId);
     }
@@ -78,7 +81,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         try {
             scheduler.shutdown();
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage(), e);
         }
     }
 }
